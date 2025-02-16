@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ebb2c3175a4c6d44b893dfc76330ddb0
+timeCreated: 1518829218
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111726
+  packageName: Folding Table and Chair PBR
+  packageVersion: 1.0
+  assetPath: Assets/devotid/Folding Table and Chair/Prefabs/CHAIR_Folding.prefab
+  uploadId: 230370
