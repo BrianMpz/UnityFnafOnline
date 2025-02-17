@@ -24,12 +24,12 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
 
     private void InitialiseAnimatronics()
     {
-        Animatronics.ForEach((animatronic) => { animatronic.enabled = true; if (animatronic.isActiveAndEnabled) animatronic.Initialise(); });
+        Animatronics.ForEach((animatronic) => { if (animatronic.enabled) animatronic.Initialise(); });
     }
 
     private void DisableAnimatronics()
     {
-        Animatronics.ForEach((animatronic) => { if (animatronic.isActiveAndEnabled) animatronic.Disable(); animatronic.enabled = false; });
+        Animatronics.ForEach((animatronic) => { if (animatronic.enabled) animatronic.Disable(); });
     }
 
     public List<Node> BreadthFirstSearch(Node start, Node target, Animatronic animatronic, bool takeOccupancyIntoAccount)
