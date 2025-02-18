@@ -7,7 +7,7 @@ public class Foxy : Animatronic
 {
     [SerializeField] private NetworkVariable<float> currentAttackAttempt;
     public float foxyProgress;
-    private bool isLocked = false; // Whether Foxy is locked by camera observation
+    [SerializeField] private bool isLocked = false; // Whether Foxy is locked by camera observation
     [SerializeField] private float lockCoolDownTime = 5f;  // Minimum time for lock duration
     private Coroutine unlockingCoroutine; private AudioSource foxyRunAudio;
     private AudioSource foxyTauntAudio;
@@ -146,7 +146,7 @@ public class Foxy : Animatronic
             PlayThunkClientRpc(indexOfPlayerNode);
         }
 
-        SetNode(startNode, false);
+        SetNode(startNode, false, false);
 
         // targetedPlayer = null;
 
@@ -381,7 +381,7 @@ public class Foxy : Animatronic
         PlayerNode playerNode = AnimatronicManager.Instance.PlayerNodes[indexOfPlayerNode];
         string killerName = gameObject.name;
 
-        playerNode.playerBehaviour.DieClientRpc(killerName, MultiplayerManager.NewClientRpcSendParams(playerNode.playerBehaviour.OwnerClientId));
+        playerNode.playerBehaviour.DieClientRpc(killerName, deathScream, MultiplayerManager.NewClientRpcSendParams(playerNode.playerBehaviour.OwnerClientId));
 
         SetNode(playerNode, true);
 

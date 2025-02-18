@@ -1,13 +1,20 @@
+using System;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class BackstagePlayerBehaviour : PlayerBehaviour
 {
+    public Maintenance maintenance;
     public BackstageCameraController cameraController;
     public Door door;
     [SerializeField] private Light RoomLight;
     [SerializeField] private float timeToWaitBeforeKill;
+    private int zapAttempts;
+    private float zapCooldown;
+    public Zap zap;
+    public Action OnZap;
 
     public override bool IsVulnerable(Node currentNode)
     {
@@ -61,14 +68,14 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
         else playerComputer.Lock();
     }
 
-    private protected override IEnumerator DeathAnimation()
+    private protected override IEnumerator DeathAnimation(string deathScream)
     {
         if (!isAlive.Value) yield break;
 
-        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable("jumpscare scream");
+        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
         float elapedTime = 0;
 
-        while (elapedTime < .55f)
+        while (elapedTime < .6f)
         {
             cameraController.LerpTowardsDeathView();
             yield return null;
@@ -117,5 +124,35 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     {
         power.Value -= 1;
         AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable("door knock");
+    }
+
+    public void Zap()
+    {
+        if (zapCooldown < 10)
+        {
+            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            return;
+        }
+        zapCooldown = 0;
+        zapAttempts++;
+        OnZap?.Invoke();
+
+        GameAudioManager.Instance.PlaySfxOneShot("controlled shock");
+        power.Value -= zapAttempts * zapAttempts / 2;
+        ZapServerRpc();
+        MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ZapServerRpc()
+    {
+        zap.ZapAnimatronic();
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        zapCooldown += Time.deltaTime;
     }
 }

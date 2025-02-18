@@ -13,12 +13,14 @@ public class PlayerCommunicationSystem : NetworkBehaviour
 {
     [SerializeField] private PlayerBehaviour playerBehaviour;
 
+
     [SerializeField] private Canvas joinCommsCanvas;
     [SerializeField] private Button joinCommsButton;
 
     [SerializeField] private Canvas commsCanvas;
     [SerializeField] private Button callAllPlayersButton;
     [SerializeField] private Button leaveCommsButton;
+    [SerializeField] private TMP_Text CommsDownText;
 
     [SerializeField] private Canvas spectatorCanvas;
 
@@ -42,6 +44,17 @@ public class PlayerCommunicationSystem : NetworkBehaviour
             VivoxService.Instance.ParticipantAddedToChannel += OnParticipantJoined;
         }
         callImage.SetActive(false);
+
+        Maintenance.Instance.communicationsState.OnValueChanged += CommunicationStateChanged;
+        CommsDownText.enabled = false;
+    }
+
+    private void CommunicationStateChanged(State previousValue, State newValue)
+    {
+        if (newValue == State.ONLINE) return;
+        if (!isConnected) return;
+
+        OnCallLeave();
     }
 
     public void Initialise()
@@ -86,8 +99,6 @@ public class PlayerCommunicationSystem : NetworkBehaviour
         {
             PlayerData playerData = MultiplayerManager.Instance.GetPlayerDataFromVivoxId(participant.PlayerId);
 
-            Debug.Log($"{playerData.playerName} is {playerData.role}");
-
             communicatingPlayerList.First(communicatingPlayer => communicatingPlayer.playerRole == playerData.role).Show(participant, playerData);
         }
     }
@@ -99,9 +110,23 @@ public class PlayerCommunicationSystem : NetworkBehaviour
         GameAudioManager.Instance.PlaySfxOneShot("call pick up");
     }
 
+    private IEnumerator CommsOffline()
+    {
+        CommsDownText.enabled = true;
+        yield return new WaitForSeconds(2);
+        CommsDownText.enabled = false;
+    }
+
     private void OnJoiningCall()
     {
         if (!IsOwner) return;
+
+        if (Maintenance.Instance.communicationsState.Value != State.ONLINE)
+        {
+            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            StartCoroutine(CommsOffline());
+            return;
+        }
 
         VivoxManager.Instance.SwitchToGameChat();
         VivoxManager.Instance.ChannelJoined += OnCallJoined;

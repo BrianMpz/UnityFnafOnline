@@ -16,6 +16,7 @@ public class GameFadeInUI : MonoBehaviour
 
     public void FadeOut()
     {
+        StopAllCoroutines();
         StartCoroutine(FadeOutCoroutine());
     }
 

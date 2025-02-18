@@ -28,6 +28,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     [SerializeField] private protected Transform animatronicModel; // position on map
     private protected RectTransform MapTransform { get => GetComponent<RectTransform>(); }
     [SerializeField] private float footStepPitch;
+    [SerializeField] private protected string deathScream;
     private protected bool isWaitingOnClient;
     private Coroutine lerpingToPosition;
     private protected Coroutine gameplayLoop;
@@ -37,9 +38,10 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         if (!IsServer) return;
 
         GameManager.Instance.currentHour.OnValueChanged += (currentValue, newValue) => { IncreaseAnimatronicDifficulty(); };
+        DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
         GameManager.Instance.OnPlayerPowerDown += GameManager_OnPlayerPowerDown;
 
-        SetNode(startNode);
+        SetNode(startNode, false, false);
 
         switch (GameManager.Instance.gameNight)
         {
@@ -74,8 +76,6 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         }
 
         gameplayLoop = StartCoroutine(GameplayLoop(false));
-
-        DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
     }
 
     public virtual void Disable()
@@ -263,7 +263,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ConfirmKillServerRpc(int indexOfTargetNode)
+    private protected void ConfirmKillServerRpc(int indexOfTargetNode)
     {
         isWaitingOnClient = false;
 
@@ -274,7 +274,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         {
             AdvanceInPath(targetNode, true);
             string killerName = gameObject.name;
-            playerBehaviour.DieClientRpc(killerName, MultiplayerManager.NewClientRpcSendParams(targetNode.playerBehaviour.OwnerClientId));
+            playerBehaviour.DieClientRpc(killerName, deathScream, MultiplayerManager.NewClientRpcSendParams(targetNode.playerBehaviour.OwnerClientId));
         }
         else
         {
@@ -310,16 +310,16 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         return currentNode.neighbouringNodes.FirstOrDefault(node => node != dontGoToThisNode && !node.isOccupied);
     }
 
-    private protected virtual void SetNode(Node nodeToGoTo, bool lerpToPosition = false)
+    private protected virtual void SetNode(Node nodeToGoTo, bool lerpToPosition = false, bool makeNoise = true)
     {
         List<Node> nodes = AnimatronicManager.Instance.Nodes;
         int indexOfNodeToGoTo = nodes.IndexOf(nodeToGoTo);
 
-        SetNodeClientRpc(indexOfNodeToGoTo, lerpToPosition);
+        SetNodeClientRpc(indexOfNodeToGoTo, lerpToPosition, makeNoise);
     }
 
     [ClientRpc]
-    private protected virtual void SetNodeClientRpc(int nodeToSetIndex, bool lerpToPosition = false)
+    private protected virtual void SetNodeClientRpc(int nodeToSetIndex, bool lerpToPosition = false, bool makeNoise = true)
     {
         Node nodeToSet = AnimatronicManager.Instance.Nodes[nodeToSetIndex];
         Node startingNode = currentNode;
@@ -341,14 +341,14 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         if (lerpToPosition)
         {
             if (lerpingToPosition != null) StopCoroutine(lerpingToPosition);
-            lerpingToPosition = StartCoroutine(LerpToPosition(startingNode, nodeToSet, 10));
+            lerpingToPosition = StartCoroutine(LerpToPosition(startingNode, nodeToSet, 15));
         }
         else
         {
             TeleportToPosition(nodeToSet);
         }
 
-        if (PlayerRoleManager.Instance.IsLocalPlayerAlive() && GameManager.Instance.isPlaying && animatronicModel.gameObject.activeSelf)
+        if (makeNoise && PlayerRoleManager.Instance.IsLocalPlayerAlive() && GameManager.Instance.isPlaying && animatronicModel.gameObject.activeSelf)
         {
             animatronicModel.GetComponent<AudioSource>().Play();
             animatronicModel.GetComponent<AudioSource>().pitch = footStepPitch;

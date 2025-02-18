@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 public class BackstageUI : PlayerUI
 {
+    [SerializeField] private BackstagePlayerBehaviour backstagePlayerBehaviour;
     [SerializeField] private BackstageCameraController cameraController;
     [SerializeField] private EventTrigger turnLeftTrigger;
     [SerializeField] private EventTrigger turnRightTrigger;
@@ -13,6 +14,7 @@ public class BackstageUI : PlayerUI
     {
         AddListener(turnLeftTrigger, EventTriggerType.PointerEnter, () => { StartCoroutine(WaitThenChangeTriggers(TurnLeft)); });
         AddListener(turnRightTrigger, EventTriggerType.PointerEnter, () => { StartCoroutine(WaitThenChangeTriggers(TurnRight)); });
+        backstagePlayerBehaviour.OnZap += OnPowerDrain;
     }
 
     private void TurnRight()

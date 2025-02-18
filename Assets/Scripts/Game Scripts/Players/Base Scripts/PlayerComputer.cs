@@ -47,6 +47,7 @@ public class PlayerComputer : NetworkBehaviour
 
     public void PlayerBehaviour_OnKill()
     {
+        DisableComputerSystem();
         ForceMonitorDown();
     }
 

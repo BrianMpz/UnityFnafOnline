@@ -141,6 +141,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
     private void SetBackstageOwnerships(ulong clientId)
     {
         ChangeOwnership(backstagePlayerBehaviour.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstagePlayerBehaviour.maintenance.GetComponent<NetworkObject>(), clientId);
 
         ChangeOwnership(backstagePlayerBehaviour.door.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(backstagePlayerBehaviour.door.doorLight.GetComponent<NetworkObject>(), clientId);

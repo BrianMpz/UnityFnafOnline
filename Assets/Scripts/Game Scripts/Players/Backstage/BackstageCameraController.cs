@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class BackstageCameraController : CameraController
@@ -10,11 +11,15 @@ public class BackstageCameraController : CameraController
     public Transform ShockView;
     public Transform DeathView;
     [SerializeField] private float cameraLerpSpeed;
+    public Action ViewChanged;
 
     public void SetCameraView(Transform view)
     {
         backstagePlayerBehaviour.door.doorLight.DisableLights();
         CurrentView = view;
+        backstagePlayerBehaviour.zap.CheckIsBeingWatchedServerRpc(view == ShockView);
+
+        ViewChanged?.Invoke();
     }
 
     public override void SetCameraView()

@@ -85,12 +85,12 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     private void PowerOffClientRpc(ulong ignoreId)
     { if (NetworkManager.Singleton.LocalClientId == ignoreId) return; RoomLight.enabled = false; flashLight.enabled = true; }
 
-    private protected override IEnumerator DeathAnimation()
+    private protected override IEnumerator DeathAnimation(string deathScream)
     {
         if (!isAlive.Value) yield break;
 
         flashLight.enabled = true;
-        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable("jumpscare scream");
+        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
         float elapedTime = 0;
 
         while (elapedTime < .7f)

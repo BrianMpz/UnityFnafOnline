@@ -17,10 +17,7 @@ public class GlobalCameraSystem : Singleton<GlobalCameraSystem>
         return CameraDatas.FirstOrDefault(cameradata => cameradata.GetCameraName() == cameraName);
     }
 
-    private List<PlayerComputer> playerComputers
-    {
-        get => PlayerRoleManager.Instance.GetComponentsInChildren<PlayerComputer>().ToList();
-    }
+    [SerializeField] private List<PlayerComputer> playerComputers;
 
     private int previousPlayersWatchingFoxy = -1;
     public Action<int> OnPlayersWatchingFoxyChanged;
@@ -45,14 +42,18 @@ public class GlobalCameraSystem : Singleton<GlobalCameraSystem>
         {
             foreach (CameraData cameraData in changableCameraDatas)
             {
-                if (UnityEngine.Random.Range(0, 2) == 0)
+                if (UnityEngine.Random.Range(0, 10) <= 7 && Maintenance.Instance.camerasState.Value != State.ONLINE)
                 {
-                    cameraData.isHidden = !cameraData.isHidden;
-                    OnCameraVisibilityChanged?.Invoke(cameraData.GetCameraName());
+                    cameraData.isHidden = true;
                 }
+                else
+                {
+                    cameraData.isHidden = false;
+                }
+                OnCameraVisibilityChanged?.Invoke(cameraData.GetCameraName());
             }
 
-            yield return new WaitForSeconds(10);
+            yield return new WaitForSeconds(5);
         }
     }
 

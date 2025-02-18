@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -14,6 +15,7 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
     public NetworkVariable<bool> Backstage_Charging = new(writePerm: NetworkVariableWritePermission.Owner);
     [SerializeField] private List<GeneratorPlayerObject> generatorPlayerObjects;
     [SerializeField] private GameObject generatorOS;
+    [SerializeField] private TMP_Text GeneratorDownText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,6 +23,21 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
         PlayerRoleManager.Instance.partsAndServiceBehaviour.OnPowerOn += PowerOn;
         PlayerRoleManager.Instance.partsAndServiceBehaviour.OnPowerDown += PowerOff;
         generatorPlayerObjects.ForEach(obj => obj.chargeButton.GetComponentInChildren<TMP_Text>().text = "");
+
+        Maintenance.Instance.powerGeneratorState.OnValueChanged += PowerGeneratorStateChanged;
+        GeneratorDownText.enabled = false;
+    }
+
+    private void PowerGeneratorStateChanged(State previousValue, State newValue)
+    {
+        GeneratorDownText.enabled = newValue != State.ONLINE;
+
+        if (!IsOwner) return;
+
+        if (GeneratorDownText.enabled)
+        {
+            generatorPlayerObjects.ForEach(obj => obj.StopChargingPlayer());
+        }
     }
 
     // Update is called once per frame

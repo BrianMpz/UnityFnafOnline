@@ -98,10 +98,9 @@ public class PlayerCameraSystem : NetworkBehaviour
 
         if (cameraStatic.disturbanceAudio != null) cameraStatic.disturbanceAudio.mute = !isHidingCurrentCamera;
 
-        if (!isHidingCurrentCamera)
-        {
-            CheckIsWatchingFoxy();
-        }
+        isWatchingFoxy.Value = !isHidingCurrentCamera && currentCameraName.Value == CameraName.Three;
+
+        GlobalCameraSystem.Instance.CountPlayersWatchingFoxyServerRpc();
 
         OnCameraViewChanged?.Invoke(cameraName);
 
@@ -117,7 +116,6 @@ public class PlayerCameraSystem : NetworkBehaviour
         if (!playerComputer.isMonitorUp.Value) return;
 
         isWatchingFoxy.Value = currentCameraName.Value == CameraName.Three;
-        GlobalCameraSystem.Instance.CountPlayersWatchingFoxyServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]

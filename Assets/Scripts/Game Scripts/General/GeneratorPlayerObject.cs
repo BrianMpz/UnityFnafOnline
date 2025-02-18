@@ -50,6 +50,12 @@ public class GeneratorPlayerObject : MonoBehaviour
 
     private void ChargePlayer()
     {
+        if (Maintenance.Instance.powerGeneratorState.Value != State.ONLINE)
+        {
+            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            return;
+        }
+
         PowerGenerator.Instance.ChargePlayer(playerRole);
     }
 
@@ -64,6 +70,7 @@ public class GeneratorPlayerObject : MonoBehaviour
         entry.callback.AddListener(_ => callback());
         eventTrigger.triggers.Add(entry);
     }
+
     private void Update()
     {
         float powerFloat = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole).power.Value;

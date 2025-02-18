@@ -19,7 +19,7 @@ public class PlayerUI : MonoBehaviour
         playerBehaviour.OnInitialise += Initialise;
         playerBehaviour.OnDisable += Disable;
         playerBehaviour.OnKill += Hide;
-        playerBehaviour.OnFoxyPowerDrain += OnFoxyPowerDrain;
+        playerBehaviour.OnFoxyPowerDrain += OnPowerDrain;
     }
 
     virtual public void Initialise()
@@ -63,12 +63,12 @@ public class PlayerUI : MonoBehaviour
         hourText.text = $"{currentHour}AM";
     }
 
-    private void OnFoxyPowerDrain()
+    private protected void OnPowerDrain()
     {
-        StartCoroutine(ShowFoxyPowerDrain());
+        StartCoroutine(ShowPowerDrain());
     }
 
-    private IEnumerator ShowFoxyPowerDrain()
+    private IEnumerator ShowPowerDrain()
     {
         powerText.color = Color.red;
         float elapsedTime = 0f;

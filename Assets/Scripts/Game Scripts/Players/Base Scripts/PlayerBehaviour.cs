@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using JetBrains.Annotations;
 using Unity.Collections;
+using Unity.IO.LowLevel.Unsafe;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -31,7 +32,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public abstract bool IsVulnerable(Node currentNode);
     public virtual Node GetDoorwayNode(Node AttackingNode) { return default; }
     public abstract IEnumerator WaitToKill(Node currentNode);
-    private protected abstract IEnumerator DeathAnimation();
+    private protected abstract IEnumerator DeathAnimation(string deathScream);
     [ClientRpc] public virtual void KnockOnDoorClientRpc(int indexOfCurrentNode, ClientRpcParams clientRpcParams) { }
 
     public void Initialise()
@@ -91,7 +92,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
         }
     }
 
-    private void Update()
+    public virtual void Update()
     {
         if (GameManager.localPlayerBehaviour != this || !isAlive.Value) return;
 
@@ -122,9 +123,9 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void DieClientRpc(FixedString64Bytes killer, ClientRpcParams clientRpcParams) => StartCoroutine(Die(killer.ToString()));
+    public void DieClientRpc(FixedString64Bytes killer, FixedString64Bytes deathScream, ClientRpcParams clientRpcParams) => StartCoroutine(Die(killer.ToString(), deathScream.ToString()));
 
-    private IEnumerator Die(string killer)
+    private IEnumerator Die(string killer, string deathScream)
     {
         if (GameManager.localPlayerBehaviour != this) yield break;
 
@@ -132,7 +133,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
         GameAudioManager.Instance.StopAllSfx();
 
-        yield return DeathAnimation();
+        yield return DeathAnimation(deathScream);
 
         HandleDeath(killer);
 
