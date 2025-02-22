@@ -5,6 +5,8 @@ using Unity.Netcode;
 using Unity.Services.Vivox;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
+using System.Collections;
 
 public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles most of netcode 
 {
@@ -160,7 +162,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
             {
                 playerName = name,
                 clientId = srp.Receive.SenderClientId,
-                role = GetUnusedPlayerRole(),
+                role = GetRandomUnusedPlayerRole(),
                 vivoxId = vId
             });
         else
@@ -168,7 +170,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
             {
                 playerName = name,
                 clientId = srp.Receive.SenderClientId,
-                role = GetUnusedPlayerRole(),
+                role = GetRandomUnusedPlayerRole(),
             });
 
         Debug.Log($"Adding {name}, with Id {srp.Receive.SenderClientId} and vivox Id {vId}");
@@ -263,7 +265,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         }
         while (!IsRoleAvailable(role));
 
-        SetPlayerRole(role, senderId);
+        SetPlayerRole(senderId, role);
     }
 
     public void ChangePlayerRoleToNext(PlayerRoles role)
@@ -275,7 +277,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         }
         while (!IsRoleAvailable(role));
 
-        SetPlayerRole(role, senderId);
+        SetPlayerRole(senderId, role);
     }
 
     private PlayerRoles NextRole(PlayerRoles currentState)
@@ -292,7 +294,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         return values[prevIndex];
     }
 
-    private void SetPlayerRole(PlayerRoles role, ulong clientId)
+    private void SetPlayerRole(ulong clientId, PlayerRoles role)
     {
         int playerDataIndex = GetPlayerDataIndexFromClientId(clientId);
         PlayerData playerData = playerDataList[playerDataIndex];
@@ -324,11 +326,14 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         return true;
     }
 
-    private PlayerRoles GetUnusedPlayerRole()
+    private PlayerRoles GetRandomUnusedPlayerRole()
     {
-        foreach (PlayerRoles role in Enum.GetValues(typeof(PlayerRoles)))
+        IEnumerable<PlayerRoles> playerRoles = (IEnumerable<PlayerRoles>)Enum.GetValues(typeof(PlayerRoles));
+        IEnumerable<PlayerRoles> shuffledPlayerRoles = playerRoles.ToList().OrderBy(x => UnityEngine.Random.value);
+
+        foreach (PlayerRoles role in shuffledPlayerRoles)
         {
-            if (IsRoleAvailable(role))
+            if (IsRoleAvailable(role) && role != PlayerRoles.Kitchen)
             {
                 return role;
             }
@@ -344,7 +349,15 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
             (playerData.role == PlayerRoles.None ||
             playerData.role == PlayerRoles.Kitchen))
         {
-            SetPlayerRole(PlayerRoles.SecurityOffice, NetworkManager.Singleton.LocalClientId);
+            SetPlayerRole(NetworkManager.Singleton.LocalClientId, PlayerRoles.SecurityOffice);
+        }
+    }
+
+    public void ShufflePlayerRoles()
+    {
+        foreach (PlayerData playerData in playerDataList)
+        {
+            SetPlayerRole(playerData.clientId, GetRandomUnusedPlayerRole());
         }
     }
 

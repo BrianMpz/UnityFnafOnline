@@ -10,12 +10,12 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 {
     public PlayerComputer playerComputer;
     public PlayerRoles playerRole;
-    public PlayerUI playerUI;
-    public Camera cam;
+    public Camera spectatorCamera;
+    [SerializeField] private GameObject playerModel;
     public NetworkVariable<bool> isAlive = new(writePerm: NetworkVariableWritePermission.Owner);
-    public NetworkVariable<float> power = new(writePerm: NetworkVariableWritePermission.Owner);
+    public NetworkVariable<float> power = new(writePerm: NetworkVariableWritePermission.Server);
     public NetworkVariable<float> powerUsage = new(writePerm: NetworkVariableWritePermission.Owner);
-    public NetworkVariable<bool> poweredOn = new(writePerm: NetworkVariableWritePermission.Owner);
+    private protected NetworkVariable<bool> poweredOn = new(writePerm: NetworkVariableWritePermission.Owner);
 
     public event Action OnPowerDown;
     public event Action OnPowerOn;
@@ -34,6 +34,11 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public abstract IEnumerator WaitToKill(Node currentNode);
     private protected abstract IEnumerator DeathAnimation(string deathScream);
     [ClientRpc] public virtual void KnockOnDoorClientRpc(int indexOfCurrentNode, ClientRpcParams clientRpcParams) { }
+
+    void Start()
+    {
+        spectatorCamera.enabled = false;
+    }
 
     public void Initialise()
     {
@@ -61,7 +66,6 @@ public abstract class PlayerBehaviour : NetworkBehaviour
         if (!IsOwner) return;
 
         OnPowerOn?.Invoke();
-
         poweredOn.Value = true;
     }
 
@@ -82,26 +86,20 @@ public abstract class PlayerBehaviour : NetworkBehaviour
         float previousSign = Mathf.Sign(previousValue);
         float newSign = Mathf.Sign(newValue);
 
-        if (previousSign >= 0 && newSign < 0)
+        if (previousSign > 0 && newSign <= 0)
         {
             PowerOff();
-        }
-        else if (previousSign < 0 && newSign >= 0)
-        {
-            PowerOn();
         }
     }
 
     public virtual void Update()
     {
+        if (IsServer) DrainPower();
+
         if (GameManager.localPlayerBehaviour != this || !isAlive.Value) return;
 
         SetCameraView();
         SetUsage();
-
-        if (!poweredOn.Value) return;
-
-        DrainPower();
     }
 
     protected float CalculatePowerDrain()
@@ -111,12 +109,15 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
     private void DrainPower()
     {
+        if (!poweredOn.Value) return;
+
         float drainRate = CalculatePowerDrain();
 
-        power.Value = Mathf.Max(-1, power.Value - (drainRate * powerUsage.Value));
+        power.Value = Mathf.Max(0, power.Value - (drainRate * powerUsage.Value));
     }
 
-    public void FoxyDrainPower(float drainAmount)
+    [ServerRpc(RequireOwnership = false)]
+    public void FoxyDrainPowerServerRpc(float drainAmount)
     {
         power.Value -= drainAmount;
         OnFoxyPowerDrain.Invoke();
@@ -144,9 +145,9 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
     public void HandleDeath(string killer)
     {
-        StartCoroutine(GameManager.Instance.HandleDeath(killer));
-
+        GameAudioManager.Instance.StopAllSfx();
         StartCoroutine(DeathCleanUp(false));
+        StartCoroutine(GameManager.Instance.HandleDeath(killer));
     }
 
     public IEnumerator DeathCleanUp(bool disconnection)

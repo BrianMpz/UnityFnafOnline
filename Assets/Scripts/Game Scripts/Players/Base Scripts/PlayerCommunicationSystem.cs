@@ -34,9 +34,9 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     {
         if (MultiplayerManager.isPlayingOnline)
         {
-            playerBehaviour.OnPowerDown += OnCallLeave;
+            playerBehaviour.OnPowerDown += () => { OnCallLeave(false); };
+            leaveCommsButton.onClick.AddListener(() => { OnCallLeave(false); });
             joinCommsButton.onClick.AddListener(OnJoiningCall);
-            leaveCommsButton.onClick.AddListener(OnCallLeave);
             callAllPlayersButton.onClick.AddListener(() => { StartCoroutine(CallAllPlayers()); });
 
             communicatingPlayerList.ForEach(spectatingPlayer => spectatingPlayer.Hide());
@@ -54,7 +54,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
         if (newValue == State.ONLINE) return;
         if (!isConnected) return;
 
-        OnCallLeave();
+        OnCallLeave(true);
     }
 
     public void Initialise()
@@ -66,7 +66,9 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     {
         CallAllPlayersServerRpc();
         callAllPlayersButton.gameObject.SetActive(false);
+
         yield return new WaitForSeconds(3);
+
         callAllPlayersButton.gameObject.SetActive(true);
     }
 
@@ -152,7 +154,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
         joinCommsCanvas.enabled = !isConnected;
     }
 
-    private void OnCallLeave()
+    private void OnCallLeave(bool systemDown = false)
     {
         if (!IsOwner) return;
         if (!isConnected) return;
@@ -160,10 +162,9 @@ public class PlayerCommunicationSystem : NetworkBehaviour
         isConnected = false;
 
         joinCommsButton.enabled = false;
-        joinCommsButton.GetComponentInChildren<TMP_Text>().text = "Leaving Call...";
 
-        commsCanvas.enabled = isConnected;
-        joinCommsCanvas.enabled = !isConnected;
+        string joinLeaveText = systemDown ? "Connection Lost..." : "Leaving Call...";
+        joinCommsButton.GetComponentInChildren<TMP_Text>().text = joinLeaveText;
 
         VivoxManager.Instance.SwitchToPrivateChat();
 
@@ -177,7 +178,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
 
     private IEnumerator WaitForCallLeave()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(UnityEngine.Random.Range(1, 10));
         yield return new WaitUntil(() => { return !VivoxManager.Instance.IsInChannel(VivoxManager.Instance.gameChatName); });
         joinCommsButton.enabled = true;
         joinCommsButton.GetComponentInChildren<TMP_Text>().text = "Join Call";
@@ -245,21 +246,19 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     private void CallPlayerClientRpc(ulong ignoreId)
     {
         if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
-        if (VivoxManager.Instance.GetChannel(VivoxManager.Instance.gameChatName) != null || SpectatorUI.Instance.isSpectating) return;
+        if (SpectatorUI.Instance.isSpectating) return;
 
-        callImage.SetActive(true);
-
-        PlayCallAudioAsync();
+        StartCoroutine(PlayCallAudio());
     }
 
-    private async void PlayCallAudioAsync()
+    private IEnumerator PlayCallAudio()
     {
+        callImage.SetActive(true);
         callAudio = GameAudioManager.Instance.PlaySfxInterruptable("calling");
 
-        await Task.Delay(TimeSpan.FromSeconds(2.4));
+        yield return new WaitForSeconds(2.4f);
 
         GameAudioManager.Instance.StopSfx(callAudio);
         callImage.SetActive(false);
-        Debug.Log("calling");
     }
 }

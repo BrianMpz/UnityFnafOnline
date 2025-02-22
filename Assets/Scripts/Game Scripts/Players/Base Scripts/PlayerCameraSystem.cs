@@ -85,24 +85,18 @@ public class PlayerCameraSystem : NetworkBehaviour
         if (!IsOwner) return;
 
         currentCameraName.Value = cameraName;
-
         CameraData cameraData = GlobalCameraSystem.Instance.GetCameraDataFromCameraName(cameraName);
         cameraOutputScreen.texture = cameraData.GetRenderTexture();
+        OnCameraViewChanged?.Invoke(cameraName);
+
         bool isHidden = cameraData.isHidden;
         bool canSeeAnyCamera = playerBehaviour.playerRole == PlayerRoles.SecurityOffice;
-
         isHidingCurrentCamera = !canSeeAnyCamera && isHidden;
 
-        cameraStatic.RefreshMonitorStatic(isHidingCurrentCamera);
-        cameraDistrubanceText.enabled = isHidingCurrentCamera;
-
-        if (cameraStatic.disturbanceAudio != null) cameraStatic.disturbanceAudio.mute = !isHidingCurrentCamera;
+        UpdateCameraUI();
 
         isWatchingFoxy.Value = !isHidingCurrentCamera && currentCameraName.Value == CameraName.Three;
-
         GlobalCameraSystem.Instance.CountPlayersWatchingFoxyServerRpc();
-
-        OnCameraViewChanged?.Invoke(cameraName);
 
         SetCameraServerRpc(cameraName, isHidden); // for spectators
 
@@ -110,12 +104,12 @@ public class PlayerCameraSystem : NetworkBehaviour
         cameraData.cameraFlashlight.enabled = true;
     }
 
-    private void CheckIsWatchingFoxy()
+    private void UpdateCameraUI()
     {
-        if (!IsOwner) return;
-        if (!playerComputer.isMonitorUp.Value) return;
-
-        isWatchingFoxy.Value = currentCameraName.Value == CameraName.Three;
+        cameraStatic.RefreshMonitorStatic(isHidingCurrentCamera);
+        cameraDistrubanceText.enabled = isHidingCurrentCamera;
+        if (cameraStatic.disturbanceAudio != null)
+            cameraStatic.disturbanceAudio.mute = !isHidingCurrentCamera;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -192,8 +186,6 @@ public class PlayerCameraSystem : NetworkBehaviour
 
         canvas.enabled = true;
         cameraOutputScreen.enabled = true;
-
-        if (!GameManager.Instance.IsSpectating || SpectatorUI.Instance.GetCurrentSpectator() != playerBehaviour) return;
     }
 
     [ClientRpc]
@@ -222,6 +214,8 @@ public class PlayerCameraSystem : NetworkBehaviour
         cameraStatic.RefreshMonitorStatic(isHidingCurrentCamera);
         cameraDistrubanceText.enabled = isHidingCurrentCamera;
         OnCameraViewChanged?.Invoke(cameraName);
+
+        if (!GameManager.Instance.IsSpectating || SpectatorUI.Instance.GetCurrentSpectator() != playerBehaviour) return;
 
         GlobalCameraSystem.Instance.DisableLights();
         cameraData.cameraFlashlight.enabled = true;

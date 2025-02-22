@@ -26,7 +26,7 @@ public class Foxy : Animatronic
         foxyAnimation.enabled = false;
         currentAttackAttempt.Value = 0;
 
-        GlobalCameraSystem.Instance.OnPlayersWatchingFoxyChanged += CameraSystem_OnPlayersWatchingFoxyChanged;
+        GlobalCameraSystem.Instance.OnPlayersWatchingFoxyUpdate += CameraSystem_OnPlayersWatchingFoxyUpdated;
         GameManager.Instance.OnPlayerPowerDown += GameManager_OnPlayerPowerDown;
 
         switch (GameManager.Instance.gameNight)
@@ -93,7 +93,7 @@ public class Foxy : Animatronic
     }
 
     // Called when players change their view on Foxy in the cameras
-    private void CameraSystem_OnPlayersWatchingFoxyChanged(int playersWatchingFoxy)
+    private void CameraSystem_OnPlayersWatchingFoxyUpdated(int playersWatchingFoxy)
     {
         if (playersWatchingFoxy > 0)
         {
@@ -119,7 +119,7 @@ public class Foxy : Animatronic
     {
         if (isLocked)
         {
-            unlockingCoroutine = StartCoroutine(DelayBeforeMovement());
+            unlockingCoroutine ??= StartCoroutine(DelayBeforeMovement());
         }
     }
 
@@ -365,7 +365,7 @@ public class Foxy : Animatronic
 
     private void Blocked(int indexOfPlayerNode, PlayerBehaviour pb)
     {
-        pb.FoxyDrainPower(CalculatePowerDrain());
+        pb.FoxyDrainPowerServerRpc(CalculatePowerDrain());
         ResetFoxyServerRpc(true, indexOfPlayerNode);
     }
 

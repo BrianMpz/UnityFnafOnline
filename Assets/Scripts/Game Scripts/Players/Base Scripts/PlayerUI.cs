@@ -7,10 +7,10 @@ public class PlayerUI : MonoBehaviour
 {
     [SerializeField] private protected PlayerBehaviour playerBehaviour;
     [SerializeField] private protected Canvas UICanvas;
-    [SerializeField] private TMP_Text hourText;
-    [SerializeField] private TMP_Text nightText;
-    [SerializeField] private TMP_Text powerText;
-    [SerializeField] private TMP_Text usageText;
+    [SerializeField] private protected TMP_Text hourText;
+    [SerializeField] private protected TMP_Text nightText;
+    [SerializeField] private protected TMP_Text powerText;
+    [SerializeField] private protected TMP_Text usageText;
 
     private void Awake()
     {
@@ -49,8 +49,13 @@ public class PlayerUI : MonoBehaviour
 
     public virtual void UpdatePowerText()
     {
-        powerText.text = $"Power: {Mathf.Round(playerBehaviour.power.Value)}%";
-        usageText.text = $"Usage: {Mathf.Round(playerBehaviour.powerUsage.Value)} Units";
+        powerText.text = $"Power:{Mathf.Round(playerBehaviour.power.Value)}%";
+        usageText.text = $"Usage:{Mathf.Round(playerBehaviour.powerUsage.Value)} Units";
+
+        if (PowerGenerator.Instance.GetIsCharging(playerBehaviour.playerRole).Value)
+            powerText.color = Color.green;
+        else
+            powerText.color = Color.white;
     }
 
     private void SetNightText()

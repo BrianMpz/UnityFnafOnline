@@ -6,11 +6,10 @@ using UnityEngine.UI;
 
 public class NightSelector : MonoBehaviour
 {
+    public static GameNight lastPlayedNight;
     [SerializeField] private Button previousNightButton;
     [SerializeField] private Button nextNightButton;
     [SerializeField] private TMP_Text nightText;
-
-    [SerializeField] private bool isDemo;
 
     private GameNight CurrentNight
     {
@@ -27,7 +26,12 @@ public class NightSelector : MonoBehaviour
 
     private void Start()
     {
-        MultiplayerManager.Instance.gameNight.OnValueChanged += (previousValue, newValue) => { UpdateNightText(newValue); };
+        MultiplayerManager.Instance.gameNight.OnValueChanged += (previousValue, newValue) =>
+        {
+            UpdateNightText(newValue);
+            lastPlayedNight = newValue;
+        };
+
         UpdateNightText(newValue: CurrentNight);
 
         if (!NetworkManager.Singleton.IsServer)
@@ -37,16 +41,10 @@ public class NightSelector : MonoBehaviour
             return;
         }
 
-        if (isDemo)
-        {
-            previousNightButton.enabled = false;
-            nextNightButton.enabled = false;
-        }
-
         previousNightButton.onClick.AddListener(GoToPreviousNight);
         nextNightButton.onClick.AddListener(GoToNextNight);
 
-        CurrentNight = GetHighestAvailableNight();
+        CurrentNight = lastPlayedNight;
     }
 
     private void UpdateNightText(GameNight newValue)
@@ -62,7 +60,7 @@ public class NightSelector : MonoBehaviour
         // Always allow Night One
         if (previousIndex < 0)
         {
-            Debug.Log("Already at the first night.");
+            // Already at the first night
             return;
         }
 
@@ -83,7 +81,7 @@ public class NightSelector : MonoBehaviour
         // If we're at the last night, don't go further
         if (nextIndex >= nights.Length)
         {
-            Debug.Log("Already at the last night.");
+            // Already at the last night
             return;
         }
 

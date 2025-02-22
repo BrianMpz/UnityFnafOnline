@@ -171,9 +171,9 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
 
     public bool IsEveryoneDead()
     {
-        if (securityOfficeBehaviour.isAlive.Value == true) return false;
-        if (partsAndServiceBehaviour.isAlive.Value == true) return false;
-        if (backstagePlayerBehaviour.isAlive.Value == true) return false;
+        if (securityOfficeBehaviour.isAlive.Value) return false;
+        if (partsAndServiceBehaviour.isAlive.Value) return false;
+        if (backstagePlayerBehaviour.isAlive.Value) return false;
 
         return true;
     }

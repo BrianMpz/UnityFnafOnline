@@ -12,8 +12,9 @@ public class PlayerComputer : NetworkBehaviour
     [SerializeField] private PlayerBehaviour playerBehaviour;
     [SerializeField] private Animator animator;
     [SerializeField] private Canvas screenSelectorCanvas;
-
     public NetworkVariable<bool> isMonitorUp = new(writePerm: NetworkVariableWritePermission.Owner);
+    [SerializeField] private bool isMonitorAlwaysUp;
+
     public Action<bool> OnMonitorFlipFinished;
     public Action<ComputerScreen> OnComputerScreenChanged;
 
@@ -76,7 +77,9 @@ public class PlayerComputer : NetworkBehaviour
 
     public void TriggerFlipAnimation(bool flip)
     {
-        if (animator != null) animator.SetBool("FlipUp", flip);
+        if (animator == null) return;
+
+        animator.SetBool("FlipUp", flip);
         TriggerFlipAnimationServerRpc(flip);
     }
 
@@ -88,7 +91,9 @@ public class PlayerComputer : NetworkBehaviour
     private void TriggerFlipAnimationClientRpc(bool flip, ulong ignoreId)
     {
         if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
-        if (animator != null) animator.SetBool("FlipUp", flip);
+        if (animator == null) return;
+
+        animator.SetBool("FlipUp", flip);
     }
 
     // after an animation
@@ -133,7 +138,7 @@ public class PlayerComputer : NetworkBehaviour
 
     public void DisableComputerSystem()
     {
-        isMonitorUp.Value = false;
+        isMonitorUp.Value = isMonitorAlwaysUp;
         screenSelectorCanvas.enabled = false;
         DisableAllComputerScreens();
     }

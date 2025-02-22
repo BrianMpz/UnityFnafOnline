@@ -14,7 +14,6 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     [ClientRpc]
     public override void KnockOnDoorClientRpc(int indexOfCurrentNode, ClientRpcParams clientRpcParams)
     {
-        power.Value -= 1;
         AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable("door knock");
         knocking.panStereo = -0.5f;
     }
@@ -26,13 +25,14 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
 
     public override void SetUsage()
     {
-        powerUsage.Value = 1;
+        powerUsage.Value = 0;
 
         if (door.isDoorClosed.Value) powerUsage.Value += 4;
         if (door.doorLight.isFlashingLight.Value) powerUsage.Value++;
 
         if (playerComputer.isMonitorUp.Value) powerUsage.Value++;
-        if (playerComputer.playerCommunicationSystem.isConnected) powerUsage.Value += 1f;
+
+        if (Maintenance.Instance.powerGeneratorState.Value == State.ONLINE) powerUsage.Value += 1f;
 
         if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) powerUsage.Value -= 4;
     }

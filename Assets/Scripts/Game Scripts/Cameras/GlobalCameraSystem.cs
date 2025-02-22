@@ -20,7 +20,7 @@ public class GlobalCameraSystem : Singleton<GlobalCameraSystem>
     [SerializeField] private List<PlayerComputer> playerComputers;
 
     private int previousPlayersWatchingFoxy = -1;
-    public Action<int> OnPlayersWatchingFoxyChanged;
+    public Action<int> OnPlayersWatchingFoxyUpdate;
     public Action<CameraName> OnCameraVisibilityChanged;
 
 
@@ -42,7 +42,7 @@ public class GlobalCameraSystem : Singleton<GlobalCameraSystem>
         {
             foreach (CameraData cameraData in changableCameraDatas)
             {
-                if (UnityEngine.Random.Range(0, 10) <= 7 && Maintenance.Instance.camerasState.Value != State.ONLINE)
+                if (Maintenance.Instance.camerasState.Value != State.ONLINE)
                 {
                     cameraData.isHidden = true;
                 }
@@ -53,7 +53,7 @@ public class GlobalCameraSystem : Singleton<GlobalCameraSystem>
                 OnCameraVisibilityChanged?.Invoke(cameraData.GetCameraName());
             }
 
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(2);
         }
     }
 
@@ -69,11 +69,7 @@ public class GlobalCameraSystem : Singleton<GlobalCameraSystem>
             }
         }
 
-        if (count != previousPlayersWatchingFoxy)
-        {
-            previousPlayersWatchingFoxy = count;
-            OnPlayersWatchingFoxyChanged?.Invoke(count);
-        }
+        OnPlayersWatchingFoxyUpdate?.Invoke(count);
     }
 
     public void DisableLights()

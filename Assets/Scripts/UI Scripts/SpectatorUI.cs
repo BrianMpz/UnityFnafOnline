@@ -60,7 +60,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
         if (playerBehaviour == default) return;
 
         if (!PlayerRoleManager.Instance.IsPlayerDead(playerBehaviour))
-            currentPlayerPowerText.text = $"Player Power: {playerBehaviour.power.Value:F2}%";
+            currentPlayerPowerText.text = $"Player Power: {playerBehaviour.power.Value:F1}%";
         else
             currentPlayerPowerText.text = "";
     }
@@ -136,7 +136,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
 
         PlayerBehaviour playerBehaviour = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole);
 
-        playerBehaviour.cam.enabled = true;
+        playerBehaviour.spectatorCamera.enabled = true;
 
         if (playerBehaviour.IsCameraUp())
         {
@@ -154,7 +154,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
         PlayerBehaviour playerBehaviour = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerList[index]);
         if (playerBehaviour == default) return;
 
-        playerBehaviour.cam.enabled = false;
+        playerBehaviour.spectatorCamera.enabled = false;
 
         GlobalCameraSystem.Instance.DisableLights();
 

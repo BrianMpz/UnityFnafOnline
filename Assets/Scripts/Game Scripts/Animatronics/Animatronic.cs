@@ -170,7 +170,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
             return;
         }
 
-        List<PlayerNode> attackablePlayers = AnimatronicManager.Instance.PlayerNodes.Where(x => x.playerBehaviour != null && x.playerBehaviour.isAlive.Value).ToList();
+        List<PlayerNode> attackablePlayers = AnimatronicManager.Instance.PlayerNodes.Where(x => x.playerBehaviour != null).ToList();
 
         if (attackablePlayers.Count == 0) TargetPlayer(null);
         else TargetPlayer(attackablePlayers[UnityEngine.Random.Range(0, attackablePlayers.Count)]);
@@ -220,8 +220,6 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         {
             AdvanceInPath(nodeToGoTo);
         }
-
-        yield break;
     }
 
     private IEnumerator KillPlayer(PlayerNode playerNode)
@@ -244,6 +242,8 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         {
             return isWaitingOnClient == false || Time.time > clientWaitingTimeout || !playerNode.playerBehaviour.isAlive.Value;
         });
+
+        ConfirmKillServerRpc(indexOfTargetNode);
     }
 
     [ClientRpc]
@@ -286,8 +286,11 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     {
         int indexOfCurrentNode = AnimatronicManager.Instance.Nodes.IndexOf(currentNode);
         ulong blockId = MultiplayerManager.Instance.GetPlayerDataFromPlayerRole(playerBehaviour.playerRole).clientId;
+
+        playerBehaviour.power.Value -= 1;
         playerBehaviour.KnockOnDoorClientRpc(indexOfCurrentNode, MultiplayerManager.NewClientRpcSendParams(blockId));
-        SetNode(startNode);
+
+        SetNode(startNode, true, false);
     }
 
     private void AdvanceInPath(Node nodeToGoTo, bool lerpToPosition = false)
@@ -307,6 +310,8 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     private Node GetRandomAvailableNode(Node dontGoToThisNode)
     {
+        if (currentNode.neighbouringNodes.Length < 2) return null;
+
         return currentNode.neighbouringNodes.FirstOrDefault(node => node != dontGoToThisNode && !node.isOccupied);
     }
 
@@ -341,7 +346,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         if (lerpToPosition)
         {
             if (lerpingToPosition != null) StopCoroutine(lerpingToPosition);
-            lerpingToPosition = StartCoroutine(LerpToPosition(startingNode, nodeToSet, 15));
+            lerpingToPosition = StartCoroutine(LerpToPosition(startingNode, nodeToSet, 12));
         }
         else
         {

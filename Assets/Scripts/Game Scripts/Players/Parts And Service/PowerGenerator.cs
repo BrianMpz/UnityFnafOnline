@@ -71,6 +71,8 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
 
     public void ChargePlayer(PlayerRoles playerRole)
     {
+        if (!IsOwner) return;
+
         switch (playerRole)
         {
             case PlayerRoles.SecurityOffice:
@@ -87,6 +89,8 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
 
     public void StopChargingPlayers(PlayerRoles playerRole)
     {
+        if (!IsOwner) return;
+
         SecurityOffice_Charging.Value = false;
         PartsAndService_Charging.Value = false;
         Backstage_Charging.Value = false;

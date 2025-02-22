@@ -90,9 +90,9 @@ public class GameManager : NetworkSingleton<GameManager>
 
         while (Time.time < gameEndTime)
         {
+            yield return null;
             if (!isPlaying) yield break;
             currentGameTime.Value += Time.deltaTime;
-            yield return null;
         }
 
         Debug.Log("Game has Ended!");
@@ -156,7 +156,11 @@ public class GameManager : NetworkSingleton<GameManager>
     [ServerRpc(RequireOwnership = false)]
     public void RelayDeathServerRpc(FixedString64Bytes killer, ServerRpcParams serverRpcParams = default)
     {
-        if (playerRoleManager.IsEveryoneDead()) StopCoroutine(gameTimeCoroutine);
+        if (playerRoleManager.IsEveryoneDead())
+        {
+            StopCoroutine(gameTimeCoroutine);
+            isPlaying = false;
+        }
 
         RelayDeathClientRpc(killer, serverRpcParams.Receive.SenderClientId);
     }
@@ -178,7 +182,6 @@ public class GameManager : NetworkSingleton<GameManager>
     {
         if (playerRoleManager.IsEveryoneDead())
         {
-            isPlaying = false;
             RelayGameOverClientRpc();
         }
     }

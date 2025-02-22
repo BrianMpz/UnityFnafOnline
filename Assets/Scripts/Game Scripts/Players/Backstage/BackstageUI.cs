@@ -14,7 +14,6 @@ public class BackstageUI : PlayerUI
     {
         AddListener(turnLeftTrigger, EventTriggerType.PointerEnter, () => { StartCoroutine(WaitThenChangeTriggers(TurnLeft)); });
         AddListener(turnRightTrigger, EventTriggerType.PointerEnter, () => { StartCoroutine(WaitThenChangeTriggers(TurnRight)); });
-        backstagePlayerBehaviour.OnZap += OnPowerDrain;
     }
 
     private void TurnRight()

@@ -14,7 +14,6 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     private int zapAttempts;
     private float zapCooldown;
     public Zap zap;
-    public Action OnZap;
 
     public override bool IsVulnerable(Node currentNode)
     {
@@ -39,12 +38,12 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
 
     public override void SetUsage()
     {
-        powerUsage.Value = 1;
+        powerUsage.Value = 0;
 
         if (door.isDoorClosed.Value) powerUsage.Value += 2;
         if (door.doorLight.isFlashingLight.Value) powerUsage.Value += 1;
 
-        if (playerComputer.playerCommunicationSystem.isConnected) powerUsage.Value += 1f;
+        if (playerComputer.isMonitorUp.Value) powerUsage.Value += 1f;
 
         if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) powerUsage.Value -= 4;
     }
@@ -122,7 +121,6 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     [ClientRpc]
     public override void KnockOnDoorClientRpc(int indexOfCurrentNode, ClientRpcParams clientRpcParams)
     {
-        power.Value -= 1;
         AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable("door knock");
     }
 
@@ -133,19 +131,21 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
             GameAudioManager.Instance.PlaySfxOneShot("button error");
             return;
         }
+
         zapCooldown = 0;
         zapAttempts++;
-        OnZap?.Invoke();
 
         GameAudioManager.Instance.PlaySfxOneShot("controlled shock");
-        power.Value -= zapAttempts * zapAttempts / 2;
-        ZapServerRpc();
+
+        ZapServerRpc(zapAttempts);
+
         MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ZapServerRpc()
+    private void ZapServerRpc(int zapAttempts)
     {
+        power.Value -= zapAttempts * zapAttempts / 2;
         zap.ZapAnimatronic();
     }
 

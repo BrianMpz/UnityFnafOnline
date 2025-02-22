@@ -35,8 +35,6 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
         if (rightDoor.doorLight.isFlashingLight.Value) powerUsage.Value++;
 
         if (playerComputer.isMonitorUp.Value) powerUsage.Value++;
-        if (playerComputer.playerCommunicationSystem.isConnected) powerUsage.Value += 1f;
-
         if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) powerUsage.Value -= 5;
     }
 
@@ -105,7 +103,6 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     [ClientRpc]
     public override void KnockOnDoorClientRpc(int indexOfCurrentNode, ClientRpcParams clientRpcParams)
     {
-        power.Value -= 1;
         Node animatronic_currentNode = AnimatronicManager.Instance.Nodes[indexOfCurrentNode];
 
         AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable("door knock");
