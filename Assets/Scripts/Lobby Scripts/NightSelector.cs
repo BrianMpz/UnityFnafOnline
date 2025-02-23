@@ -96,10 +96,6 @@ public class NightSelector : MonoBehaviour
         {
             CurrentNight = nights[nextIndex];
         }
-        else
-        {
-            Debug.Log("No further nights available.");
-        }
     }
 
     private GameNight GetHighestAvailableNight()

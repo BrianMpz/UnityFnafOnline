@@ -6,8 +6,8 @@ using UnityEngine;
 public class Zap : Animatronic
 {
     [SerializeField] private PlayerNode playerNode;
-    [SerializeField] private float startingPositionZ;
-    [SerializeField] private float endingPositionZ;
+    [SerializeField] private Vector3 startingPosition;
+    [SerializeField] private Vector3 endingPosition;
     [SerializeField] private float moveSpeed;
     private NetworkVariable<bool> isBeingWatched = new(writePerm: NetworkVariableWritePermission.Server);
     Coroutine movementProgress;
@@ -62,7 +62,7 @@ public class Zap : Animatronic
 
     private IEnumerator ApproachPlayer()
     {
-        animatronicModel.position = new(animatronicModel.position.x, animatronicModel.position.y, startingPositionZ);
+        animatronicModel.position = startingPosition;
         float elapsedTime = 0;
         float duration = Mathf.Infinity;
 
@@ -74,8 +74,8 @@ public class Zap : Animatronic
                 continue;
             }
 
-            float newZpostion = Mathf.Lerp(startingPositionZ, endingPositionZ, elapsedTime / duration);
-            animatronicModel.position = new(animatronicModel.position.x, animatronicModel.position.y, newZpostion);
+            Vector3 newPostion = Vector3.Lerp(startingPosition, endingPosition, elapsedTime / duration);
+            animatronicModel.localPosition = newPostion;
 
             yield return null;
 

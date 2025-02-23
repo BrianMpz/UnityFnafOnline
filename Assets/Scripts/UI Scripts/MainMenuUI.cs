@@ -12,7 +12,6 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private TMP_InputField playerNameInputField;
-    [SerializeField] private NotImplementedInBuildUI notImplementedInBuildUI;
 
     private void Start()
     {
@@ -25,7 +24,7 @@ public class MainMenuUI : MonoBehaviour
         {
             if (!CanPlayOnline)
             {
-                notImplementedInBuildUI.Show();
+                NotImplementedInBuildUI.Instance.Show();
                 return;
             }
 
@@ -39,7 +38,7 @@ public class MainMenuUI : MonoBehaviour
 
         settingsButton.onClick.AddListener(() =>
         {
-            notImplementedInBuildUI.Show();
+            SettingsUI.Instance.Show();
         });
 
         playOfflineButton.onClick.AddListener(() =>

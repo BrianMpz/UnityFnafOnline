@@ -7,18 +7,20 @@ using UnityEngine.UI;
 
 public class PlayerCameraSystem : NetworkBehaviour
 {
-    [SerializeField] private PlayerBehaviour playerBehaviour;
+    [SerializeField] private PlayerComputer playerComputer;
     public NetworkVariable<bool> isWatchingFoxy = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<CameraName> currentCameraName = new(writePerm: NetworkVariableWritePermission.Owner);
     [SerializeField] private CameraStatic cameraStatic;
     [SerializeField] private Canvas canvas;
     [SerializeField] private RawImage cameraOutputScreen;
-    [SerializeField] private PlayerComputer playerComputer;
     [SerializeField] private TMP_Text cameraDistrubanceText;
+    [SerializeField] private TMP_Text accessDeniedText;
+    [SerializeField] private TMP_Text audioOnlyText;
+
+
     private AudioSource cameraBootUpAudio;
     public event Action<CameraName> OnCameraViewChanged;
     private bool isHidingCurrentCamera;
-
     private void Start()
     {
         GameManager.Instance.OnAnimatronicMoved += GameManager_OnAnimatronicMoved;
@@ -27,8 +29,9 @@ public class PlayerCameraSystem : NetworkBehaviour
         GlobalCameraSystem.Instance.OnCameraVisibilityChanged += GlobalCameraSystem_OnCameraVisibilityChanged;
     }
 
-    public void Initialise()
+    public void Initialise(Camera playerCamera)
     {
+        canvas.worldCamera = playerCamera;
         currentCameraName.Value = CameraName.One;
         Disable();
     }
@@ -85,36 +88,67 @@ public class PlayerCameraSystem : NetworkBehaviour
         if (!IsOwner) return;
 
         currentCameraName.Value = cameraName;
+
         CameraData cameraData = GlobalCameraSystem.Instance.GetCameraDataFromCameraName(cameraName);
-        cameraOutputScreen.texture = cameraData.GetRenderTexture();
-        OnCameraViewChanged?.Invoke(cameraName);
 
-        bool isHidden = cameraData.isHidden;
-        bool canSeeAnyCamera = playerBehaviour.playerRole == PlayerRoles.SecurityOffice;
-        isHidingCurrentCamera = !canSeeAnyCamera && isHidden;
+        bool canSeeAnyCamera = playerComputer.playerBehaviour.playerRole == PlayerRoles.SecurityOffice;
+        isHidingCurrentCamera = (!canSeeAnyCamera && (cameraData.isCurrentlyHidden || cameraData.isSecurityOfficeOnly)) || cameraData.isAudioOnly;
 
-        UpdateCameraUI();
+        UpdateCameraUI(cameraData);
 
-        isWatchingFoxy.Value = !isHidingCurrentCamera && currentCameraName.Value == CameraName.Three;
-        GlobalCameraSystem.Instance.CountPlayersWatchingFoxyServerRpc();
+        CheckIsWatchingFoxy();
 
-        SetCameraServerRpc(cameraName, isHidden); // for spectators
+        SetCameraServerRpc(cameraName); // for spectators
 
-        GlobalCameraSystem.Instance.DisableLights();
-        cameraData.cameraFlashlight.enabled = true;
-    }
+        EnableCurrentLights(cameraData);
 
-    private void UpdateCameraUI()
-    {
-        cameraStatic.RefreshMonitorStatic(isHidingCurrentCamera);
-        cameraDistrubanceText.enabled = isHidingCurrentCamera;
         if (cameraStatic.disturbanceAudio != null)
             cameraStatic.disturbanceAudio.mute = !isHidingCurrentCamera;
     }
 
+    private static void EnableCurrentLights(CameraData cameraData)
+    {
+        GlobalCameraSystem.Instance.DisableLights();
+        cameraData.cameraFlashlight.enabled = true;
+    }
+
+    private void CheckIsWatchingFoxy()
+    {
+        isWatchingFoxy.Value = playerComputer.isMonitorUp.Value && !isHidingCurrentCamera && currentCameraName.Value == CameraName.Three;
+        GlobalCameraSystem.Instance.CountPlayersWatchingFoxyServerRpc();
+    }
+
+    private void UpdateCameraUI(CameraData cameraData)
+    {
+        cameraOutputScreen.texture = cameraData.GetRenderTexture();
+        cameraDistrubanceText.enabled = false;
+        accessDeniedText.enabled = false;
+        audioOnlyText.enabled = false;
+
+        cameraStatic.RefreshMonitorStatic(isHidingCurrentCamera);
+
+        if (isHidingCurrentCamera)
+        {
+            if (cameraData.isSecurityOfficeOnly)
+            {
+                accessDeniedText.enabled = true;
+            }
+            else if (cameraData.isAudioOnly)
+            {
+                audioOnlyText.enabled = true;
+            }
+            else // isCurrentlyHidden
+            {
+                cameraDistrubanceText.enabled = true;
+            }
+        }
+
+        OnCameraViewChanged?.Invoke(cameraData.GetCameraName());
+    }
+
     [ServerRpc(RequireOwnership = false)]
-    private void SetCameraServerRpc(CameraName cameraName, bool isHidden, ServerRpcParams serverRpcParams = default)
-    => SetCameraClientRpc(cameraName, isHidden, serverRpcParams.Receive.SenderClientId);
+    private void SetCameraServerRpc(CameraName cameraName, ServerRpcParams serverRpcParams = default)
+    => SetCameraClientRpc(cameraName, serverRpcParams.Receive.SenderClientId);
 
     private void GameManager_OnAnimatronicMoved(Node fromNode, Node toNode)
     {
@@ -196,28 +230,25 @@ public class PlayerCameraSystem : NetworkBehaviour
         canvas.enabled = false;
         cameraOutputScreen.enabled = false;
 
-        if (!GameManager.Instance.IsSpectating || SpectatorUI.Instance.GetCurrentSpectator() != playerBehaviour) return;
+        if (!GameManager.Instance.IsSpectating || SpectatorUI.Instance.GetCurrentSpectator() != playerComputer.playerBehaviour) return;
         GlobalCameraSystem.Instance.DisableLights();
     }
 
     [ClientRpc]
-    public void SetCameraClientRpc(CameraName cameraName, bool isHidden, ulong ignoreId)
+    public void SetCameraClientRpc(CameraName cameraName, ulong ignoreId)
     {
         if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
-        bool canSeeAnyCamera = MultiplayerManager.Instance.GetPlayerDataFromClientId(ignoreId).role == PlayerRoles.SecurityOffice;
 
         CameraData cameraData = GlobalCameraSystem.Instance.GetCameraDataFromCameraName(cameraName);
-        cameraOutputScreen.texture = cameraData.GetRenderTexture();
 
-        bool isHidingCurrentCamera = !canSeeAnyCamera && isHidden;
+        bool isHidden = cameraData.isCurrentlyHidden;
+        bool canSeeAnyCamera = MultiplayerManager.Instance.GetPlayerDataFromClientId(ignoreId).role == PlayerRoles.SecurityOffice;
+        isHidingCurrentCamera = (!canSeeAnyCamera && (isHidden || cameraData.isSecurityOfficeOnly)) || cameraData.isAudioOnly;
 
-        cameraStatic.RefreshMonitorStatic(isHidingCurrentCamera);
-        cameraDistrubanceText.enabled = isHidingCurrentCamera;
-        OnCameraViewChanged?.Invoke(cameraName);
+        UpdateCameraUI(cameraData);
 
-        if (!GameManager.Instance.IsSpectating || SpectatorUI.Instance.GetCurrentSpectator() != playerBehaviour) return;
+        if (!GameManager.Instance.IsSpectating || SpectatorUI.Instance.GetCurrentSpectator() != playerComputer.playerBehaviour) return;
 
-        GlobalCameraSystem.Instance.DisableLights();
-        cameraData.cameraFlashlight.enabled = true;
+        EnableCurrentLights(cameraData);
     }
 }

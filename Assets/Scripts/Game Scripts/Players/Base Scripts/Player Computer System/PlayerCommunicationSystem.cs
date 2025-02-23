@@ -11,9 +11,7 @@ using UnityEngine.UI;
 
 public class PlayerCommunicationSystem : NetworkBehaviour
 {
-    [SerializeField] private PlayerBehaviour playerBehaviour;
-
-
+    [SerializeField] private PlayerComputer playerComputer;
     [SerializeField] private Canvas joinCommsCanvas;
     [SerializeField] private Button joinCommsButton;
 
@@ -34,7 +32,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     {
         if (MultiplayerManager.isPlayingOnline)
         {
-            playerBehaviour.OnPowerDown += () => { OnCallLeave(false); };
+            playerComputer.playerBehaviour.OnPowerDown += () => { OnCallLeave(false); };
             leaveCommsButton.onClick.AddListener(() => { OnCallLeave(false); });
             joinCommsButton.onClick.AddListener(OnJoiningCall);
             callAllPlayersButton.onClick.AddListener(() => { StartCoroutine(CallAllPlayers()); });
@@ -57,8 +55,11 @@ public class PlayerCommunicationSystem : NetworkBehaviour
         OnCallLeave(true);
     }
 
-    public void Initialise()
+    public void Initialise(Camera playerCamera)
     {
+        commsCanvas.worldCamera = playerCamera;
+        joinCommsCanvas.worldCamera = playerCamera;
+        spectatorCanvas.worldCamera = playerCamera;
         Disable();
     }
 
@@ -210,6 +211,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
 
         joinCommsCanvas.enabled = false;
         commsCanvas.enabled = false;
+        joinCommsButton.GetComponentInChildren<TMP_Text>().text = "Join Call";
 
         DisableServerRpc(); // for spectators
     }
@@ -236,6 +238,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
         commsCanvas.enabled = false;
         joinCommsCanvas.enabled = false;
         spectatorCanvas.enabled = false;
+        joinCommsButton.GetComponentInChildren<TMP_Text>().text = "Join Call";
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -245,7 +248,6 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     [ClientRpc]
     private void CallPlayerClientRpc(ulong ignoreId)
     {
-        if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
         if (SpectatorUI.Instance.isSpectating) return;
 
         StartCoroutine(PlayCallAudio());

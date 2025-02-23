@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class SecurityOfficeUI : PlayerUI
 {
-    [SerializeField] private PlayerComputer playerComputer;
     [SerializeField] private EventTrigger monitorFlip;
     [SerializeField] private EventTrigger monitorToggle;
 
@@ -49,7 +48,7 @@ public class SecurityOfficeUI : PlayerUI
 
     private void MonitorFlip()
     {
-        if (playerComputer.isLocked)
+        if (playerBehaviour.playerComputer.isLocked)
         {
             GameAudioManager.Instance.PlaySfxOneShot("button error");
             return;
@@ -58,7 +57,7 @@ public class SecurityOfficeUI : PlayerUI
 
         timeSinceLastCameraFlip = 0;
 
-        playerComputer.ToggleMonitorFlip();
+        playerBehaviour.playerComputer.ToggleMonitorFlip();
         DisableFlip();
     }
 

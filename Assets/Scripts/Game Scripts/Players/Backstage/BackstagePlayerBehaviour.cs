@@ -74,7 +74,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
         AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
         float elapedTime = 0;
 
-        while (elapedTime < .6f)
+        while (elapedTime < .7f)
         {
             cameraController.LerpTowardsDeathView();
             yield return null;
@@ -155,4 +155,5 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
 
         zapCooldown += Time.deltaTime;
     }
+
 }

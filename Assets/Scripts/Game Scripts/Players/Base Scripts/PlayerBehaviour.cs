@@ -8,10 +8,10 @@ using UnityEngine;
 
 public abstract class PlayerBehaviour : NetworkBehaviour
 {
-    public PlayerComputer playerComputer;
     public PlayerRoles playerRole;
+    public PlayerComputer playerComputer;
+    public Camera playerCamera;
     public Camera spectatorCamera;
-    [SerializeField] private GameObject playerModel;
     public NetworkVariable<bool> isAlive = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<float> power = new(writePerm: NetworkVariableWritePermission.Server);
     public NetworkVariable<float> powerUsage = new(writePerm: NetworkVariableWritePermission.Owner);
@@ -23,7 +23,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public event Action OnDisable;
     public event Action OnDeath;
     public event Action OnKill;
-    public event Action OnFoxyPowerDrain;
+    public Action OnFoxyPowerDrain;
     public bool hasADoorWay;
 
     public abstract void SetUsage();
@@ -37,6 +37,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
     void Start()
     {
+        if (IsServer) power.Value = 100f;
         spectatorCamera.enabled = false;
     }
 
@@ -46,8 +47,6 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
         isAlive.Value = true;
         OnInitialise?.Invoke();
-
-        power.Value = 100f;
 
         PowerOn();
         power.OnValueChanged += CheckPowerValue;
@@ -120,7 +119,6 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public void FoxyDrainPowerServerRpc(float drainAmount)
     {
         power.Value -= drainAmount;
-        OnFoxyPowerDrain.Invoke();
     }
 
     [ClientRpc]
@@ -157,5 +155,21 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
         Disable();
         OnDeath?.Invoke();
+    }
+
+    public void X()
+    {
+        // Do something
+        XServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void XServerRpc(ServerRpcParams serverRpcParams = default) => XClientRpc(serverRpcParams.Receive.SenderClientId);
+
+    [ClientRpc]
+    private void XClientRpc(ulong ignoreId)
+    {
+        if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
+        // do something
     }
 }

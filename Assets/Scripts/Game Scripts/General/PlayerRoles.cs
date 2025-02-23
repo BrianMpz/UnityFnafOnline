@@ -3,6 +3,6 @@ public enum PlayerRoles
     SecurityOffice,
     PartsAndService,
     Backstage,
-    Kitchen,
+    PrizeCounter,
     None
 }

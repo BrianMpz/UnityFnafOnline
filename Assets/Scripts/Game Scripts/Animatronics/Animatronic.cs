@@ -161,7 +161,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         }
     }
 
-    private protected void TargetRandomPlayer()
+    private protected void TargetRandomPlayer(bool includeDeadPeople = false)
     {
         if (PlayerRoleManager.Instance.IsEveryoneDead())
         {
@@ -171,6 +171,8 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         }
 
         List<PlayerNode> attackablePlayers = AnimatronicManager.Instance.PlayerNodes.Where(x => x.playerBehaviour != null).ToList();
+
+        if (!includeDeadPeople) attackablePlayers = attackablePlayers.Where(x => x.playerBehaviour.isAlive.Value).ToList();
 
         if (attackablePlayers.Count == 0) TargetPlayer(null);
         else TargetPlayer(attackablePlayers[UnityEngine.Random.Range(0, attackablePlayers.Count)]);
@@ -242,8 +244,6 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         {
             return isWaitingOnClient == false || Time.time > clientWaitingTimeout || !playerNode.playerBehaviour.isAlive.Value;
         });
-
-        ConfirmKillServerRpc(indexOfTargetNode);
     }
 
     [ClientRpc]
@@ -290,7 +290,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         playerBehaviour.power.Value -= 1;
         playerBehaviour.KnockOnDoorClientRpc(indexOfCurrentNode, MultiplayerManager.NewClientRpcSendParams(blockId));
 
-        SetNode(startNode, true, false);
+        SetNode(startNode, false, false);
     }
 
     private void AdvanceInPath(Node nodeToGoTo, bool lerpToPosition = false)

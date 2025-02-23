@@ -28,9 +28,12 @@ public class MatchmakingUI : MonoBehaviour
             Loader.LoadScene(Loader.Scene.MainMenu);
         });
 
-
         string playerName = PlayerPrefs.GetString(MultiplayerManager.PlayerprefsPlayerNameLocation, "");
-        if (playerName == "") playerName = "Player" + Random.Range(1000, 10000).ToString();
+        if (playerName == "")
+        {
+            playerName = "Player" + Random.Range(1000, 10000).ToString();
+            PlayerPrefs.SetString(MultiplayerManager.PlayerprefsPlayerNameLocation, playerName);
+        }
 
         MultiplayerManager.Instance.playerName = playerName;
         playerPlayerNameText.text = $"Player Name: " + MultiplayerManager.Instance.playerName;

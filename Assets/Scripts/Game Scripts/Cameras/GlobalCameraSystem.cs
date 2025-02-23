@@ -5,7 +5,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
-public class GlobalCameraSystem : Singleton<GlobalCameraSystem>
+public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
 {
     private List<CameraData> CameraDatas
     {
@@ -17,9 +17,11 @@ public class GlobalCameraSystem : Singleton<GlobalCameraSystem>
         return CameraDatas.FirstOrDefault(cameradata => cameradata.GetCameraName() == cameraName);
     }
 
-    [SerializeField] private List<PlayerComputer> playerComputers;
+    private List<PlayerComputer> PlayerComputers
+    {
+        get => PlayerRoleManager.Instance.GetComponentsInChildren<PlayerComputer>().ToList();
+    }
 
-    private int previousPlayersWatchingFoxy = -1;
     public Action<int> OnPlayersWatchingFoxyUpdate;
     public Action<CameraName> OnCameraVisibilityChanged;
 
@@ -31,12 +33,7 @@ public class GlobalCameraSystem : Singleton<GlobalCameraSystem>
 
     private IEnumerator SetCameraVisibilities()
     {
-        List<CameraData> changableCameraDatas = CameraDatas.Where(cameraData =>
-            cameraData.GetCameraName() != CameraName.Eight &&
-            cameraData.GetCameraName() != CameraName.Four &&
-            cameraData.GetCameraName() != CameraName.Nine
-            ).ToList();
-
+        List<CameraData> changableCameraDatas = CameraDatas.Where(cameraData => cameraData.GetCameraName() != CameraName.Eight).ToList();
 
         while (GameManager.Instance.isPlaying)
         {
@@ -44,11 +41,11 @@ public class GlobalCameraSystem : Singleton<GlobalCameraSystem>
             {
                 if (Maintenance.Instance.camerasState.Value != State.ONLINE)
                 {
-                    cameraData.isHidden = true;
+                    cameraData.isCurrentlyHidden = true;
                 }
                 else
                 {
-                    cameraData.isHidden = false;
+                    cameraData.isCurrentlyHidden = cameraData.isAudioOnly;
                 }
                 OnCameraVisibilityChanged?.Invoke(cameraData.GetCameraName());
             }
@@ -61,14 +58,14 @@ public class GlobalCameraSystem : Singleton<GlobalCameraSystem>
     public void CountPlayersWatchingFoxyServerRpc()
     {
         int count = 0;
-        foreach (PlayerComputer playerComputer in playerComputers)
+
+        foreach (PlayerComputer playerComputer in PlayerComputers)
         {
-            if (playerComputer.isMonitorUp.Value && playerComputer.playerCameraSystem.isWatchingFoxy.Value)
+            if (playerComputer.playerCameraSystem.isWatchingFoxy.Value)
             {
                 count++;
             }
         }
-
         OnPlayersWatchingFoxyUpdate?.Invoke(count);
     }
 
@@ -79,7 +76,7 @@ public class GlobalCameraSystem : Singleton<GlobalCameraSystem>
 
     public bool CheckIfAnyoneWatchingHallwayNode(Node hallwayNode)
     {
-        foreach (PlayerComputer playerComputer in playerComputers)
+        foreach (PlayerComputer playerComputer in PlayerComputers)
         {
             if (playerComputer.playerCameraSystem.CheckIfAnyoneWatchingHallwayNode(hallwayNode))
             {

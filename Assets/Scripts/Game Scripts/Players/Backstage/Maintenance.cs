@@ -13,6 +13,7 @@ public class Maintenance : NetworkSingleton<Maintenance>
     [SerializeField] private Button rebootCommunicationButton;
     [SerializeField] private Button rebootCamerasButton;
     [SerializeField] private Button rebootPowerGeneratorButton;
+    [SerializeField] private Button rebootAllButton;
     [SerializeField] private TMP_Text communicationStatus;
     [SerializeField] private TMP_Text cameraStatus;
     [SerializeField] private TMP_Text powerGeneratorStatus;
@@ -46,9 +47,10 @@ public class Maintenance : NetworkSingleton<Maintenance>
         playerBehaviour.OnPowerOn += PowerOn;
         playerBehaviour.OnPowerDown += PowerOff;
 
-        rebootCommunicationButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootSystem(SystemType.Comms)));
-        rebootCamerasButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootSystem(SystemType.Cameras)));
-        rebootPowerGeneratorButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootSystem(SystemType.PowerGenerator)));
+        rebootCommunicationButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootSystem(SystemType.Comms, Random.Range(8, rebootTime))));
+        rebootCamerasButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootSystem(SystemType.Cameras, Random.Range(11, rebootTime))));
+        rebootPowerGeneratorButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootSystem(SystemType.PowerGenerator, Random.Range(5, rebootTime))));
+        rebootAllButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootAllSystems(Random.Range(rebootTime, rebootTime * 1.5f))));
 
         backstageCameraController.ViewChanged += CancelReboot;
 
@@ -61,16 +63,16 @@ public class Maintenance : NetworkSingleton<Maintenance>
                 currentDifficulty = 1;
                 break;
             case GameNight.Two:
-                currentDifficulty = 2;
-                break;
-            case GameNight.Three:
                 currentDifficulty = 4;
                 break;
-            case GameNight.Four:
+            case GameNight.Three:
                 currentDifficulty = 7;
                 break;
+            case GameNight.Four:
+                currentDifficulty = 10;
+                break;
             case GameNight.Five:
-                currentDifficulty = 11;
+                currentDifficulty = 13;
                 break;
             case GameNight.Six:
                 currentDifficulty = 16;
@@ -129,7 +131,7 @@ public class Maintenance : NetworkSingleton<Maintenance>
         }
     }
 
-    private IEnumerator RebootSystem(SystemType systemType)
+    private IEnumerator RebootSystem(SystemType systemType, float rebootLength)
     {
         if (isRebooting) yield break; // Prevent multiple reboots at the same time
 
@@ -138,14 +140,37 @@ public class Maintenance : NetworkSingleton<Maintenance>
         DisableButtons();
         isRebooting = true;
 
-        yield return new WaitForSeconds(Random.Range(5, rebootTime));
+        yield return new WaitForSeconds(rebootLength);
 
         GameAudioManager.Instance.PlaySfxOneShot("camera blip");
         SetSystemState(systemType, State.ONLINE);
         EnableButtons();
         isRebooting = false;
 
-        Debug.Log($"[Maintenance] {systemType} restored.");
+        //Debug.Log($"[Maintenance] {systemType} restored.");
+    }
+
+    private IEnumerator RebootAllSystems(float rebootLength)
+    {
+        if (isRebooting) yield break; // Prevent multiple reboots at the same time
+
+        GameAudioManager.Instance.PlaySfxOneShot("camera blip");
+        SetSystemState(SystemType.Cameras, State.REBOOTING);
+        SetSystemState(SystemType.Comms, State.REBOOTING);
+        SetSystemState(SystemType.PowerGenerator, State.REBOOTING);
+        DisableButtons();
+        isRebooting = true;
+
+        yield return new WaitForSeconds(rebootLength);
+
+        GameAudioManager.Instance.PlaySfxOneShot("camera blip");
+        SetSystemState(SystemType.Cameras, State.ONLINE);
+        SetSystemState(SystemType.Comms, State.ONLINE);
+        SetSystemState(SystemType.PowerGenerator, State.ONLINE);
+        EnableButtons();
+        isRebooting = false;
+
+        //Debug.Log($"[Maintenance] All sytems restored.");
     }
 
     private void SetSystemState(SystemType systemType, State newState)
@@ -180,6 +205,7 @@ public class Maintenance : NetworkSingleton<Maintenance>
         rebootCommunicationButton.interactable = false;
         rebootCamerasButton.interactable = false;
         rebootPowerGeneratorButton.interactable = false;
+        rebootAllButton.interactable = false;
     }
 
     private void EnableButtons()
@@ -187,6 +213,7 @@ public class Maintenance : NetworkSingleton<Maintenance>
         rebootCommunicationButton.interactable = true;
         rebootCamerasButton.interactable = true;
         rebootPowerGeneratorButton.interactable = true;
+        rebootAllButton.interactable = true;
     }
 
     private IEnumerator RandomlyDisableSystems()
@@ -199,21 +226,21 @@ public class Maintenance : NetworkSingleton<Maintenance>
             if (communicationsState.Value == State.ONLINE && Random.value < 0.1f)
             {
                 SetSystemState(SystemType.Comms, State.OFFLINE);
-                Debug.Log("[Maintenance] Communications disabled randomly.");
+                //Debug.Log("[Maintenance] Communications disabled randomly.");
                 StartCoroutine(AutoRestoreAfterDelay(SystemType.Comms, 60f));
             }
 
             if (camerasState.Value == State.ONLINE && Random.value < 0.7f)
             {
                 SetSystemState(SystemType.Cameras, State.OFFLINE);
-                Debug.Log("[Maintenance] Cameras disabled randomly.");
+                //Debug.Log("[Maintenance] Cameras disabled randomly.");
                 StartCoroutine(AutoRestoreAfterDelay(SystemType.Cameras, 60f));
             }
 
             if (powerGeneratorState.Value == State.ONLINE && Random.value < 0.2f)
             {
                 SetSystemState(SystemType.PowerGenerator, State.OFFLINE);
-                Debug.Log("[Maintenance] Power Generator disabled randomly.");
+                //Debug.Log("[Maintenance] Power Generator disabled randomly.");
                 StartCoroutine(AutoRestoreAfterDelay(SystemType.PowerGenerator, 60f));
             }
         }

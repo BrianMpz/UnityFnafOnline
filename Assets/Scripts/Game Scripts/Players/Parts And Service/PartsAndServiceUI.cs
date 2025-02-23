@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class PartsAndServiceUI : PlayerUI
 {
     [SerializeField] private PartsAndServiceCameraController cameraController;
-    [SerializeField] private PlayerComputer playerComputer;
 
     [SerializeField] private EventTrigger monitorFlip;
     [SerializeField] private EventTrigger monitorToggle;
@@ -72,7 +71,7 @@ public class PartsAndServiceUI : PlayerUI
     private void MonitorFlip()
     {
         if (timeSinceLastCameraFlip < cameraFlipCooldownTime) return;
-        if (playerComputer.isLocked)
+        if (playerBehaviour.playerComputer.isLocked)
         {
             GameAudioManager.Instance.PlaySfxOneShot("button error");
             return;
@@ -80,8 +79,8 @@ public class PartsAndServiceUI : PlayerUI
 
         timeSinceLastCameraFlip = 0;
 
-        playerComputer.ToggleMonitorFlip();
-        playerComputer.OnMonitorFlipFinished += PlayerComputer_OnMonitorFlipFinished;
+        playerBehaviour.playerComputer.ToggleMonitorFlip();
+        playerBehaviour.playerComputer.OnMonitorFlipFinished += PlayerComputer_OnMonitorFlipFinished;
 
         DisableFlip();
         DisableLookTriggers();

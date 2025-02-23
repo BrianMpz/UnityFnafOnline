@@ -6,12 +6,13 @@ using UnityEngine.UI;
 
 public class PlayerComputer : NetworkBehaviour
 {
+    public PlayerBehaviour playerBehaviour;
     public PlayerCameraSystem playerCameraSystem;
     public PlayerCommunicationSystem playerCommunicationSystem;
-    public NetworkVariable<ComputerScreen> currentComputerScreen = new(writePerm: NetworkVariableWritePermission.Owner);
-    [SerializeField] private PlayerBehaviour playerBehaviour;
-    [SerializeField] private Animator animator;
+    public PlayerManual playerManual;
     [SerializeField] private Canvas screenSelectorCanvas;
+    public NetworkVariable<ComputerScreen> currentComputerScreen = new(writePerm: NetworkVariableWritePermission.Owner);
+    [SerializeField] private Animator animator;
     public NetworkVariable<bool> isMonitorUp = new(writePerm: NetworkVariableWritePermission.Owner);
     [SerializeField] private bool isMonitorAlwaysUp;
 
@@ -31,8 +32,10 @@ public class PlayerComputer : NetworkBehaviour
 
     public void Initialise()
     {
-        playerCameraSystem.Initialise();
-        playerCommunicationSystem.Initialise();
+        screenSelectorCanvas.worldCamera = playerBehaviour.playerCamera;
+        playerCameraSystem.Initialise(playerBehaviour.playerCamera);
+        playerCommunicationSystem.Initialise(playerBehaviour.playerCamera);
+        playerManual.Initialise(playerBehaviour.playerCamera);
     }
 
     public void PlayerBehaviour_OnPowerOn()
@@ -65,6 +68,8 @@ public class PlayerComputer : NetworkBehaviour
 
     private void ForceMonitorDown()
     {
+        if (isMonitorAlwaysUp) return;
+
         if (isMonitorUp.Value) FlipCamera();
     }
 
@@ -157,6 +162,9 @@ public class PlayerComputer : NetworkBehaviour
             case ComputerScreen.Comms:
                 playerCommunicationSystem.Enable();
                 break;
+            case ComputerScreen.Manual:
+                playerManual.Enable();
+                break;
         }
 
         OnComputerScreenChanged?.Invoke(currentComputerScreen.Value);
@@ -166,11 +174,13 @@ public class PlayerComputer : NetworkBehaviour
     {
         playerCameraSystem.Disable();
         playerCommunicationSystem.Disable();
+        playerManual.Disable();
     }
 }
 
 public enum ComputerScreen
 {
     Cameras,
-    Comms
+    Comms,
+    Manual
 }

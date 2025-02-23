@@ -333,7 +333,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
         foreach (PlayerRoles role in shuffledPlayerRoles)
         {
-            if (IsRoleAvailable(role) && role != PlayerRoles.Kitchen)
+            if (IsRoleAvailable(role) && role != PlayerRoles.PrizeCounter)
             {
                 return role;
             }
@@ -347,7 +347,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
         if (playerDataList.Count == 1 &&
             (playerData.role == PlayerRoles.None ||
-            playerData.role == PlayerRoles.Kitchen))
+            playerData.role == PlayerRoles.PrizeCounter))
         {
             SetPlayerRole(NetworkManager.Singleton.LocalClientId, PlayerRoles.SecurityOffice);
         }

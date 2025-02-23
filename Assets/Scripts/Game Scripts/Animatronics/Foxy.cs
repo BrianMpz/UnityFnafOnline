@@ -36,19 +36,19 @@ public class Foxy : Animatronic
                 currentMovementWaitTime.Value = 10;
                 break;
             case GameNight.Two:
-                currentDifficulty.Value = 2;
+                currentDifficulty.Value = 4;
                 currentMovementWaitTime.Value = 8;
                 break;
             case GameNight.Three:
-                currentDifficulty.Value = 4;
+                currentDifficulty.Value = 7;
                 currentMovementWaitTime.Value = 6;
                 break;
             case GameNight.Four:
-                currentDifficulty.Value = 7;
+                currentDifficulty.Value = 10;
                 currentMovementWaitTime.Value = 5;
                 break;
             case GameNight.Five:
-                currentDifficulty.Value = 11;
+                currentDifficulty.Value = 13;
                 currentMovementWaitTime.Value = 4;
                 break;
             case GameNight.Six:
@@ -158,6 +158,7 @@ public class Foxy : Animatronic
     private protected override IEnumerator GameplayLoop(bool isAggro)
     {
         isAggrivated.Value = isAggro;
+
         if (isAggro)
         {
             currentMovementWaitTime.Value /= 2;
@@ -165,9 +166,10 @@ public class Foxy : Animatronic
         }
         else yield return new WaitForSeconds(waitTimeToStartMoving); // Initial wait before starting movement
 
-
         currentAttackAttempt.Value++;
+
         TargetRandomPlayer();
+
         if (targetedPlayer != null) SetFoxyProgressClientRpc(0, targetedPlayer.playerBehaviour.playerRole);
 
         while (GameManager.Instance.isPlaying)
@@ -365,6 +367,7 @@ public class Foxy : Animatronic
 
     private void Blocked(int indexOfPlayerNode, PlayerBehaviour pb)
     {
+        pb.OnFoxyPowerDrain.Invoke();
         pb.FoxyDrainPowerServerRpc(CalculatePowerDrain());
         ResetFoxyServerRpc(true, indexOfPlayerNode);
     }
@@ -385,7 +388,7 @@ public class Foxy : Animatronic
 
         SetNode(playerNode, true);
 
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(10);
 
         ResetFoxyServerRpc();
     }

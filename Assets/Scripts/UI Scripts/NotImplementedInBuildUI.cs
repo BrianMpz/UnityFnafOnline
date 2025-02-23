@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NotImplementedInBuildUI : MonoBehaviour
+public class NotImplementedInBuildUI : Singleton<NotImplementedInBuildUI>
 {
     [SerializeField] private Canvas canvas;
     [SerializeField] private Button closeButton;

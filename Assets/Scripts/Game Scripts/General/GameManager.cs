@@ -76,7 +76,7 @@ public class GameManager : NetworkSingleton<GameManager>
 
         if (!IsServer) yield break;
 
-        gameTimeCoroutine = StartCoroutine(StartGameTime());
+        gameTimeCoroutine ??= StartCoroutine(StartGameTime());
     }
 
     private IEnumerator StartGameTime()
@@ -85,14 +85,14 @@ public class GameManager : NetworkSingleton<GameManager>
 
         currentGameTime.Value = 0;
 
-        float gameSTartTime = Time.time;
-        float gameEndTime = gameSTartTime + MaxGameLength;
+        float gameEndTime = MaxGameLength;
 
-        while (Time.time < gameEndTime)
+        while (currentGameTime.Value < gameEndTime)
         {
             yield return null;
-            if (!isPlaying) yield break;
             currentGameTime.Value += Time.deltaTime;
+
+            if (!isPlaying) yield break;
         }
 
         Debug.Log("Game has Ended!");

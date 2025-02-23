@@ -7,7 +7,9 @@ public class CameraData : MonoBehaviour
     [SerializeField] private CameraName cameraName;
     [SerializeField] private RenderTexture cameraTexture;
     public Node[] nodesVisibleOnCamera;
-    public bool isHidden;
+    public bool isCurrentlyHidden;
+    public bool isAudioOnly;
+    public bool isSecurityOfficeOnly;
     public Light cameraFlashlight;
 
     private void Awake()
