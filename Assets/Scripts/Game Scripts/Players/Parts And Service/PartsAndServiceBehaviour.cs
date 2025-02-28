@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PartsAndServiceBehaviour : PlayerBehaviour
 {
+    [Header("Specialised Variables")]
     public PartsAndServiceCameraController cameraController;
     public PowerGenerator generator;
     public Door door;
@@ -12,29 +13,30 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     [SerializeField] private float timeToWaitBeforeKill;
 
     [ClientRpc]
-    public override void KnockOnDoorClientRpc(int indexOfCurrentNode, ClientRpcParams clientRpcParams)
+    public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, ClientRpcParams _)
     {
+        // play sound with left panning
         AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable("door knock");
         knocking.panStereo = -0.5f;
     }
 
-    public override void SetCameraView()
+    private protected override void UpdateCameraView()
     {
         cameraController.SetCameraView();
     }
 
-    public override void SetUsage()
+    private protected override void UpdatePowerUsage()
     {
-        powerUsage.Value = 0;
+        currentPowerUsage.Value = 0;
 
-        if (door.isDoorClosed.Value) powerUsage.Value += 4;
-        if (door.doorLight.isFlashingLight.Value) powerUsage.Value++;
+        if (door.isDoorClosed.Value) currentPowerUsage.Value += 4;
+        if (door.doorLight.isFlashingLight.Value) currentPowerUsage.Value++;
 
-        if (playerComputer.isMonitorUp.Value) powerUsage.Value++;
+        if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value++;
 
-        if (Maintenance.Instance.powerGeneratorState.Value == State.ONLINE) powerUsage.Value += 1f;
+        if (Maintenance.Instance.powerGeneratorState.Value == State.ONLINE) currentPowerUsage.Value += 1f;
 
-        if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) powerUsage.Value -= 4;
+        if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 4;
     }
 
     public override void PowerOn()
@@ -43,7 +45,7 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
         RoomLight.enabled = true;
         flashLight.enabled = false;
         PowerOnServerRpc();
-        AudioSource ambiance = GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
+        GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
     }
     [ServerRpc(RequireOwnership = false)]
     private void PowerOnServerRpc(ServerRpcParams serverRpcParams = default) => PowerOnClientRpc(serverRpcParams.Receive.SenderClientId);
@@ -64,12 +66,15 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     private void PowerOffClientRpc(ulong ignoreId)
     { if (NetworkManager.Singleton.LocalClientId == ignoreId) return; RoomLight.enabled = false; flashLight.enabled = true; }
 
-    private protected override IEnumerator DeathAnimation(string deathScream)
+    private protected override IEnumerator PlayDeathAnimation(string deathScream)
     {
-        if (!isAlive.Value) yield break;
+        if (!isPlayerAlive.Value) yield break;
 
         flashLight.enabled = true;
+
         AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
+        GameAudioManager.Instance.StopAllSfx();
+
         float elapedTime = 0;
 
         while (elapedTime < .7f)
@@ -81,7 +86,7 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
         GameAudioManager.Instance.StopSfx(audioSource);
     }
 
-    public override IEnumerator WaitToKill(Node currentNode)
+    public override IEnumerator WaitUntilKillConditionsAreMet(Node currentNode)
     {
         float forceDeathTime = Time.time + timeToWaitBeforeKill;
 
@@ -92,7 +97,7 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
         {
             yield return new WaitUntil(() =>
             {
-                return Time.time > forceDeathTime || !playerComputer.isMonitorUp.Value || !isAlive.Value;
+                return Time.time > forceDeathTime || !playerComputer.isMonitorUp.Value || !isPlayerAlive.Value;
             });
 
             yield break;
@@ -100,7 +105,7 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
         else playerComputer.Lock();
     }
 
-    public override bool IsVulnerable(Node currentNode)
+    public override bool IsPlayerVulnerable(Node currentNode)
     {
         if (currentNode != door.linkedNode) return false;
 
@@ -109,10 +114,5 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
             return false;
         }
         return true;
-    }
-
-    public override bool IsCameraUp()
-    {
-        return playerComputer.isMonitorUp.Value;
     }
 }

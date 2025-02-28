@@ -17,18 +17,20 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
         return CameraDatas.FirstOrDefault(cameradata => cameradata.GetCameraName() == cameraName);
     }
 
-    private List<PlayerComputer> PlayerComputers
-    {
-        get => PlayerRoleManager.Instance.GetComponentsInChildren<PlayerComputer>().ToList();
-    }
-
+    private List<PlayerComputer> playerComputers;
     public Action<int> OnPlayersWatchingFoxyUpdate;
     public Action<CameraName> OnCameraVisibilityChanged;
 
 
     private void Start()
     {
+        playerComputers = PlayerRoleManager.Instance.GetComponentsInChildren<PlayerComputer>().ToList();
         GameManager.Instance.OnGameStarted += () => { StartCoroutine(SetCameraVisibilities()); };
+    }
+
+    private void Update()
+    {
+        CountPlayersWatchingFoxy();
     }
 
     private IEnumerator SetCameraVisibilities()
@@ -54,19 +56,21 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void CountPlayersWatchingFoxyServerRpc()
+    public void CountPlayersWatchingFoxy()
     {
-        int count = 0;
+        if (!IsServer) return;
 
-        foreach (PlayerComputer playerComputer in PlayerComputers)
+        int playersWatchingfoxy = 0;
+        foreach (PlayerComputer playerComputer in playerComputers)
         {
             if (playerComputer.playerCameraSystem.isWatchingFoxy.Value)
             {
-                count++;
+                playersWatchingfoxy++;
             }
         }
-        OnPlayersWatchingFoxyUpdate?.Invoke(count);
+
+        Debug.Log($"{playersWatchingfoxy} players watching foxy");
+        OnPlayersWatchingFoxyUpdate?.Invoke(playersWatchingfoxy);
     }
 
     public void DisableLights()
@@ -76,7 +80,7 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
 
     public bool CheckIfAnyoneWatchingHallwayNode(Node hallwayNode)
     {
-        foreach (PlayerComputer playerComputer in PlayerComputers)
+        foreach (PlayerComputer playerComputer in playerComputers)
         {
             if (playerComputer.playerCameraSystem.CheckIfAnyoneWatchingHallwayNode(hallwayNode))
             {

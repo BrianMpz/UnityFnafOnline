@@ -31,9 +31,9 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
     private void Game_OnClientDisconnect(PlayerData disconnectedPlayerData)
     {
         PlayerBehaviour playerBehaviour = GetPlayerBehaviourFromRole(disconnectedPlayerData.role);
-        if (playerBehaviour != null && playerBehaviour.isAlive.Value)
+        if (playerBehaviour != null && playerBehaviour.isPlayerAlive.Value)
         {
-            StartCoroutine(playerBehaviour.DeathCleanUp(true));
+            StartCoroutine(playerBehaviour.DisconnectionDeathCleanUp());
         }
     }
 
@@ -171,9 +171,9 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
 
     public bool IsEveryoneDead()
     {
-        if (securityOfficeBehaviour.isAlive.Value) return false;
-        if (partsAndServiceBehaviour.isAlive.Value) return false;
-        if (backstagePlayerBehaviour.isAlive.Value) return false;
+        if (securityOfficeBehaviour.isPlayerAlive.Value) return false;
+        if (partsAndServiceBehaviour.isPlayerAlive.Value) return false;
+        if (backstagePlayerBehaviour.isPlayerAlive.Value) return false;
 
         return true;
     }
@@ -184,14 +184,14 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
 
         if (playerBehaviour == default) return true;
 
-        else return !playerBehaviour.isAlive.Value;
+        else return !playerBehaviour.isPlayerAlive.Value;
     }
 
     public bool IsPlayerDead(PlayerBehaviour playerBehaviour)
     {
         if (playerBehaviour == default) return true;
 
-        else return !playerBehaviour.isAlive.Value;
+        else return !playerBehaviour.isPlayerAlive.Value;
     }
 
     public bool IsLocalPlayerAlive()
@@ -199,22 +199,22 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         PlayerBehaviour playerBehaviour = GetLocalPlayerBehaviour();
         if (playerBehaviour == default) return false;
 
-        else return playerBehaviour.isAlive.Value;
+        else return playerBehaviour.isPlayerAlive.Value;
     }
 
     public bool IsPlayerVulnerable(Node currentnode, PlayerNode targetNode)
     {
-        if (targetNode.playerBehaviour == securityOfficeBehaviour && securityOfficeBehaviour.IsVulnerable(currentnode))
+        if (targetNode.playerBehaviour == securityOfficeBehaviour && securityOfficeBehaviour.IsPlayerVulnerable(currentnode))
         {
             return true;
         }
 
-        if (targetNode.playerBehaviour == partsAndServiceBehaviour && partsAndServiceBehaviour.IsVulnerable(currentnode))
+        if (targetNode.playerBehaviour == partsAndServiceBehaviour && partsAndServiceBehaviour.IsPlayerVulnerable(currentnode))
         {
             return true;
         }
 
-        if (targetNode.playerBehaviour == backstagePlayerBehaviour && backstagePlayerBehaviour.IsVulnerable(currentnode))
+        if (targetNode.playerBehaviour == backstagePlayerBehaviour && backstagePlayerBehaviour.IsPlayerVulnerable(currentnode))
         {
             return true;
         }

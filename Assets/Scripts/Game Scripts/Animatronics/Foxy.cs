@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using Unity.Netcode;
@@ -9,7 +10,8 @@ public class Foxy : Animatronic
     public float foxyProgress;
     [SerializeField] private bool isLocked = false; // Whether Foxy is locked by camera observation
     [SerializeField] private float lockCoolDownTime = 5f;  // Minimum time for lock duration
-    private Coroutine unlockingCoroutine; private AudioSource foxyRunAudio;
+    private Coroutine unlockCoroutine;
+    private AudioSource foxyRunAudio;
     private AudioSource foxyTauntAudio;
     private AudioSource foxyThunkAudio;
 
@@ -18,6 +20,7 @@ public class Foxy : Animatronic
     [SerializeField] private Node backstageHallwayNode;
     [SerializeField] private FoxyWarningSign foxyWarningSign;
     [SerializeField] private Animation foxyAnimation;
+    public event Action<PlayerRoles, float> OnFoxyPowerDrain;
 
     public override void Initialise()
     {
@@ -87,7 +90,7 @@ public class Foxy : Animatronic
         if (gameplayLoop != null) StopCoroutine(gameplayLoop);
 
         PlayerNode playerNode = AnimatronicManager.Instance.PlayerNodes.FirstOrDefault(x =>
-            x.playerBehaviour != null && x.playerBehaviour.playerRole == playerRole && x.playerBehaviour.isAlive.Value);
+            x.playerBehaviour != null && x.playerBehaviour.playerRole == playerRole && x.playerBehaviour.isPlayerAlive.Value);
 
         gameplayLoop = StartCoroutine(GameplayLoop(true));
     }
@@ -97,41 +100,29 @@ public class Foxy : Animatronic
     {
         if (playersWatchingFoxy > 0)
         {
-            Lock();
+            LockFoxy();
         }
-        else
+        else if (unlockCoroutine == null)
         {
-            Unlock();
+            unlockCoroutine = StartCoroutine(UnlockAfterDelay());
         }
     }
 
-
-    // Locks Foxy from moving when players are watching him
-    private void Lock()
+    void LockFoxy()
     {
-        //Debug.Log("Locked");
-        if (unlockingCoroutine != null) StopCoroutine(unlockingCoroutine);
         isLocked = true;
-    }
-
-    // Unlocks Foxy after the camera goes off and applies random delay before starting movement
-    private void Unlock()
-    {
-        if (isLocked)
+        if (unlockCoroutine != null)
         {
-            unlockingCoroutine ??= StartCoroutine(DelayBeforeMovement());
+            StopCoroutine(unlockCoroutine);
+            unlockCoroutine = null;
         }
     }
 
-    // Coroutine to handle Foxy's behavior after being unlocked
-    private IEnumerator DelayBeforeMovement()
+    private IEnumerator UnlockAfterDelay()
     {
-        //Debug.Log("Unlocking");
-
         yield return new WaitForSeconds(lockCoolDownTime);
-
         isLocked = false;
-        //Debug.Log("Unlocked");
+        unlockCoroutine = null;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -178,7 +169,7 @@ public class Foxy : Animatronic
 
             if (targetedPlayer == null) continue;
 
-            if (Random.Range(1, 21) <= currentDifficulty.Value)
+            if (UnityEngine.Random.Range(1, 21) <= currentDifficulty.Value)
             {
                 if (!isLocked)
                 {
@@ -236,7 +227,7 @@ public class Foxy : Animatronic
 
     private IEnumerator WaitToAttack(PlayerNode playerNode)
     {
-        float definitiveAttackTime = Time.time + Random.Range(10, 30);
+        float definitiveAttackTime = Time.time + UnityEngine.Random.Range(10, 30);
         int indexOfPlayerNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
 
         switch (playerNode.playerBehaviour.playerRole)
@@ -321,7 +312,7 @@ public class Foxy : Animatronic
                 {
                     Blocked(indexOfPlayerNode, pb);
                 }
-                else if (pb.isAlive.Value)
+                else if (pb.isPlayerAlive.Value)
                 {
                     KillPlayerServerRpc(indexOfPlayerNode);
                 }
@@ -337,7 +328,7 @@ public class Foxy : Animatronic
                 {
                     Blocked(indexOfPlayerNode, pb);
                 }
-                else if (pb.isAlive.Value)
+                else if (pb.isPlayerAlive.Value)
                 {
                     KillPlayerServerRpc(indexOfPlayerNode);
                 }
@@ -353,7 +344,7 @@ public class Foxy : Animatronic
                 {
                     Blocked(indexOfPlayerNode, pb);
                 }
-                else if (pb.isAlive.Value)
+                else if (pb.isPlayerAlive.Value)
                 {
                     KillPlayerServerRpc(indexOfPlayerNode);
                 }
@@ -367,8 +358,8 @@ public class Foxy : Animatronic
 
     private void Blocked(int indexOfPlayerNode, PlayerBehaviour pb)
     {
-        pb.OnFoxyPowerDrain.Invoke();
-        pb.FoxyDrainPowerServerRpc(CalculatePowerDrain());
+        PlayThunkAudio(1);
+        OnFoxyPowerDrain.Invoke(pb.playerRole, CalculatePowerDrain());
         ResetFoxyServerRpc(true, indexOfPlayerNode);
     }
 
@@ -404,18 +395,19 @@ public class Foxy : Animatronic
     {
         if (PlayerRoleManager.Instance.IsPlayerDead(GameManager.localPlayerBehaviour)) yield break;
 
-        if (GameManager.localPlayerBehaviour != playerNode.playerBehaviour)
+        float audioDuration = 1.7f;
+
+        if (!playerNode.playerBehaviour.IsOwner)
         {
-            foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", 1f);
+            foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", 0.7f);
             yield return new WaitForSeconds(0.2f);
-            foxyTauntAudio =
-                GameAudioManager.Instance.PlaySfxInterruptable(isAggrivated.Value ? "foxy taunt" : "fire in the hole", 0.3f);
+            foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isAggrivated.Value ? "foxy taunt" : "fire in the hole", 0.3f);
 
             float elapedTime = 0;
 
-            while (elapedTime < 1.7f)
+            while (elapedTime < audioDuration)
             {
-                if (foxyTauntAudio != null) foxyTauntAudio.volume = 1 - (elapedTime / 1.7f);
+                if (foxyTauntAudio != null) foxyTauntAudio.volume = 1 - (elapedTime / audioDuration);
                 elapedTime += Time.deltaTime;
                 yield return null;
             }
@@ -424,15 +416,15 @@ public class Foxy : Animatronic
         {
             foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", 0);
             yield return new WaitForSeconds(0.2f);
-            foxyTauntAudio =
-                GameAudioManager.Instance.PlaySfxInterruptable(isAggrivated.Value ? "foxy taunt" : "fire in the hole", 0f);
+            foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isAggrivated.Value ? "foxy taunt" : "fire in the hole", 0f);
 
             float elapedTime = 0;
 
-            while (elapedTime < 1.7f)
+            while (elapedTime < audioDuration)
             {
-                if (foxyRunAudio != null) foxyRunAudio.volume = (elapedTime / 1.7f) + 0.3f;
-                if (foxyTauntAudio != null) foxyTauntAudio.volume = (elapedTime / 1.7f) + 0.2f;
+                // start quiet and slowly get louder
+                if (foxyRunAudio != null) foxyRunAudio.volume = (elapedTime / audioDuration) + 0.3f;
+                if (foxyTauntAudio != null) foxyTauntAudio.volume = (elapedTime / audioDuration) + 0.2f;
                 elapedTime += Time.deltaTime;
                 yield return null;
             }
@@ -465,19 +457,18 @@ public class Foxy : Animatronic
     [ClientRpc]
     private void PlayThunkClientRpc(int indexOfPlayerNode = -1)
     {
-        if (GameManager.Instance.IsSpectating) return;
-
         PlayerNode playerNode = AnimatronicManager.Instance.PlayerNodes[indexOfPlayerNode];
 
+        if (playerNode.playerBehaviour.IsOwner) return;
+        if (GameManager.Instance.IsSpectating) return;
+
+        PlayThunkAudio(0.3f); // set for players that arent the target
+    }
+
+    public void PlayThunkAudio(float volume)
+    {
         GameAudioManager.Instance.StopSfx(foxyRunAudio);
         GameAudioManager.Instance.StopSfx(foxyTauntAudio);
-        if (GameManager.localPlayerBehaviour != playerNode.playerBehaviour)
-        {
-            foxyThunkAudio = GameAudioManager.Instance.PlaySfxInterruptable("thunk", 0.3f);
-        }
-        else
-        {
-            foxyThunkAudio = GameAudioManager.Instance.PlaySfxInterruptable("thunk");
-        }
+        GameAudioManager.Instance.PlaySfxInterruptable("thunk", volume);
     }
 }

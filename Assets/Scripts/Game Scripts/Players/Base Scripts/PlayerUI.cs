@@ -18,8 +18,8 @@ public class PlayerUI : MonoBehaviour
         GameManager.Instance.OnGameStarted += SetNightText;
         playerBehaviour.OnInitialise += Initialise;
         playerBehaviour.OnDisable += Disable;
-        playerBehaviour.OnKill += Hide;
-        playerBehaviour.OnFoxyPowerDrain += OnPowerDrain;
+        playerBehaviour.OnPlayerJumpscare += Hide;
+        AnimatronicManager.Instance.foxy.OnFoxyPowerDrain += OnPowerDrain;
     }
 
     virtual public void Initialise()
@@ -42,15 +42,15 @@ public class PlayerUI : MonoBehaviour
 
     public virtual void Update()
     {
-        if (!playerBehaviour.isAlive.Value) return;
+        if (!playerBehaviour.isPlayerAlive.Value) return;
 
         UpdatePowerText();
     }
 
     public virtual void UpdatePowerText()
     {
-        powerText.text = $"Power:{Mathf.Round(playerBehaviour.power.Value)}%";
-        usageText.text = $"Usage:{Mathf.Round(playerBehaviour.powerUsage.Value)} Units";
+        powerText.text = $"Power:{Mathf.Round(playerBehaviour.currentPower.Value)}%";
+        usageText.text = $"Usage:{Mathf.Round(playerBehaviour.currentPowerUsage.Value)} Units";
 
         if (PowerGenerator.Instance.GetIsCharging(playerBehaviour.playerRole).Value)
             powerText.color = Color.green;
@@ -68,8 +68,10 @@ public class PlayerUI : MonoBehaviour
         hourText.text = $"{currentHour}AM";
     }
 
-    private protected void OnPowerDrain()
+    private protected void OnPowerDrain(PlayerRoles playerRole, float _)
     {
+        if (playerBehaviour.playerRole != playerRole) return;
+
         StartCoroutine(ShowPowerDrain());
     }
 

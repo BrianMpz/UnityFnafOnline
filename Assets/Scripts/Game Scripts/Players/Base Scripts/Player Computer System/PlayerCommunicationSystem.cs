@@ -25,8 +25,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     [SerializeField] private List<CommunicatingPlayer> communicatingPlayerList;
     private AudioSource callAudio;
     [SerializeField] private GameObject callImage;
-    public bool isConnected;
-    private bool isOnComms;
+    public bool isConnectedToCall;
 
     private void Start()
     {
@@ -50,7 +49,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     private void CommunicationStateChanged(State previousValue, State newValue)
     {
         if (newValue == State.ONLINE) return;
-        if (!isConnected) return;
+        if (!isConnectedToCall) return;
 
         OnCallLeave(true);
     }
@@ -145,22 +144,22 @@ public class PlayerCommunicationSystem : NetworkBehaviour
 
         VivoxManager.Instance.ChannelJoined -= OnCallJoined;
 
-        isConnected = true;
+        isConnectedToCall = true;
 
         callAllPlayersButton.enabled = true;
 
-        if (!isOnComms) return;
+        if (playerComputer.currentComputerScreen.Value == ComputerScreen.Comms) return;
 
-        commsCanvas.enabled = isConnected;
-        joinCommsCanvas.enabled = !isConnected;
+        commsCanvas.enabled = isConnectedToCall;
+        joinCommsCanvas.enabled = !isConnectedToCall;
     }
 
     private void OnCallLeave(bool systemDown = false)
     {
         if (!IsOwner) return;
-        if (!isConnected) return;
+        if (!isConnectedToCall) return;
 
-        isConnected = false;
+        isConnectedToCall = false;
 
         joinCommsButton.enabled = false;
 
@@ -171,10 +170,10 @@ public class PlayerCommunicationSystem : NetworkBehaviour
 
         StartCoroutine(WaitForCallLeave());
 
-        if (!isOnComms) return;
+        if (playerComputer.currentComputerScreen.Value == ComputerScreen.Comms) return;
 
-        commsCanvas.enabled = isConnected;
-        joinCommsCanvas.enabled = !isConnected;
+        commsCanvas.enabled = isConnectedToCall;
+        joinCommsCanvas.enabled = !isConnectedToCall;
     }
 
     private IEnumerator WaitForCallLeave()
@@ -189,10 +188,8 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        isOnComms = true;
-
-        commsCanvas.enabled = isConnected;
-        joinCommsCanvas.enabled = !isConnected;
+        commsCanvas.enabled = isConnectedToCall;
+        joinCommsCanvas.enabled = !isConnectedToCall;
         spectatorCanvas.enabled = false;
 
         EnableServerRpc(); // for spectators
@@ -206,8 +203,6 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     public void Disable()
     {
         if (!IsOwner) return;
-
-        isOnComms = false;
 
         joinCommsCanvas.enabled = false;
         commsCanvas.enabled = false;
@@ -248,6 +243,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     [ClientRpc]
     private void CallPlayerClientRpc(ulong ignoreId)
     {
+        if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
         if (SpectatorUI.Instance.isSpectating) return;
 
         StartCoroutine(PlayCallAudio());

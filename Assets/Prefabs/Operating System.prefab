@@ -1435,15 +1435,15 @@ MonoBehaviour:
     is crucial in maintaining surveillance, power distribution, and system integrity
     to ensure continued operations and protection against potential threats.\r\n\r\n**Security
     Office Operator**\r\n\r\nThe Security Office Operator is responsible for monitoring
-    the facility\u2019s surveillance system and tracking the movement of hostile
-    animatronics. The operator must maintain constant vigilance through the camera
-    network to detect early signs of intrusion. They have the highest level of camera
-    access and must judiciously manage camera power, rapidly cycle through feeds,
-    and relay critical situational updates to the team. In the event of a primary
-    system failure, the operator has access to a backup camera system to maintain
-    surveillance. Strict adherence to monitoring protocols is essential to identifying
-    and mitigating threats before they can compromise facility security.\r\n\n**Parts
-    and Service Operator**\r\n\r\nThe Parts and Service Operator oversees the facility\u2019s
+    the facility\u2019s surveillance system and tracking the movement of threats.
+    The operator must maintain constant vigilance through the camera network to detect
+    early signs of intrusion. They have the highest level of camera access and must
+    judiciously manage camera power, rapidly cycle through feeds, and relay critical
+    situational updates to the team. In the event of a primary system failure, the
+    operator has access to a backup camera system to maintain surveillance. Strict
+    adherence to monitoring protocols is essential to identifying and mitigating
+    threats before they can compromise facility security.\r\n\n**Parts and Service
+    Operator**\r\n\r\nThe Parts and Service Operator oversees the facility\u2019s
     power distribution and maintenance systems. This role is critical, as the operator
     has direct control over the power generator, allowing them to allocate energy
     to specific offices as needed. Due to a recent security compromise, facility
@@ -2645,7 +2645,7 @@ MonoBehaviour:
   - {fileID: 7442793943352476838}
   - {fileID: 1730895499564969621}
   callImage: {fileID: 6469305981058165494}
-  isConnected: 0
+  isConnectedToCall: 0
 --- !u!223 &5130240704715356168
 Canvas:
   m_ObjectHideFlags: 0
@@ -2653,7 +2653,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3073651387098290907}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}

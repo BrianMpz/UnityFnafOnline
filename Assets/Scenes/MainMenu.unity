@@ -347,6 +347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb2f8e6dc81cfde4baa48304daa222ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 0
   canvas: {fileID: 115655864}
   closeButton: {fileID: 115655863}
 --- !u!1 &207619437
@@ -1030,6 +1031,7 @@ GameObject:
   - component: {fileID: 1461269353}
   - component: {fileID: 1461269352}
   - component: {fileID: 1461269354}
+  - component: {fileID: 1461269355}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -1147,6 +1149,14 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!81 &1461269355
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1461269351}
+  m_Enabled: 1
 --- !u!1 &1985560122
 GameObject:
   m_ObjectHideFlags: 0
@@ -1821,7 +1831,6 @@ MonoBehaviour:
   settingsButton: {fileID: 301393406}
   quitButton: {fileID: 1985560124}
   playerNameInputField: {fileID: 4452030125284532889}
-  notImplementedInBuildUI: {fileID: 115655865}
 --- !u!114 &4130612385860244006
 MonoBehaviour:
   m_ObjectHideFlags: 0

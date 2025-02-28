@@ -17,10 +17,10 @@ public class PlayerCameraSystem : NetworkBehaviour
     [SerializeField] private TMP_Text accessDeniedText;
     [SerializeField] private TMP_Text audioOnlyText;
 
-
     private AudioSource cameraBootUpAudio;
     public event Action<CameraName> OnCameraViewChanged;
     private bool isHidingCurrentCamera;
+
     private void Start()
     {
         GameManager.Instance.OnAnimatronicMoved += GameManager_OnAnimatronicMoved;
@@ -34,6 +34,13 @@ public class PlayerCameraSystem : NetworkBehaviour
         canvas.worldCamera = playerCamera;
         currentCameraName.Value = CameraName.One;
         Disable();
+    }
+
+    private void Update()
+    {
+        if (!GameManager.Instance.isPlaying || !IsOwner) return;
+
+        CheckIsWatchingFoxy();
     }
 
     public void Enable()
@@ -67,9 +74,6 @@ public class PlayerCameraSystem : NetworkBehaviour
 
         GlobalCameraSystem.Instance.DisableLights();
 
-        isWatchingFoxy.Value = false;
-        GlobalCameraSystem.Instance.CountPlayersWatchingFoxyServerRpc();
-
         DisableServerRpc(); // for spectators
     }
 
@@ -92,7 +96,7 @@ public class PlayerCameraSystem : NetworkBehaviour
         CameraData cameraData = GlobalCameraSystem.Instance.GetCameraDataFromCameraName(cameraName);
 
         bool canSeeAnyCamera = playerComputer.playerBehaviour.playerRole == PlayerRoles.SecurityOffice;
-        isHidingCurrentCamera = (!canSeeAnyCamera && (cameraData.isCurrentlyHidden || cameraData.isSecurityOfficeOnly)) || cameraData.isAudioOnly;
+        isHidingCurrentCamera = cameraData.isAudioOnly || (!canSeeAnyCamera && (cameraData.isCurrentlyHidden || cameraData.isSecurityOfficeOnly));
 
         UpdateCameraUI(cameraData);
 
@@ -114,8 +118,10 @@ public class PlayerCameraSystem : NetworkBehaviour
 
     private void CheckIsWatchingFoxy()
     {
-        isWatchingFoxy.Value = playerComputer.isMonitorUp.Value && !isHidingCurrentCamera && currentCameraName.Value == CameraName.Three;
-        GlobalCameraSystem.Instance.CountPlayersWatchingFoxyServerRpc();
+        bool isOnCameraSystem = playerComputer.currentComputerScreen.Value == ComputerScreen.Cameras;
+        bool isViewingPiratesCove = currentCameraName.Value == CameraName.Three;
+
+        isWatchingFoxy.Value = playerComputer.isMonitorUp.Value && isOnCameraSystem && !isHidingCurrentCamera && isViewingPiratesCove;
     }
 
     private void UpdateCameraUI(CameraData cameraData)

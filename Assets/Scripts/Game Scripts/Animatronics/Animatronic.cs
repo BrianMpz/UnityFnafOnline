@@ -30,8 +30,8 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     [SerializeField] private float footStepPitch;
     [SerializeField] private protected string deathScream;
     private protected bool isWaitingOnClient;
-    private Coroutine lerpingToPosition;
     private protected Coroutine gameplayLoop;
+    private Coroutine lerpingToPosition;
 
     public virtual void Initialise()
     {
@@ -105,7 +105,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         if (isWaitingOnClient) return;
 
         PlayerNode playerToTarget = AnimatronicManager.Instance.PlayerNodes.FirstOrDefault(x
-            => x.playerBehaviour != null && x.playerBehaviour.playerRole != playerNode.playerBehaviour.playerRole && x.playerBehaviour.isAlive.Value);
+            => x.playerBehaviour != null && x.playerBehaviour.playerRole != playerNode.playerBehaviour.playerRole && x.playerBehaviour.isPlayerAlive.Value);
 
         TargetPlayer(playerToTarget);
     }
@@ -127,7 +127,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
             if (currentDifficulty.Value == 0 || currentMovementWaitTime.Value == 0) continue;
 
-            if (targetedPlayer == null || !targetedPlayer.playerBehaviour.isAlive.Value) TargetRandomPlayer();
+            if (targetedPlayer == null || !targetedPlayer.playerBehaviour.isPlayerAlive.Value) TargetRandomPlayer();
             else if (UnityEngine.Random.Range(1, 11) <= 2) TargetRandomPlayer();
 
             if (targetedPlayer == null) continue;
@@ -172,7 +172,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
         List<PlayerNode> attackablePlayers = AnimatronicManager.Instance.PlayerNodes.Where(x => x.playerBehaviour != null).ToList();
 
-        if (!includeDeadPeople) attackablePlayers = attackablePlayers.Where(x => x.playerBehaviour.isAlive.Value).ToList();
+        if (!includeDeadPeople) attackablePlayers = attackablePlayers.Where(x => x.playerBehaviour.isPlayerAlive.Value).ToList();
 
         if (attackablePlayers.Count == 0) TargetPlayer(null);
         else TargetPlayer(attackablePlayers[UnityEngine.Random.Range(0, attackablePlayers.Count)]);
@@ -226,28 +226,30 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     private IEnumerator KillPlayer(PlayerNode playerNode)
     {
-        ClientRpcParams rpcParams = MultiplayerManager.NewClientRpcSendParams(playerNode.playerBehaviour.OwnerClientId);
+        ClientRpcParams clientRpcParams = MultiplayerManager.NewClientRpcSendParams(playerNode.playerBehaviour.OwnerClientId);
         int indexOfTargetNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
         int indexOfCurrentNode = AnimatronicManager.Instance.Nodes.IndexOf(currentNode);
 
-        if (playerNode.playerBehaviour.hasADoorWay)
+        if (playerNode.playerBehaviour.animatronicsCanStandInDoorway)
         {
             Node doorwayNode = playerNode.playerBehaviour.GetDoorwayNode(currentNode);
             AdvanceInPath(doorwayNode, true);
         }
 
-        WaitToKillLocalClientRpc(indexOfTargetNode, indexOfCurrentNode, rpcParams);
+        WaitToKillLocalClientRpc(indexOfTargetNode, indexOfCurrentNode, clientRpcParams);
         isWaitingOnClient = true;
 
-        float clientWaitingTimeout = Time.time + 30f;
+        float clientWaitingTimeout = Time.time + 60f;
         yield return new WaitUntil(() =>
         {
-            return isWaitingOnClient == false || Time.time > clientWaitingTimeout || !playerNode.playerBehaviour.isAlive.Value;
+            return isWaitingOnClient == false || Time.time > clientWaitingTimeout || !playerNode.playerBehaviour.isPlayerAlive.Value;
         });
+
+        // the gameplay loop coroutine continues...
     }
 
     [ClientRpc]
-    private void WaitToKillLocalClientRpc(int indexOfTargetNode, int indexOfCurrentNode, ClientRpcParams clientRpcParams)
+    private void WaitToKillLocalClientRpc(int indexOfTargetNode, int indexOfCurrentNode, ClientRpcParams _)
     {
         StartCoroutine(WaitToKill(indexOfTargetNode, indexOfCurrentNode));
     }
@@ -257,7 +259,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         PlayerNode targetNode = AnimatronicManager.Instance.PlayerNodes[indexOfTargetNode];
         Node currentNode = AnimatronicManager.Instance.Nodes[indexOfCurrentNode];
 
-        yield return targetNode.playerBehaviour.WaitToKill(currentNode);
+        yield return targetNode.playerBehaviour.WaitUntilKillConditionsAreMet(currentNode);
 
         ConfirmKillServerRpc(indexOfTargetNode);
     }
@@ -270,7 +272,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         PlayerNode targetNode = AnimatronicManager.Instance.PlayerNodes[indexOfTargetNode];
         PlayerBehaviour playerBehaviour = targetNode.playerBehaviour;
 
-        if (playerBehaviour.isAlive.Value)
+        if (playerBehaviour.isPlayerAlive.Value)
         {
             AdvanceInPath(targetNode, true);
             string killerName = gameObject.name;
@@ -287,8 +289,8 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         int indexOfCurrentNode = AnimatronicManager.Instance.Nodes.IndexOf(currentNode);
         ulong blockId = MultiplayerManager.Instance.GetPlayerDataFromPlayerRole(playerBehaviour.playerRole).clientId;
 
-        playerBehaviour.power.Value -= 1;
-        playerBehaviour.KnockOnDoorClientRpc(indexOfCurrentNode, MultiplayerManager.NewClientRpcSendParams(blockId));
+        playerBehaviour.currentPower.Value -= 1;
+        playerBehaviour.PlayDoorKnockAudioClientRpc(indexOfCurrentNode, MultiplayerManager.NewClientRpcSendParams(blockId));
 
         SetNode(startNode, false, false);
     }

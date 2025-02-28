@@ -6,16 +6,17 @@ using UnityEngine.Rendering;
 
 public class BackstagePlayerBehaviour : PlayerBehaviour
 {
+    [Header("Specialised Variables")]
     public Maintenance maintenance;
     public BackstageCameraController cameraController;
     public Door door;
+    public Zap zap;
     [SerializeField] private Light RoomLight;
     [SerializeField] private float timeToWaitBeforeKill;
-    private int zapAttempts;
     private float zapCooldown;
-    public Zap zap;
+    private int zapAttempts;
 
-    public override bool IsVulnerable(Node currentNode)
+    public override bool IsPlayerVulnerable(Node currentNode)
     {
         if (currentNode != door.linkedNode) return false;
 
@@ -26,29 +27,24 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
         return true;
     }
 
-    public override bool IsCameraUp()
-    {
-        return playerComputer.isMonitorUp.Value;
-    }
-
-    public override void SetCameraView()
+    private protected override void UpdateCameraView()
     {
         cameraController.SetCameraView();
     }
 
-    public override void SetUsage()
+    private protected override void UpdatePowerUsage()
     {
-        powerUsage.Value = 0;
+        currentPowerUsage.Value = 0;
 
-        if (door.isDoorClosed.Value) powerUsage.Value += 2;
-        if (door.doorLight.isFlashingLight.Value) powerUsage.Value += 1;
+        if (door.isDoorClosed.Value) currentPowerUsage.Value += 2;
+        if (door.doorLight.isFlashingLight.Value) currentPowerUsage.Value += 1;
 
-        if (playerComputer.isMonitorUp.Value) powerUsage.Value += 1f;
+        if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value += 1f;
 
-        if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) powerUsage.Value -= 4;
+        if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 4;
     }
 
-    public override IEnumerator WaitToKill(Node currentNode)
+    public override IEnumerator WaitUntilKillConditionsAreMet(Node currentNode)
     {
         float forceDeathTime = Time.time + timeToWaitBeforeKill;
 
@@ -59,7 +55,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
         {
             yield return new WaitUntil(() =>
             {
-                return Time.time > forceDeathTime || !playerComputer.isMonitorUp.Value || !isAlive.Value;
+                return Time.time > forceDeathTime || !playerComputer.isMonitorUp.Value || !isPlayerAlive.Value;
             });
 
             yield break;
@@ -67,11 +63,13 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
         else playerComputer.Lock();
     }
 
-    private protected override IEnumerator DeathAnimation(string deathScream)
+    private protected override IEnumerator PlayDeathAnimation(string deathScream)
     {
-        if (!isAlive.Value) yield break;
+        if (!isPlayerAlive.Value) yield break;
 
         AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
+        GameAudioManager.Instance.StopAllSfx();
+
         float elapedTime = 0;
 
         while (elapedTime < .7f)
@@ -117,13 +115,6 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     private void PowerOffClientRpc(ulong ignoreId)
     { if (NetworkManager.Singleton.LocalClientId == ignoreId) return; RoomLight.intensity = 0.3f; }
 
-
-    [ClientRpc]
-    public override void KnockOnDoorClientRpc(int indexOfCurrentNode, ClientRpcParams clientRpcParams)
-    {
-        AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable("door knock");
-    }
-
     public void Zap()
     {
         if (zapCooldown < 10)
@@ -145,7 +136,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ZapServerRpc(int zapAttempts)
     {
-        power.Value -= zapAttempts * zapAttempts / 2;
+        currentPower.Value -= zapAttempts * zapAttempts / 2;
         zap.ZapAnimatronic();
     }
 

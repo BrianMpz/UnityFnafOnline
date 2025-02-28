@@ -7,13 +7,13 @@ public class PlayerNode : Node
     public PlayerBehaviour playerBehaviour;
     public bool IsAlive
     {
-        get => playerBehaviour.isAlive.Value;
+        get => playerBehaviour.isPlayerAlive.Value;
     }
 
     void Awake()
     {
         GetComponent<Image>().color = Color.white;
-        if (playerBehaviour != null) playerBehaviour.isAlive.OnValueChanged += IsAliveChanged;
+        if (playerBehaviour != null) playerBehaviour.isPlayerAlive.OnValueChanged += IsAliveChanged;
     }
 
     private void IsAliveChanged(bool previousValue, bool newValue)

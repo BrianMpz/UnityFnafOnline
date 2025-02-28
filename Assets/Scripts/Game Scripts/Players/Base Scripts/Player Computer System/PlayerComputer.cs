@@ -27,7 +27,7 @@ public class PlayerComputer : NetworkBehaviour
         playerBehaviour.OnInitialise += Initialise;
         playerBehaviour.OnPowerOn += PlayerBehaviour_OnPowerOn;
         playerBehaviour.OnPowerDown += PlayerBehaviour_OnPowerDown;
-        playerBehaviour.OnKill += PlayerBehaviour_OnKill;
+        playerBehaviour.OnPlayerJumpscare += PlayerBehaviour_OnKill;
     }
 
     public void Initialise()

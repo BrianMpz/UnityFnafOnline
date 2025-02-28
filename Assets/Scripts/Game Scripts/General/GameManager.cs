@@ -22,7 +22,6 @@ public class GameManager : NetworkSingleton<GameManager>
     public Action<PlayerRoles> OnPlayerPowerDown;
     public bool isPlaying;
     public bool IsSpectating { get => SpectatorUI.Instance.isSpectating; }
-    [ServerRpc(RequireOwnership = false)] public void OnPlayerPowerDownServerRpc(PlayerRoles playerRole) => OnPlayerPowerDown?.Invoke(playerRole);
     private Coroutine gameTimeCoroutine;
 
     private void Start()
@@ -99,6 +98,8 @@ public class GameManager : NetworkSingleton<GameManager>
 
         EndGameClientRpc();
     }
+
+    [ServerRpc(RequireOwnership = false)] public void OnPlayerPowerDownServerRpc(PlayerRoles playerRole) => OnPlayerPowerDown?.Invoke(playerRole);
 
     [ClientRpc]
     public void EndGameClientRpc()

@@ -34,7 +34,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
         // Set up singleplayer warning and chat based on online status.
         bool online = MultiplayerManager.isPlayingOnline;
         singleplayerWarningText.enabled = !online;
-        shuffleRolesButton.gameObject.SetActive(IsHost);
+        shuffleRolesButton.gameObject.SetActive(IsServer);
 
         if (online)
         {

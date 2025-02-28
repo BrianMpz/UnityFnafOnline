@@ -17,7 +17,6 @@ public class Maintenance : NetworkSingleton<Maintenance>
     [SerializeField] private TMP_Text communicationStatus;
     [SerializeField] private TMP_Text cameraStatus;
     [SerializeField] private TMP_Text powerGeneratorStatus;
-    [SerializeField] private float rebootTime;
     private float currentDifficulty;
 
     public NetworkVariable<State> communicationsState = new(writePerm: NetworkVariableWritePermission.Owner);
@@ -47,10 +46,10 @@ public class Maintenance : NetworkSingleton<Maintenance>
         playerBehaviour.OnPowerOn += PowerOn;
         playerBehaviour.OnPowerDown += PowerOff;
 
-        rebootCommunicationButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootSystem(SystemType.Comms, Random.Range(8, rebootTime))));
-        rebootCamerasButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootSystem(SystemType.Cameras, Random.Range(11, rebootTime))));
-        rebootPowerGeneratorButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootSystem(SystemType.PowerGenerator, Random.Range(5, rebootTime))));
-        rebootAllButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootAllSystems(Random.Range(rebootTime, rebootTime * 1.5f))));
+        rebootCommunicationButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootSystem(SystemType.Comms, Random.Range(8, 12))));
+        rebootCamerasButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootSystem(SystemType.Cameras, Random.Range(6, 15))));
+        rebootPowerGeneratorButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootSystem(SystemType.PowerGenerator, Random.Range(5, 12))));
+        rebootAllButton.onClick.AddListener(() => restoreSystemCoroutine = StartCoroutine(RebootAllSystems(Random.Range(12, 24))));
 
         backstageCameraController.ViewChanged += CancelReboot;
 

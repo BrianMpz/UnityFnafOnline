@@ -8552,7 +8552,7 @@ GameObject:
   - component: {fileID: 396085142}
   - component: {fileID: 396085143}
   m_Layer: 0
-  m_Name: Camera System
+  m_Name: Global Camera System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21894,7 +21894,7 @@ MonoBehaviour:
     m_InternalValue: 0
   powerUsage:
     m_InternalValue: 0
-  hasADoorWay: 1
+  animatronicsCanStandInDoorway: 1
   cameraController: {fileID: 388036877}
   leftDoor: {fileID: 764730587}
   rightDoor: {fileID: 1197183539}
@@ -24399,7 +24399,7 @@ MonoBehaviour:
     m_InternalValue: 0
   powerUsage:
     m_InternalValue: 0
-  hasADoorWay: 0
+  animatronicsCanStandInDoorway: 0
   maintenance: {fileID: 1418359294}
   cameraController: {fileID: 1650363751}
   door: {fileID: 727750008}
@@ -26594,7 +26594,6 @@ MonoBehaviour:
   communicationStatus: {fileID: 1872488602}
   cameraStatus: {fileID: 1547647285}
   powerGeneratorStatus: {fileID: 311557043}
-  rebootTime: 20
   communicationsState:
     m_InternalValue: 0
   camerasState:
@@ -27726,19 +27725,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c02f5d6ba4a896e4e8b6cfb37bf67410, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: -0.7930056
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c02f5d6ba4a896e4e8b6cfb37bf67410, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c02f5d6ba4a896e4e8b6cfb37bf67410, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 1
+      value: 0.6092144
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c02f5d6ba4a896e4e8b6cfb37bf67410, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c02f5d6ba4a896e4e8b6cfb37bf67410, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -27746,7 +27745,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c02f5d6ba4a896e4e8b6cfb37bf67410, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
+      value: 284.935
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c02f5d6ba4a896e4e8b6cfb37bf67410, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -30906,7 +30905,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.8
+      value: -5.32
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalPosition.y
@@ -30914,7 +30913,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -24.5
+      value: 20.38
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalRotation.w
@@ -32776,7 +32775,7 @@ MonoBehaviour:
     m_InternalValue: 0
   powerUsage:
     m_InternalValue: 0
-  hasADoorWay: 0
+  animatronicsCanStandInDoorway: 0
   cameraController: {fileID: 218222860}
   generator: {fileID: 134478291}
   door: {fileID: 941509130}

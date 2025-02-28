@@ -15,7 +15,7 @@ public abstract class CameraController : MonoBehaviour
     {
         playerBehaviour.OnInitialise += Initialise;
         playerBehaviour.OnDisable += Disable;
-        playerBehaviour.OnKill += () => { canPlayerControlCamera = false; };
+        playerBehaviour.OnPlayerJumpscare += () => { canPlayerControlCamera = false; };
     }
 
     private protected virtual void Initialise()
@@ -29,7 +29,7 @@ public abstract class CameraController : MonoBehaviour
 
     public virtual void Disable()
     {
-        if (GameManager.localPlayerBehaviour == playerBehaviour) GameManager.Instance.DefaultAudioListener.enabled = true;
+        if (GameManager.localPlayerBehaviour.IsOwner) GameManager.Instance.DefaultAudioListener.enabled = true;
         audioListener.enabled = false;
 
         cam.enabled = false;

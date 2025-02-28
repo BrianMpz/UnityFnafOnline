@@ -60,7 +60,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
         if (playerBehaviour == default) return;
 
         if (!PlayerRoleManager.Instance.IsPlayerDead(playerBehaviour))
-            currentPlayerPowerText.text = $"Player Power: {playerBehaviour.power.Value:F1}%";
+            currentPlayerPowerText.text = $"Player Power: {playerBehaviour.currentPower.Value:F1}%";
         else
             currentPlayerPowerText.text = "";
     }
@@ -138,13 +138,13 @@ public class SpectatorUI : Singleton<SpectatorUI>
 
         playerBehaviour.spectatorCamera.enabled = true;
 
-        if (playerBehaviour.IsCameraUp())
+        if (playerBehaviour.playerComputer.isMonitorUp.Value)
         {
             CameraName currentCamera = playerBehaviour.playerComputer.playerCameraSystem.currentCameraName.Value;
             GlobalCameraSystem.Instance.GetCameraDataFromCameraName(currentCamera).cameraFlashlight.enabled = true;
         }
 
-        playerBehaviour.isAlive.OnValueChanged += CheckPlayerAliveStatus;
+        playerBehaviour.isPlayerAlive.OnValueChanged += CheckPlayerAliveStatus;
     }
 
     private void StopSpectating(int index)
@@ -158,7 +158,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
 
         GlobalCameraSystem.Instance.DisableLights();
 
-        playerBehaviour.isAlive.OnValueChanged -= CheckPlayerAliveStatus;
+        playerBehaviour.isPlayerAlive.OnValueChanged -= CheckPlayerAliveStatus;
     }
 
     private void CheckPlayerAliveStatus(bool _, bool _1)

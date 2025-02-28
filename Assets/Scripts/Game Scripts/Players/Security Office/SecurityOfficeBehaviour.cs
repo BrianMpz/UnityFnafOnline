@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SecurityOfficeBehaviour : PlayerBehaviour
 {
+    [Header("Specialised Variables")]
     public SecurityOfficeCameraController cameraController;
     public Door leftDoor;
     public Door rightDoor;
@@ -11,34 +12,32 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     [SerializeField] private Light flashLight;
     [SerializeField] private float timeToWaitBeforeKill;
 
-    [SerializeField] private Node LeftAttackingNode;
+    [Header("Specialised Variables")]
+    [SerializeField] private Node LeftDoorBlindSpotNode;
     [SerializeField] private Node LeftDoorwayNode;
-
-    [SerializeField] private Node RightAttackingNode;
+    [SerializeField] private Node RightDoorBlindSpotNode;
     [SerializeField] private Node RightDoorwayNode;
 
-    public override void SetCameraView()
+    private protected override void UpdateCameraView()
     {
-        if (playerComputer.isMonitorUp.Value || !isAlive.Value) return;
-
         cameraController.SetCameraView();
     }
 
-    public override void SetUsage()
+    private protected override void UpdatePowerUsage()
     {
-        powerUsage.Value = 1;
+        currentPowerUsage.Value = 1;
 
-        if (leftDoor.isDoorClosed.Value) powerUsage.Value += 2;
-        if (leftDoor.doorLight.isFlashingLight.Value) powerUsage.Value++;
+        if (leftDoor.isDoorClosed.Value) currentPowerUsage.Value += 2;
+        if (leftDoor.doorLight.isFlashingLight.Value) currentPowerUsage.Value++;
 
-        if (rightDoor.isDoorClosed.Value) powerUsage.Value++;
-        if (rightDoor.doorLight.isFlashingLight.Value) powerUsage.Value++;
+        if (rightDoor.isDoorClosed.Value) currentPowerUsage.Value++;
+        if (rightDoor.doorLight.isFlashingLight.Value) currentPowerUsage.Value++;
 
-        if (playerComputer.isMonitorUp.Value) powerUsage.Value++;
-        if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) powerUsage.Value -= 5;
+        if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value++;
+        if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 5;
     }
 
-    public override bool IsVulnerable(Node currentNode)
+    public override bool IsPlayerVulnerable(Node currentNode)
     {
         if (currentNode != rightDoor.linkedNode && currentNode != leftDoor.linkedNode) return false;
 
@@ -61,8 +60,9 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
         RoomLight.enabled = true;
         flashLight.enabled = false;
         PowerOnServerRpc();
-        AudioSource ambiance = GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
-        AudioSource fan = GameAudioManager.Instance.PlaySfxInterruptable("fan", 0.2f, true);
+
+        GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
+        GameAudioManager.Instance.PlaySfxInterruptable("fan", 0.2f, true);
     }
     [ServerRpc(RequireOwnership = false)]
     private void PowerOnServerRpc(ServerRpcParams serverRpcParams = default) => PowerOnClientRpc(serverRpcParams.Receive.SenderClientId);
@@ -83,12 +83,15 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     private void PowerOffClientRpc(ulong ignoreId)
     { if (NetworkManager.Singleton.LocalClientId == ignoreId) return; RoomLight.enabled = false; flashLight.enabled = true; }
 
-    private protected override IEnumerator DeathAnimation(string deathScream)
+    private protected override IEnumerator PlayDeathAnimation(string deathScream)
     {
-        if (!isAlive.Value) yield break;
+        if (!isPlayerAlive.Value) yield break;
 
         flashLight.enabled = true;
+
         AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
+        GameAudioManager.Instance.StopAllSfx();
+
         float elapedTime = 0;
 
         while (elapedTime < .7f)
@@ -101,7 +104,7 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     }
 
     [ClientRpc]
-    public override void KnockOnDoorClientRpc(int indexOfCurrentNode, ClientRpcParams clientRpcParams)
+    public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, ClientRpcParams _)
     {
         Node animatronic_currentNode = AnimatronicManager.Instance.Nodes[indexOfCurrentNode];
 
@@ -109,7 +112,7 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
         knocking.panStereo = leftDoor.linkedNode == animatronic_currentNode ? -0.5f : 0.5f;
     }
 
-    public override IEnumerator WaitToKill(Node currentNode)
+    public override IEnumerator WaitUntilKillConditionsAreMet(Node currentNode)
     {
         float forceDeathTime = Time.time + Random.Range(1, timeToWaitBeforeKill);
 
@@ -120,7 +123,7 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
         {
             yield return new WaitUntil(() =>
             {
-                return Time.time > forceDeathTime || !playerComputer.isMonitorUp.Value || !isAlive.Value;
+                return Time.time > forceDeathTime || !playerComputer.isMonitorUp.Value || !isPlayerAlive.Value;
             });
 
             yield break;
@@ -132,7 +135,7 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
             leftDoor.Lock();
             yield return new WaitUntil(() =>
             {
-                return Time.time > forceDeathTime || cameraController.playerView.eulerAngles.y > 200 || !isAlive.Value || !poweredOn.Value;
+                return Time.time > forceDeathTime || cameraController.playerView.eulerAngles.y > 200 || !isPlayerAlive.Value;
             });
 
             yield break;
@@ -142,7 +145,7 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
             rightDoor.Lock();
             yield return new WaitUntil(() =>
             {
-                return Time.time > forceDeathTime || cameraController.playerView.eulerAngles.y < 160 || !isAlive.Value || !poweredOn.Value;
+                return Time.time > forceDeathTime || cameraController.playerView.eulerAngles.y < 160 || !isPlayerAlive.Value;
             });
 
             yield break;
@@ -151,14 +154,9 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
 
     public override Node GetDoorwayNode(Node AttackingNode)
     {
-        if (AttackingNode == LeftAttackingNode) return LeftDoorwayNode;
-        if (AttackingNode == RightAttackingNode) return RightDoorwayNode;
+        if (AttackingNode == LeftDoorBlindSpotNode) return LeftDoorwayNode;
+        if (AttackingNode == RightDoorBlindSpotNode) return RightDoorwayNode;
 
-        throw new System.Exception("Something aint right...");
-    }
-
-    public override bool IsCameraUp()
-    {
-        return playerComputer.isMonitorUp.Value;
+        return base.GetDoorwayNode(AttackingNode);
     }
 }

@@ -19,7 +19,7 @@ public class Door : NetworkBehaviour
     {
         playerBehaviour.OnPowerOn += PlayerBehaviour_OnPowerOn;
         playerBehaviour.OnPowerDown += PlayerBehaviour_OnPowerDown;
-        playerBehaviour.OnDeath += PlayerBehaviour_OnDeath;
+        playerBehaviour.OnPlayerDeath += PlayerBehaviour_OnDeath;
         playerBehaviour.OnInitialise += Initialise;
     }
 
