@@ -94,8 +94,9 @@ public class PlayerCameraSystem : NetworkBehaviour
         currentCameraName.Value = cameraName;
 
         CameraData cameraData = GlobalCameraSystem.Instance.GetCameraDataFromCameraName(cameraName);
+        PlayerRoles playerRole = playerComputer.playerBehaviour.playerRole;
 
-        bool canSeeAnyCamera = playerComputer.playerBehaviour.playerRole == PlayerRoles.SecurityOffice;
+        bool canSeeAnyCamera = playerRole == PlayerRoles.SecurityOffice;
         isHidingCurrentCamera = cameraData.isAudioOnly || (!canSeeAnyCamera && (cameraData.isCurrentlyHidden || cameraData.isSecurityOfficeOnly));
 
         UpdateCameraUI(cameraData);
@@ -110,10 +111,26 @@ public class PlayerCameraSystem : NetworkBehaviour
             cameraStatic.disturbanceAudio.mute = !isHidingCurrentCamera;
     }
 
-    private static void EnableCurrentLights(CameraData cameraData)
+    public void EnableCurrentLights(CameraData cameraData)
     {
+        PlayerRoles playerRole = playerComputer.playerBehaviour.playerRole;
+        bool canSeeAnyCamera = playerRole == PlayerRoles.SecurityOffice;
+
         GlobalCameraSystem.Instance.DisableLights();
         cameraData.cameraFlashlight.enabled = true;
+
+        if (canSeeAnyCamera)
+        {
+            cameraData.cameraFlashlight.intensity = 5;
+            cameraOutputScreen.color = Color.green;
+            cameraData.cameraFlashlight.range = cameraData.startingRange * 5f;
+        }
+        else
+        {
+            cameraData.cameraFlashlight.intensity = 1.7f;
+            cameraOutputScreen.color = Color.white;
+            cameraData.cameraFlashlight.range = cameraData.startingRange;
+        }
     }
 
     private void CheckIsWatchingFoxy()

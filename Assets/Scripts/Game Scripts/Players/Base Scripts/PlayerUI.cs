@@ -36,10 +36,6 @@ public class PlayerUI : MonoBehaviour
 
     public void Hide() => UICanvas.enabled = false;
 
-    public void HideInSpectator() => UICanvas.enabled = false;
-
-    public void ShowInSpectator() => UICanvas.enabled = true;
-
     public virtual void Update()
     {
         if (!playerBehaviour.isPlayerAlive.Value) return;

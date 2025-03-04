@@ -10,7 +10,7 @@ public class PlayerComputer : NetworkBehaviour
     public PlayerCameraSystem playerCameraSystem;
     public PlayerCommunicationSystem playerCommunicationSystem;
     public PlayerManual playerManual;
-    [SerializeField] private Canvas screenSelectorCanvas;
+    [SerializeField] private Canvas defaultCanvas;
     public NetworkVariable<ComputerScreen> currentComputerScreen = new(writePerm: NetworkVariableWritePermission.Owner);
     [SerializeField] private Animator animator;
     public NetworkVariable<bool> isMonitorUp = new(writePerm: NetworkVariableWritePermission.Owner);
@@ -32,7 +32,7 @@ public class PlayerComputer : NetworkBehaviour
 
     public void Initialise()
     {
-        screenSelectorCanvas.worldCamera = playerBehaviour.playerCamera;
+        defaultCanvas.worldCamera = playerBehaviour.playerCamera;
         playerCameraSystem.Initialise(playerBehaviour.playerCamera);
         playerCommunicationSystem.Initialise(playerBehaviour.playerCamera);
         playerManual.Initialise(playerBehaviour.playerCamera);
@@ -137,14 +137,14 @@ public class PlayerComputer : NetworkBehaviour
     public void EnableComputerSystem()
     {
         isMonitorUp.Value = true;
-        screenSelectorCanvas.enabled = true;
+        defaultCanvas.enabled = true;
         SetComputerScreen(currentComputerScreen.Value);
     }
 
     public void DisableComputerSystem()
     {
         isMonitorUp.Value = isMonitorAlwaysUp;
-        screenSelectorCanvas.enabled = false;
+        defaultCanvas.enabled = false;
         DisableAllComputerScreens();
     }
 
@@ -182,5 +182,7 @@ public enum ComputerScreen
 {
     Cameras,
     Comms,
-    Manual
+    Manual,
+    MotionDetection,
+    AudioLure
 }

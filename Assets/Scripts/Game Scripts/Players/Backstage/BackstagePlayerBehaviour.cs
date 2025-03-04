@@ -8,7 +8,6 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
 {
     [Header("Specialised Variables")]
     public Maintenance maintenance;
-    public BackstageCameraController cameraController;
     public Door door;
     public Zap zap;
     [SerializeField] private Light RoomLight;
@@ -67,8 +66,8 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     {
         if (!isPlayerAlive.Value) yield break;
 
-        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
         GameAudioManager.Instance.StopAllSfx();
+        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
 
         float elapedTime = 0;
 

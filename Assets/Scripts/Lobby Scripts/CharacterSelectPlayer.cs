@@ -38,12 +38,12 @@ public class CharacterSelectPlayer : MonoBehaviour
 
         leftOptionButton.onClick.AddListener(() =>
         {
-            MultiplayerManager.Instance.ChangePlayerRoleToPrevious(GetPlayerDataFromPlayerIndex().role);
+            MultiplayerManager.Instance.ChangePlayerRole(GetPlayerDataFromPlayerIndex().role, next: false);
         });
 
         rightOptionButton.onClick.AddListener(() =>
         {
-            MultiplayerManager.Instance.ChangePlayerRoleToNext(GetPlayerDataFromPlayerIndex().role);
+            MultiplayerManager.Instance.ChangePlayerRole(GetPlayerDataFromPlayerIndex().role, next: true);
         });
 
         MultiplayerManager.Instance.OnPlayerDataListChanged += MultiplayerManager_OnPLayerDataListChanged;
@@ -98,7 +98,7 @@ public class CharacterSelectPlayer : MonoBehaviour
                     HelpyBackstage.enabled = true;
                     break;
                 default:
-                    playerRoleText.text = playerData.role.ToString();
+                    playerRoleText.text = "Spectator";
                     break;
             }
 

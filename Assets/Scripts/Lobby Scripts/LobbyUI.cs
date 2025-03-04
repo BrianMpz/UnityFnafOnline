@@ -46,10 +46,6 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
             PlayerPrefs.SetString("GameCode", "");
         }
 
-        // Spawn network object if not already spawned.
-        if (!NetworkObject.IsSpawned)
-            NetworkObject.Spawn();
-
         // Initialize lobby UI.
         startButton.gameObject.SetActive(true);
         aboutToStartGame = false;
@@ -147,8 +143,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
 
         yield return new WaitForSeconds(1);
 
-        MultiplayerManager.Instance.ResetReadyPlayersDictionary();
-        NetworkObject.Despawn();
+        MultiplayerManager.Instance.ResetPlayersLoadedIntoGameSceneDictionary();
         Loader.LoadNetworkScene(Loader.Scene.Game);
     }
 

@@ -13,6 +13,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     // constant attributes
     public PlayerRoles playerRole;
     public PlayerComputer playerComputer;
+    public CameraController cameraController;
     public Camera playerCamera;
     public Camera spectatorCamera;
     public bool animatronicsCanStandInDoorway;
@@ -76,14 +77,14 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
     public virtual void Update()
     {
-        if (!isPlayerAlive.Value) return;
-
         HandlePlayerUpdate();
     }
 
     private void HandlePlayerUpdate()
     {
         if (IsServer) DrainPower();
+
+        if (!isPlayerAlive.Value) return;
 
         if (!IsOwner) return;
 
@@ -102,6 +103,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public virtual void PowerOff()
     {
         if (!IsOwner) return;
+        if (!isPlayerAlive.Value) return;
 
         OnPowerDown?.Invoke();
         GameManager.Instance.OnPlayerPowerDownServerRpc(playerRole);
@@ -149,24 +151,23 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
     [ClientRpc]
     public void DieClientRpc(FixedString64Bytes killer, FixedString64Bytes deathScream, ClientRpcParams _) => StartCoroutine(Die(killer, deathScream));
-
     private IEnumerator Die(FixedString64Bytes killer, FixedString64Bytes deathScream)
     {
-        if (GameManager.localPlayerBehaviour != this) yield break;
+        if (!IsOwner) yield break;
 
         OnPlayerJumpscare?.Invoke();
-
         yield return PlayDeathAnimation(deathScream.ToString()); // each individual subclass determine this behaviour
-
         HandleDeath(killer.ToString());
 
-        yield return new WaitForSeconds(0.3f); // wait a sec before cutting mic
-
+        // wait a sec before cutting mic
+        yield return new WaitForSeconds(0.3f);
         if (MultiplayerManager.isPlayingOnline) VivoxManager.Instance.SwitchToLobbyChat();
     }
 
     public void HandleDeath(string killer)
     {
+        // clean up after player death
+
         GameAudioManager.Instance.StopAllSfx();
         StartCoroutine(GameManager.Instance.HandleDeath(killer));
 
@@ -176,6 +177,8 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
     public IEnumerator DisconnectionDeathCleanUp()
     {
+        // the player has disconnected during the came and needs to be cleaned up
+
         yield return new WaitUntil(() => { return IsOwner; });
         GameManager.Instance.RelayDeathServerRpc("disconnection");
 

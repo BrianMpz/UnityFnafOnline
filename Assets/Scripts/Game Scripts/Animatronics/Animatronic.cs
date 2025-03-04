@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Unity.Netcode;
-using System.IO;
 
 public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS runs on server
 {
-    [SerializeField] private protected NetworkVariable<bool> isAggrivated;
 
-    [Header("Current Values")]
+    [Header("Dynamic Values")]
+    [SerializeField] private protected NetworkVariable<bool> isAggrivated;
     public NetworkVariable<float> currentDifficulty;
     [SerializeField] private protected NetworkVariable<float> currentMovementWaitTime;
     [SerializeField] private protected PlayerNode targetedPlayer;
@@ -201,7 +200,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         {
             PlayerNode playerNode = nodeToGoTo.GetComponent<PlayerNode>();
 
-            if (PlayerRoleManager.Instance.IsPlayerVulnerable(currentNode, playerNode) && playerNode.IsAlive)
+            if (PlayerRoleManager.Instance.IsPlayerVulnerableToAttack(currentNode, playerNode) && playerNode.IsAlive)
             {
                 yield return KillPlayer(playerNode);
             }

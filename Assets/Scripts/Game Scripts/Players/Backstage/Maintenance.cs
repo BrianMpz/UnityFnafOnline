@@ -220,7 +220,7 @@ public class Maintenance : NetworkSingleton<Maintenance>
         while (GameManager.Instance.isPlaying)
         {
             // Wait a random interval between 30 and 60 seconds before checking again.
-            yield return new WaitForSeconds(Mathf.Lerp(60f, 30f, currentDifficulty / 20));
+            yield return new WaitForSeconds(Mathf.Lerp(120f, 30f, currentDifficulty / 20));
 
             if (communicationsState.Value == State.ONLINE && Random.value < 0.1f)
             {

@@ -5,7 +5,6 @@ using UnityEngine;
 public class SecurityOfficeBehaviour : PlayerBehaviour
 {
     [Header("Specialised Variables")]
-    public SecurityOfficeCameraController cameraController;
     public Door leftDoor;
     public Door rightDoor;
     [SerializeField] private Light RoomLight;
@@ -89,8 +88,8 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
 
         flashLight.enabled = true;
 
-        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
         GameAudioManager.Instance.StopAllSfx();
+        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
 
         float elapedTime = 0;
 

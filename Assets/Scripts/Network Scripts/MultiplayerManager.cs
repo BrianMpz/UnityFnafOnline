@@ -20,9 +20,10 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
     public event Action<bool> OnTryingToJoinGame;
     public event Action<PlayerData> Game_ClientDisconnect;
     public event Action OnPlayerDataListChanged;
+
     public NetworkVariable<GameNight> gameNight = new(writePerm: NetworkVariableWritePermission.Server);
-    public NetworkList<PlayerData> playerDataList;
-    private Dictionary<ulong, bool> readyPlayersDictionary;
+    public NetworkList<PlayerData> playerDataList = new(writePerm: NetworkVariableWritePermission.Server);
+    private Dictionary<ulong, bool> playersLoadedIntoGameSceneDictionary;
 
     private void Start()
     {
@@ -36,7 +37,6 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
     private void InitialisePlayerList()
     {
-        readyPlayersDictionary = new();
         playerDataList = new();
         playerDataList.OnListChanged += PlayerDataList_OnListChanged;
     }
@@ -51,6 +51,37 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         OnDisconnectedFromGame?.Invoke(false);
     }
 
+    private void NetworkManager_Server_OnClientDisconnectCallback(ulong id) // one of the clients have disconnected
+    {
+        PlayerData disconnectedPlayerData = GetPlayerDataFromClientId(id);
+        Game_ClientDisconnect?.Invoke(disconnectedPlayerData);
+        playerDataList.Remove(disconnectedPlayerData);
+
+        // if the player has disconnected mid-load, remove them from this dict;
+        if (playersLoadedIntoGameSceneDictionary.Keys.Contains(id)) playersLoadedIntoGameSceneDictionary.Remove(id);
+        CheckToBegin();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ClientConnectedServerRpc(FixedString128Bytes name, FixedString128Bytes vId, ServerRpcParams srp = default)
+    {
+        if (isPlayingOnline)
+            playerDataList.Add(new PlayerData
+            {
+                playerName = name,
+                clientId = srp.Receive.SenderClientId,
+                role = GetRandomUnusedPlayerRole(),
+                vivoxId = vId
+            });
+        else
+            playerDataList.Add(new PlayerData
+            {
+                playerName = name,
+                clientId = srp.Receive.SenderClientId,
+                role = GetRandomUnusedPlayerRole(),
+            });
+    }
+
     private void Client_JoinLobbyChannel(ulong id) // rejected from joining game
     {
         if (id == NetworkManager.Singleton.LocalClientId) VivoxManager.Instance.JoinedRoom(joinCode);
@@ -58,28 +89,26 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         NetworkManager.Singleton.OnClientConnectedCallback -= Client_JoinLobbyChannel;
     }
 
-    private void NetworkManager_Server_OnClientDisconnectCallback(ulong id) // one of the clients have disconnected
-    {
-        PlayerData disconnectedPlayerData = GetPlayerDataFromClientId(id);
-        Game_ClientDisconnect?.Invoke(disconnectedPlayerData);
-        playerDataList.Remove(disconnectedPlayerData);
-    }
-
     private void JoinRoomApproval(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response) // handles join requests
     {
-        if (SceneManager.GetActiveScene().name != Loader.Scene.Lobby.ToString())
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        bool gameHasAlreadyStarted = currentSceneName != Loader.Scene.Lobby.ToString();
+        bool isGameAboutToStart = currentSceneName == Loader.Scene.Lobby.ToString() && LobbyUI.Instance.aboutToStartGame;
+        bool isGameFull = NetworkManager.Singleton.ConnectedClientsIds.Count == MaxPlayers;
+
+        if (gameHasAlreadyStarted) // game ha
         {
             response.Approved = false;
             response.Reason = "The game has already started!";
             return;
         }
-        if (SceneManager.GetActiveScene().name == Loader.Scene.Lobby.ToString() && LobbyUI.Instance.aboutToStartGame)
+        if (isGameAboutToStart)
         {
             response.Approved = false;
             response.Reason = "The game has already about to start!";
             return;
         }
-        if (NetworkManager.Singleton.ConnectedClientsIds.Count == MaxPlayers)
+        if (isGameFull)
         {
             response.Approved = false;
             response.Reason = "The room is full!";
@@ -136,17 +165,13 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
     public void CreateOfflineRoom()
     {
+        // creates a local, singleplayer lobby
         joinCode = "N/A";
         NetworkManager.Singleton.StartHost();
         Loader.LoadNetworkScene(Loader.Scene.Lobby);
     }
 
-    public bool IsCodeValid()
-    {
-        if (joinCode.Length == 6) return true;
-
-        return false;
-    }
+    public bool IsCodeValid() => joinCode.Length == 6;
 
     public override void OnNetworkSpawn()
     {
@@ -154,29 +179,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         else ClientConnectedServerRpc(playerName, "");
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void ClientConnectedServerRpc(FixedString128Bytes name, FixedString128Bytes vId, ServerRpcParams srp = default)
-    {
-        if (isPlayingOnline)
-            playerDataList.Add(new PlayerData
-            {
-                playerName = name,
-                clientId = srp.Receive.SenderClientId,
-                role = GetRandomUnusedPlayerRole(),
-                vivoxId = vId
-            });
-        else
-            playerDataList.Add(new PlayerData
-            {
-                playerName = name,
-                clientId = srp.Receive.SenderClientId,
-                role = GetRandomUnusedPlayerRole(),
-            });
-
-        Debug.Log($"Adding {name}, with Id {srp.Receive.SenderClientId} and vivox Id {vId}");
-    }
-
-    public bool IsPlayerIndexConnected(int playerIndex)
+    public bool IsPlayerIndexConnected(int playerIndex) // lobby only
     {
         return playerIndex < playerDataList.Count;
     }
@@ -196,6 +199,18 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
             }
         }
         return default;
+    }
+
+    public int GetPlayerDataIndexFromClientId(ulong clientId)
+    {
+        for (int i = 0; i < playerDataList.Count; i++)
+        {
+            if (playerDataList[i].clientId == clientId)
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public PlayerData GetPlayerDataFromPlayerRole(PlayerRoles playerRole)
@@ -244,7 +259,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         return GetLocalPlayerData().role;
     }
 
-    private ulong GetClientIdFromRole(PlayerRoles role)
+    private ulong GetClientIdFromRole(PlayerRoles role) // only one player will have a role each
     {
         foreach (PlayerData data in playerDataList)
         {
@@ -256,28 +271,17 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         return default;
     }
 
-    public void ChangePlayerRoleToPrevious(PlayerRoles role)
+    public void ChangePlayerRole(PlayerRoles currentRole, bool next)
     {
-        ulong senderId = GetClientIdFromRole(role);
+        ulong senderId = GetClientIdFromRole(currentRole);
         do
         {
-            role = PrevRole(role);
+            // true = get next role else get prev role
+            currentRole = next ? NextRole(currentRole) : PrevRole(currentRole);
         }
-        while (!IsRoleAvailable(role));
+        while (!IsRoleAvailable(currentRole));
 
-        SetPlayerRole(senderId, role);
-    }
-
-    public void ChangePlayerRoleToNext(PlayerRoles role)
-    {
-        ulong senderId = GetClientIdFromRole(role);
-        do
-        {
-            role = NextRole(role);
-        }
-        while (!IsRoleAvailable(role));
-
-        SetPlayerRole(senderId, role);
+        SetPlayerRole(senderId, currentRole);
     }
 
     private PlayerRoles NextRole(PlayerRoles currentState)
@@ -302,18 +306,6 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         playerDataList[playerDataIndex] = playerData;
     }
 
-    public int GetPlayerDataIndexFromClientId(ulong clientId)
-    {
-        for (int i = 0; i < playerDataList.Count; i++)
-        {
-            if (playerDataList[i].clientId == clientId)
-            {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     private bool IsRoleAvailable(PlayerRoles role)
     {
         foreach (PlayerData playerData in playerDataList)
@@ -333,27 +325,27 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
         foreach (PlayerRoles role in shuffledPlayerRoles)
         {
-            if (IsRoleAvailable(role) && role != PlayerRoles.PrizeCounter)
+            if (IsRoleAvailable(role))
             {
                 return role;
             }
         }
-        return default;
+
+        // there are not enough roles for the amount of players in the lobby
+        throw new Exception("Not enough roles for the number of players in the lobby! Increase role count");
     }
 
-    public void DisallowHavingNoRole()
+    public void DisallowHavingNoRole() // when starting the game the player cant have a spectator
     {
         PlayerData playerData = GetLocalPlayerData();
 
-        if (playerDataList.Count == 1 &&
-            (playerData.role == PlayerRoles.None ||
-            playerData.role == PlayerRoles.PrizeCounter))
+        if (playerDataList.Count == 1 && (playerData.role == PlayerRoles.None))
         {
             SetPlayerRole(NetworkManager.Singleton.LocalClientId, PlayerRoles.SecurityOffice);
         }
     }
 
-    public void ShufflePlayerRoles()
+    public void ShufflePlayerRoles() // gives each player a random role
     {
         foreach (PlayerData playerData in playerDataList)
         {
@@ -361,26 +353,30 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         }
     }
 
-    public void ResetReadyPlayersDictionary()
+    public void ResetPlayersLoadedIntoGameSceneDictionary() // called when about to load into the game scene
     {
+        playersLoadedIntoGameSceneDictionary = new();
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            readyPlayersDictionary[clientId] = false;
+            playersLoadedIntoGameSceneDictionary[clientId] = false;
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void ReadyToStartGameServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        readyPlayersDictionary[serverRpcParams.Receive.SenderClientId] = true; // once players load into scene they will be true
+        playersLoadedIntoGameSceneDictionary[serverRpcParams.Receive.SenderClientId] = true; // once players load into scene they will be true
         CheckToBegin();
     }
 
     private void CheckToBegin()
     {
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        if (currentSceneName != Loader.Scene.Game.ToString() || GameManager.Instance.isPlaying) return;
+
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            if (readyPlayersDictionary[clientId] == false)
+            if (playersLoadedIntoGameSceneDictionary[clientId] == false)
             {
                 return; //if a player hasn't loaded in dont start
             }

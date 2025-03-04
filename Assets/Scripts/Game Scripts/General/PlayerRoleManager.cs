@@ -5,6 +5,9 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Manages player roles, assigns ownership of objects, and handles disconnections.
+/// </summary>
 public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
 {
     public SecurityOfficeBehaviour securityOfficeBehaviour;
@@ -18,7 +21,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         GameManager.Instance.OnGameWin += DisableAllPlayers;
         GameManager.Instance.OnGameOver += DisableAllPlayers;
 
-        DisableAllPlayers();
+        DisableAllPlayers(); // the local player is turned on during run time
 
         if (MultiplayerManager.isPlayingOnline) VivoxManager.Instance.SwitchToPrivateChat();
     }
@@ -28,7 +31,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         if (IsServer) MultiplayerManager.Instance.Game_ClientDisconnect -= Game_OnClientDisconnect;
     }
 
-    private void Game_OnClientDisconnect(PlayerData disconnectedPlayerData)
+    private void Game_OnClientDisconnect(PlayerData disconnectedPlayerData) // only the server handles this project
     {
         PlayerBehaviour playerBehaviour = GetPlayerBehaviourFromRole(disconnectedPlayerData.role);
         if (playerBehaviour != null && playerBehaviour.isPlayerAlive.Value)
@@ -55,6 +58,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         }
         else
         {
+            // if the player doesnt have a roles then spectate for the duration of the game
             if (MultiplayerManager.isPlayingOnline) VivoxManager.Instance.SwitchToLobbyChat();
             SpectatorUI.Instance.Show();
         }
@@ -156,6 +160,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
 
     private IEnumerator WaitForObjectsToSpawn()
     {
+        // we wont be able to change ownership unhtil the objects spawn
         List<NetworkObject> networkObjects = FindObjectsByType<NetworkObject>(sortMode: FindObjectsSortMode.None).ToList();
         yield return new WaitUntil(() => networkObjects.All(obj => obj != null && obj.IsSpawned));
     }
@@ -165,6 +170,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         if (networkObject.OwnerClientId != targetClientId)
         {
             networkObject.ChangeOwnership(targetClientId);
+            // we dont want to destroy with owner because we want the server to still conrtrol it
             networkObject.DontDestroyWithOwner = true;
         }
     }
@@ -178,31 +184,28 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         return true;
     }
 
-    public bool IsPlayerDead(PlayerRoles playerRole)
+    public bool IsPlayerDead(PlayerBehaviour playerBehaviour)
     {
-        PlayerBehaviour playerBehaviour = GetPlayerBehaviourFromRole(playerRole);
-
-        if (playerBehaviour == default) return true;
+        if (playerBehaviour == null) return true;
 
         else return !playerBehaviour.isPlayerAlive.Value;
     }
 
-    public bool IsPlayerDead(PlayerBehaviour playerBehaviour)
+    public bool IsPlayerDead(PlayerRoles playerRole)
     {
-        if (playerBehaviour == default) return true;
+        PlayerBehaviour playerBehaviour = GetPlayerBehaviourFromRole(playerRole);
 
-        else return !playerBehaviour.isPlayerAlive.Value;
+        return IsPlayerDead(playerBehaviour);
     }
 
     public bool IsLocalPlayerAlive()
     {
         PlayerBehaviour playerBehaviour = GetLocalPlayerBehaviour();
-        if (playerBehaviour == default) return false;
 
-        else return playerBehaviour.isPlayerAlive.Value;
+        return !IsPlayerDead(playerBehaviour);
     }
 
-    public bool IsPlayerVulnerable(Node currentnode, PlayerNode targetNode)
+    public bool IsPlayerVulnerableToAttack(Node currentnode, PlayerNode targetNode)
     {
         if (targetNode.playerBehaviour == securityOfficeBehaviour && securityOfficeBehaviour.IsPlayerVulnerable(currentnode))
         {

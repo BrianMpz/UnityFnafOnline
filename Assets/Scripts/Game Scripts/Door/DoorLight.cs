@@ -78,7 +78,7 @@ public class DoorLight : NetworkBehaviour
         return door.isDoorClosed.Value ||
             (door.playerBehaviour == partsAndServiceBehaviour &&
                 (
-                    partsAndServiceBehaviour.cameraController.CurrentView != partsAndServiceBehaviour.cameraController.DoorView ||
+                    partsAndServiceBehaviour.partsAndServiceCameraController.CurrentView != partsAndServiceBehaviour.partsAndServiceCameraController.DoorView ||
                     door.linkedNode.occupier == AnimatronicManager.Instance.foxy
                 ));
     }

@@ -13,7 +13,6 @@ public class Foxy : Animatronic
     private Coroutine unlockCoroutine;
     private AudioSource foxyRunAudio;
     private AudioSource foxyTauntAudio;
-    private AudioSource foxyThunkAudio;
 
     [SerializeField] private Node securityOfficeHallwayNode;
     [SerializeField] private Node partsAndServiceHallwayNode;
@@ -92,7 +91,8 @@ public class Foxy : Animatronic
         PlayerNode playerNode = AnimatronicManager.Instance.PlayerNodes.FirstOrDefault(x =>
             x.playerBehaviour != null && x.playerBehaviour.playerRole == playerRole && x.playerBehaviour.isPlayerAlive.Value);
 
-        gameplayLoop = StartCoroutine(GameplayLoop(true));
+        isAggrivated.Value = true;
+        gameplayLoop = StartCoroutine(GameplayLoop(isAggrivated.Value));
     }
 
     // Called when players change their view on Foxy in the cameras
@@ -102,10 +102,7 @@ public class Foxy : Animatronic
         {
             LockFoxy();
         }
-        else if (unlockCoroutine == null)
-        {
-            unlockCoroutine = StartCoroutine(UnlockAfterDelay());
-        }
+        else unlockCoroutine ??= StartCoroutine(UnlockAfterDelay());
     }
 
     void LockFoxy()
@@ -150,6 +147,12 @@ public class Foxy : Animatronic
     {
         isAggrivated.Value = isAggro;
 
+        if (isAggrivated.Value)
+        {
+            isAggrivated.Value = false;
+            currentMovementWaitTime.Value *= 2;
+            currentDifficulty.Value -= 10;
+        }
         if (isAggro)
         {
             currentMovementWaitTime.Value /= 2;
@@ -225,7 +228,7 @@ public class Foxy : Animatronic
         GameManager.Instance.OnFoxyStatusChanged?.Invoke();
     }
 
-    private IEnumerator WaitToAttack(PlayerNode playerNode)
+    private IEnumerator WaitToAttack(PlayerNode playerNode) // expand for more roles
     {
         float definitiveAttackTime = Time.time + UnityEngine.Random.Range(10, 30);
         int indexOfPlayerNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
@@ -303,7 +306,7 @@ public class Foxy : Animatronic
 
         yield return new WaitForSeconds(1.7f);
 
-        switch (pb.playerRole)
+        switch (pb.playerRole) // expand for more roles
         {
             case PlayerRoles.SecurityOffice:
                 SecurityOfficeBehaviour securityOfficeBehaviour = PlayerRoleManager.Instance.securityOfficeBehaviour;
@@ -437,7 +440,7 @@ public class Foxy : Animatronic
 
         foxyAnimation.enabled = true;
 
-        switch (playerBehaviour.playerRole)
+        switch (playerBehaviour.playerRole) // expand for more roles
         {
             case PlayerRoles.SecurityOffice:
                 GameManager.Instance.OnFoxyAttacking?.Invoke(securityOfficeHallwayNode);

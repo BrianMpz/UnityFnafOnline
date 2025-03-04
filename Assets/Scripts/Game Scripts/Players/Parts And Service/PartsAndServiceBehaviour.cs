@@ -5,7 +5,7 @@ using UnityEngine;
 public class PartsAndServiceBehaviour : PlayerBehaviour
 {
     [Header("Specialised Variables")]
-    public PartsAndServiceCameraController cameraController;
+    public PartsAndServiceCameraController partsAndServiceCameraController;
     public PowerGenerator generator;
     public Door door;
     [SerializeField] private Light RoomLight;
@@ -72,8 +72,8 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
 
         flashLight.enabled = true;
 
-        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
         GameAudioManager.Instance.StopAllSfx();
+        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
 
         float elapedTime = 0;
 
