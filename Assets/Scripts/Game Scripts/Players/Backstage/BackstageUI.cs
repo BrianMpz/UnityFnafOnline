@@ -10,7 +10,7 @@ public class BackstageUI : PlayerUI
     [SerializeField] private EventTrigger turnLeftTrigger;
     [SerializeField] private EventTrigger turnRightTrigger;
 
-    private void Start()
+    private void Awake()
     {
         AddListener(turnLeftTrigger, EventTriggerType.PointerEnter, () => { StartCoroutine(WaitThenChangeTriggers(TurnLeft)); });
         AddListener(turnRightTrigger, EventTriggerType.PointerEnter, () => { StartCoroutine(WaitThenChangeTriggers(TurnRight)); });

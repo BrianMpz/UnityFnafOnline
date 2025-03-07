@@ -70,6 +70,8 @@ public class GameManager : NetworkSingleton<GameManager>
 
         yield return new WaitForSeconds(2);
 
+        if (isPlaying) yield break;
+
         isPlaying = true;
         OnGameStarted?.Invoke();
 

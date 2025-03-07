@@ -29,13 +29,13 @@ public class DeathScreenUI : MonoBehaviour
     private IEnumerator FadeOut()
     {
         AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable("death static");
-        float elapedTime = 0;
+        float elapsedTime = 0;
 
-        while (elapedTime < fadeOutTime)
+        while (elapsedTime < fadeOutTime)
         {
-            if (audioSource != null) audioSource.volume = 1 / (elapedTime / fadeOutTime);
-            blackOut.color = new Color(0, 0, 0, elapedTime / fadeOutTime);
-            elapedTime += Time.deltaTime;
+            if (audioSource != null) audioSource.volume = 1 / (elapsedTime / fadeOutTime);
+            blackOut.color = new Color(0, 0, 0, elapsedTime / fadeOutTime);
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 

@@ -10,10 +10,12 @@ public class PlayerComputer : NetworkBehaviour
     public PlayerCameraSystem playerCameraSystem;
     public PlayerCommunicationSystem playerCommunicationSystem;
     public PlayerManual playerManual;
-    [SerializeField] private Canvas defaultCanvas;
+    public PlayerMotionDetectionSystem playerMotionDetectionSystem;
+
+    [SerializeField] private Canvas selectorCanvas;
     public NetworkVariable<ComputerScreen> currentComputerScreen = new(writePerm: NetworkVariableWritePermission.Owner);
-    [SerializeField] private Animator animator;
     public NetworkVariable<bool> isMonitorUp = new(writePerm: NetworkVariableWritePermission.Owner);
+    [SerializeField] private Animator animator;
     [SerializeField] private bool isMonitorAlwaysUp;
 
     public Action<bool> OnMonitorFlipFinished;
@@ -32,10 +34,14 @@ public class PlayerComputer : NetworkBehaviour
 
     public void Initialise()
     {
-        defaultCanvas.worldCamera = playerBehaviour.playerCamera;
+        selectorCanvas.worldCamera = playerBehaviour.playerCamera;
+
         playerCameraSystem.Initialise(playerBehaviour.playerCamera);
         playerCommunicationSystem.Initialise(playerBehaviour.playerCamera);
         playerManual.Initialise(playerBehaviour.playerCamera);
+        playerMotionDetectionSystem.Initialise(playerBehaviour.playerCamera);
+
+        currentComputerScreen.Value = ComputerScreen.None;
     }
 
     public void PlayerBehaviour_OnPowerOn()
@@ -137,14 +143,14 @@ public class PlayerComputer : NetworkBehaviour
     public void EnableComputerSystem()
     {
         isMonitorUp.Value = true;
-        defaultCanvas.enabled = true;
+        selectorCanvas.enabled = true;
         SetComputerScreen(currentComputerScreen.Value);
     }
 
     public void DisableComputerSystem()
     {
         isMonitorUp.Value = isMonitorAlwaysUp;
-        defaultCanvas.enabled = false;
+        selectorCanvas.enabled = false;
         DisableAllComputerScreens();
     }
 
@@ -165,6 +171,9 @@ public class PlayerComputer : NetworkBehaviour
             case ComputerScreen.Manual:
                 playerManual.Enable();
                 break;
+            case ComputerScreen.MotionDetection:
+                playerMotionDetectionSystem.Enable();
+                break;
         }
 
         OnComputerScreenChanged?.Invoke(currentComputerScreen.Value);
@@ -175,6 +184,7 @@ public class PlayerComputer : NetworkBehaviour
         playerCameraSystem.Disable();
         playerCommunicationSystem.Disable();
         playerManual.Disable();
+        playerMotionDetectionSystem.Disable();
     }
 }
 
@@ -184,5 +194,6 @@ public enum ComputerScreen
     Comms,
     Manual,
     MotionDetection,
-    AudioLure
+    AudioLure,
+    None,
 }

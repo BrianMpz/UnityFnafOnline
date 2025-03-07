@@ -90,7 +90,7 @@ public class Zap : Animatronic
 
             yield return new WaitForSeconds(UnityEngine.Random.Range(5, 60));
 
-            gameplayLoop = StartCoroutine(GameplayLoop(false));
+            gameplayLoop = StartCoroutine(GameplayLoop());
         }
     }
 

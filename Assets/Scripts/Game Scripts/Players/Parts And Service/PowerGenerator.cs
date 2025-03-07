@@ -10,9 +10,12 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
 {
     public PartsAndServiceBehaviour partsAndServiceBehaviour;
     public PartsAndServiceUI partsAndServiceUI;
+
     public NetworkVariable<bool> SecurityOffice_Charging = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> PartsAndService_Charging = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> Backstage_Charging = new(writePerm: NetworkVariableWritePermission.Owner);
+    public NetworkVariable<bool> Janitor_Charging = new(writePerm: NetworkVariableWritePermission.Owner);
+
     [SerializeField] private List<GeneratorPlayerObject> generatorPlayerObjects;
     [SerializeField] private GameObject generatorOS;
     [SerializeField] private TMP_Text GeneratorDownText;
@@ -65,6 +68,7 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
             PlayerRoles.SecurityOffice => SecurityOffice_Charging,
             PlayerRoles.PartsAndService => PartsAndService_Charging,
             PlayerRoles.Backstage => Backstage_Charging,
+            PlayerRoles.Janitor => Janitor_Charging,
             _ => default,
         };
     }
@@ -84,6 +88,9 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
             case PlayerRoles.Backstage:
                 Backstage_Charging.Value = true;
                 break;
+            case PlayerRoles.Janitor:
+                Janitor_Charging.Value = true;
+                break;
         }
     }
 
@@ -94,5 +101,6 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
         SecurityOffice_Charging.Value = false;
         PartsAndService_Charging.Value = false;
         Backstage_Charging.Value = false;
+        Janitor_Charging.Value = false;
     }
 }

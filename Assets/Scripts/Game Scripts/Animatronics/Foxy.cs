@@ -6,13 +6,14 @@ using UnityEngine;
 
 public class Foxy : Animatronic
 {
+    [SerializeField] private bool isLocked = false; // Whether Foxy is locked by camera observation
     [SerializeField] private NetworkVariable<float> currentAttackAttempt;
     public float foxyProgress;
-    [SerializeField] private bool isLocked = false; // Whether Foxy is locked by camera observation
     [SerializeField] private float lockCoolDownTime = 5f;  // Minimum time for lock duration
     private Coroutine unlockCoroutine;
     private AudioSource foxyRunAudio;
     private AudioSource foxyTauntAudio;
+    private AudioSource thunkAudio;
 
     [SerializeField] private Node securityOfficeHallwayNode;
     [SerializeField] private Node partsAndServiceHallwayNode;
@@ -143,7 +144,7 @@ public class Foxy : Animatronic
     }
 
     // The main loop where Foxy's movements and attacks are handled
-    private protected override IEnumerator GameplayLoop(bool isAggro)
+    private IEnumerator GameplayLoop(bool isAggro)
     {
         isAggrivated.Value = isAggro;
 
@@ -239,7 +240,7 @@ public class Foxy : Animatronic
 
                 yield return new WaitUntil(() =>
                 {
-                    return !securityOfficeHallwayNode.isOccupied &&
+                    return !securityOfficeHallwayNode.isOccupied.Value &&
                     (
                         Time.time > definitiveAttackTime ||
                         GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(securityOfficeHallwayNode)
@@ -248,12 +249,24 @@ public class Foxy : Animatronic
 
                 SetNode(securityOfficeHallwayNode);
                 break;
+            case PlayerRoles.Janitor:
 
+                yield return new WaitUntil(() =>
+                {
+                    return !securityOfficeHallwayNode.isOccupied.Value &&
+                    (
+                        Time.time > definitiveAttackTime ||
+                        GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(securityOfficeHallwayNode)
+                    );
+                });
+
+                SetNode(securityOfficeHallwayNode);
+                break;
             case PlayerRoles.PartsAndService:
 
                 yield return new WaitUntil(() =>
                 {
-                    return !partsAndServiceHallwayNode.isOccupied &&
+                    return !partsAndServiceHallwayNode.isOccupied.Value &&
                     (
                         Time.time > definitiveAttackTime ||
                         GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(partsAndServiceHallwayNode) ||
@@ -263,12 +276,11 @@ public class Foxy : Animatronic
 
                 SetNode(partsAndServiceHallwayNode);
                 break;
-
             case PlayerRoles.Backstage:
 
                 yield return new WaitUntil(() =>
                 {
-                    return !backstageHallwayNode.isOccupied &&
+                    return !backstageHallwayNode.isOccupied.Value &&
                     (
                         Time.time > definitiveAttackTime ||
                         GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(backstageHallwayNode) ||
@@ -324,6 +336,21 @@ public class Foxy : Animatronic
                     ResetFoxyServerRpc(false, indexOfPlayerNode);
                 }
                 break;
+            case PlayerRoles.Janitor:
+                JanitorPlayerBehaviour janitorPlayerBehaviour = PlayerRoleManager.Instance.janitorPlayerBehaviour;
+                if (janitorPlayerBehaviour.isMaskDown.Value)
+                {
+                    Blocked(indexOfPlayerNode, pb, false);
+                }
+                else if (pb.isPlayerAlive.Value)
+                {
+                    KillPlayerServerRpc(indexOfPlayerNode);
+                }
+                else
+                {
+                    ResetFoxyServerRpc(false, indexOfPlayerNode);
+                }
+                break;
             case PlayerRoles.PartsAndService:
                 PartsAndServiceBehaviour partsAndServiceBehaviour = PlayerRoleManager.Instance.partsAndServiceBehaviour;
 
@@ -359,11 +386,11 @@ public class Foxy : Animatronic
         }
     }
 
-    private void Blocked(int indexOfPlayerNode, PlayerBehaviour pb)
+    private void Blocked(int indexOfPlayerNode, PlayerBehaviour pb, bool playBlockAudio = true)
     {
         PlayThunkAudio(1);
         OnFoxyPowerDrain.Invoke(pb.playerRole, CalculatePowerDrain());
-        ResetFoxyServerRpc(true, indexOfPlayerNode);
+        ResetFoxyServerRpc(playBlockAudio, indexOfPlayerNode);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -406,12 +433,12 @@ public class Foxy : Animatronic
             yield return new WaitForSeconds(0.2f);
             foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isAggrivated.Value ? "foxy taunt" : "fire in the hole", 0.3f);
 
-            float elapedTime = 0;
+            float elapsedTime = 0;
 
-            while (elapedTime < audioDuration)
+            while (elapsedTime < audioDuration)
             {
-                if (foxyTauntAudio != null) foxyTauntAudio.volume = 1 - (elapedTime / audioDuration);
-                elapedTime += Time.deltaTime;
+                if (foxyTauntAudio != null) foxyTauntAudio.volume = 1 - (elapsedTime / audioDuration);
+                elapsedTime += Time.deltaTime;
                 yield return null;
             }
         }
@@ -421,14 +448,14 @@ public class Foxy : Animatronic
             yield return new WaitForSeconds(0.2f);
             foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isAggrivated.Value ? "foxy taunt" : "fire in the hole", 0f);
 
-            float elapedTime = 0;
+            float elapsedTime = 0;
 
-            while (elapedTime < audioDuration)
+            while (elapsedTime < audioDuration)
             {
                 // start quiet and slowly get louder
-                if (foxyRunAudio != null) foxyRunAudio.volume = (elapedTime / audioDuration) + 0.3f;
-                if (foxyTauntAudio != null) foxyTauntAudio.volume = (elapedTime / audioDuration) + 0.2f;
-                elapedTime += Time.deltaTime;
+                if (foxyRunAudio != null) foxyRunAudio.volume = (elapsedTime / audioDuration) + 0.3f;
+                if (foxyTauntAudio != null) foxyTauntAudio.volume = (elapsedTime / audioDuration) + 0.2f;
+                elapsedTime += Time.deltaTime;
                 yield return null;
             }
         }
@@ -454,6 +481,10 @@ public class Foxy : Animatronic
                 GameManager.Instance.OnFoxyAttacking?.Invoke(backstageHallwayNode);
                 foxyAnimation.Play("Foxy Backstage Run");
                 break;
+            case PlayerRoles.Janitor:
+                GameManager.Instance.OnFoxyAttacking?.Invoke(securityOfficeHallwayNode);
+                foxyAnimation.Play("Foxy Janitor Run");
+                break;
         }
     }
 
@@ -470,8 +501,14 @@ public class Foxy : Animatronic
 
     public void PlayThunkAudio(float volume)
     {
+        if (GameManager.localPlayerBehaviour?.playerRole == PlayerRoles.Janitor)
+        {
+            GameAudioManager.Instance.PlaySfxOneShot("janitor door close");
+            MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(1f);
+        }
+
         GameAudioManager.Instance.StopSfx(foxyRunAudio);
         GameAudioManager.Instance.StopSfx(foxyTauntAudio);
-        GameAudioManager.Instance.PlaySfxInterruptable("thunk", volume);
+        thunkAudio = thunkAudio != null ? thunkAudio : GameAudioManager.Instance.PlaySfxInterruptable("thunk", volume);
     }
 }

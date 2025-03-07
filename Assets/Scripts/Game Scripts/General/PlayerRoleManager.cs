@@ -13,6 +13,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
     public SecurityOfficeBehaviour securityOfficeBehaviour;
     public PartsAndServiceBehaviour partsAndServiceBehaviour;
     public BackstagePlayerBehaviour backstagePlayerBehaviour;
+    public JanitorPlayerBehaviour janitorPlayerBehaviour;
 
     private void Start()
     {
@@ -45,6 +46,8 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         securityOfficeBehaviour.Disable();
         partsAndServiceBehaviour.Disable();
         backstagePlayerBehaviour.Disable();
+        janitorPlayerBehaviour.Disable();
+        // expand for other players
     }
 
     private void InitialiseLocalPlayer()
@@ -54,6 +57,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         if (playerBehaviour != default)
         {
             if (MultiplayerManager.isPlayingOnline) VivoxManager.Instance.SwitchToPrivateChat();
+            Debug.Log(janitorPlayerBehaviour.playerRole);
             playerBehaviour.Initialise();
         }
         else
@@ -71,17 +75,14 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
 
     public PlayerBehaviour GetPlayerBehaviourFromRole(PlayerRoles playerRole)
     {
-        switch (playerRole) // extend to other offices
+        return playerRole switch // extend to other offices
         {
-            case PlayerRoles.SecurityOffice:
-                return securityOfficeBehaviour;
-            case PlayerRoles.PartsAndService:
-                return partsAndServiceBehaviour;
-            case PlayerRoles.Backstage:
-                return backstagePlayerBehaviour;
-        }
-
-        return default;
+            PlayerRoles.SecurityOffice => securityOfficeBehaviour,
+            PlayerRoles.PartsAndService => partsAndServiceBehaviour,
+            PlayerRoles.Backstage => backstagePlayerBehaviour,
+            PlayerRoles.Janitor => janitorPlayerBehaviour,
+            _ => default,
+        };
     }
 
 
@@ -101,6 +102,9 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
                     break;
                 case PlayerRoles.Backstage:
                     SetBackstageOwnerships(data.clientId);
+                    break;
+                case PlayerRoles.Janitor:
+                    SetJanitorOwnerships(data.clientId);
                     break;
             }
         }
@@ -158,6 +162,18 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         ChangeOwnership(backstagePlayerBehaviour.cameraController.GetComponent<NetworkObject>(), clientId);
     }
 
+    private void SetJanitorOwnerships(ulong clientId)
+    {
+        ChangeOwnership(janitorPlayerBehaviour.GetComponent<NetworkObject>(), clientId);
+
+        ChangeOwnership(janitorPlayerBehaviour.playerComputer.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorPlayerBehaviour.playerComputer.playerCameraSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorPlayerBehaviour.playerComputer.playerCommunicationSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorPlayerBehaviour.cameraController.GetComponent<NetworkObject>(), clientId);
+
+        ChangeOwnership(janitorPlayerBehaviour.mask.GetComponent<NetworkObject>(), clientId);
+    }
+
     private IEnumerator WaitForObjectsToSpawn()
     {
         // we wont be able to change ownership unhtil the objects spawn
@@ -180,6 +196,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         if (securityOfficeBehaviour.isPlayerAlive.Value) return false;
         if (partsAndServiceBehaviour.isPlayerAlive.Value) return false;
         if (backstagePlayerBehaviour.isPlayerAlive.Value) return false;
+        if (janitorPlayerBehaviour.isPlayerAlive.Value) return false;
 
         return true;
     }
@@ -218,6 +235,11 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         }
 
         if (targetNode.playerBehaviour == backstagePlayerBehaviour && backstagePlayerBehaviour.IsPlayerVulnerable(currentnode))
+        {
+            return true;
+        }
+
+        if (targetNode.playerBehaviour == janitorPlayerBehaviour && janitorPlayerBehaviour.IsPlayerVulnerable(currentnode))
         {
             return true;
         }

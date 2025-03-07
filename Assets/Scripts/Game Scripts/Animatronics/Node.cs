@@ -1,12 +1,14 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Node : MonoBehaviour
+public class Node : NetworkBehaviour
 {
+    public NodeName nodeName;
     public Node[] neighbouringNodes;
     public RectTransform MapTransform { get => GetComponent<RectTransform>(); }
     public Transform physicalTransform;
-    public bool isOccupied;
+    public NetworkVariable<bool> isOccupied = new(writePerm: NetworkVariableWritePermission.Server);
     public Animatronic occupier;
 
     private void OnDrawGizmosSelected()

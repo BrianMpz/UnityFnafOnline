@@ -13,10 +13,10 @@ public class AnimatronicEditor : Editor
         Animatronic animatronic = (Animatronic)target;
 
         // Validate and populate the NodeData
-        PopulatenodeData(animatronic);
+        PopulateNodeData(animatronic);
     }
 
-    private void PopulatenodeData(Animatronic animatronic)
+    private void PopulateNodeData(Animatronic animatronic)
     {
         AnimatronicManager animatronicManager = FindAnyObjectByType<AnimatronicManager>();
 

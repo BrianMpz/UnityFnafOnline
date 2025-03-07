@@ -6,31 +6,30 @@ public class GameFadeInUI : MonoBehaviour
 {
     [SerializeField] private Canvas canvas;
     [SerializeField] private Image blackScreen;
-    [SerializeField] private float fadeOutTime;
 
     private void Start()
     {
-        GameManager.Instance.OnGameStarted += FadeOut;
+        GameManager.Instance.OnGameStarted += () => { FadeOut(); };
         Hide();
     }
 
-    public void FadeOut()
+    public void FadeOut(float fadeOutTime = 5)
     {
         StopAllCoroutines();
-        StartCoroutine(FadeOutCoroutine());
+        StartCoroutine(FadeOutCoroutine(fadeOutTime));
     }
 
-    public IEnumerator FadeOutCoroutine()
+    public IEnumerator FadeOutCoroutine(float fadeOutTime)
     {
         Show();
         blackScreen.color = new Color(0, 0, 0, 1);
-        float elapedTime = 0;
+        float elapsedTime = 0;
 
         yield return new WaitForSeconds(1f);
-        while (elapedTime < fadeOutTime)
+        while (elapsedTime < fadeOutTime)
         {
-            blackScreen.color = new Color(0, 0, 0, 1 - (elapedTime / fadeOutTime));
-            elapedTime += Time.deltaTime;
+            blackScreen.color = new Color(0, 0, 0, 1 - (elapsedTime / fadeOutTime));
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
         Hide();

@@ -17,6 +17,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public Camera playerCamera;
     public Camera spectatorCamera;
     public bool animatronicsCanStandInDoorway;
+    [SerializeField] private protected float timeToWaitBeforeKill;
 
 
     [Header("Dynamic Attributes")]
@@ -24,10 +25,10 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public NetworkVariable<float> currentPower = new(writePerm: NetworkVariableWritePermission.Server);
     public NetworkVariable<float> currentPowerUsage = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> isPlayerAlive = new(writePerm: NetworkVariableWritePermission.Owner);
-    private NetworkVariable<bool> isPlayerPoweredOn = new(writePerm: NetworkVariableWritePermission.Owner);
+    private protected NetworkVariable<bool> isPlayerPoweredOn = new(writePerm: NetworkVariableWritePermission.Owner);
 
     // subscribable events
-    public event Action OnPowerDown;
+    public Action OnPowerDown;
     public event Action OnPowerOn;
     public event Action OnInitialise;
     public event Action OnDisable;
@@ -49,7 +50,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
         currentPower.Value = 100f;
     }
 
-    public void Initialise()
+    public virtual void Initialise()
     {
         if (!IsOwner) return;
 
@@ -169,10 +170,10 @@ public abstract class PlayerBehaviour : NetworkBehaviour
         // clean up after player death
 
         GameAudioManager.Instance.StopAllSfx();
-        StartCoroutine(GameManager.Instance.HandleDeath(killer));
-
         Disable();
         OnPlayerDeath?.Invoke();
+
+        StartCoroutine(GameManager.Instance.HandleDeath(killer));
     }
 
     public IEnumerator DisconnectionDeathCleanUp()

@@ -21,7 +21,7 @@ public class PartsAndServiceUI : PlayerUI
     private float cameraFlipCooldownTime = 0.3f;
     private float timeSinceLastCameraFlip;
 
-    private void Start()
+    private void Awake()
     {
         AddListener(monitorToggle, EventTriggerType.PointerEnter, CameraToggle);
         AddListener(monitorFlip, EventTriggerType.PointerEnter, MonitorFlip);

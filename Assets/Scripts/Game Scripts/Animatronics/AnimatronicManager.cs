@@ -57,7 +57,7 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
                 neighbors = current.neighbouringNodes
                     .Where(neighbor => !visited.Contains(neighbor)
                         && animatronic.GetNodeData(neighbor).isAllowedToGoTo
-                        && !neighbor.isOccupied)
+                        && !neighbor.isOccupied.Value)
                     .ToList();
             }
             else
@@ -101,6 +101,7 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
 
             foreach (Node neighbor in current.neighbouringNodes)
             {
+                if (animatronic.GetNodeData(neighbor) == null) throw new System.Exception($"node data hasnt been added for {neighbor} on {animatronic.gameObject.name}");
                 if (!visited.Contains(neighbor) && animatronic.GetNodeData(neighbor).isAllowedToGoTo)
                 {
                     visited.Add(neighbor);
@@ -130,4 +131,38 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
         return PlayerNodes.FirstOrDefault(playerNode => playerNode.playerBehaviour != null && playerNode.playerBehaviour.playerRole == playerRole);
     }
 
+    public Node GetNodeFromName(NodeName nodeName)
+    {
+        return Nodes.FirstOrDefault(node => node.nodeName == nodeName);
+    }
+}
+
+public enum NodeName
+{
+    Stage1,
+    Stage2,
+    Stage3,
+    Hall1,
+    Hall2,
+    Hall3,
+    Hall4,
+    Hall5,
+    Bathroom,
+    LeftHallway1,
+    LeftHallway2,
+    Janitor_Inside,
+    LeftHallway3,
+    SecurityOffice_DoorwayL,
+    RightHallway1,
+    RightHallway2,
+    RightHallway3,
+    SecurityOffice_DoorwayR,
+    Cove,
+    BackstageHall1,
+    BackstageHall2,
+    PartsAndService,
+    Kitchen,
+    Janitor,
+    SecurityOffice,
+    Backstage
 }

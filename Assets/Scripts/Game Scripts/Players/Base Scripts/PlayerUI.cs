@@ -12,7 +12,7 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private protected TMP_Text powerText;
     [SerializeField] private protected TMP_Text usageText;
 
-    private void Awake()
+    private void Start()
     {
         GameManager.Instance.currentHour.OnValueChanged += UpdateGameTimeText;
         GameManager.Instance.OnGameStarted += SetNightText;
@@ -20,6 +20,7 @@ public class PlayerUI : MonoBehaviour
         playerBehaviour.OnDisable += Disable;
         playerBehaviour.OnPlayerJumpscare += Hide;
         AnimatronicManager.Instance.foxy.OnFoxyPowerDrain += OnPowerDrain;
+        Hide();
     }
 
     virtual public void Initialise()

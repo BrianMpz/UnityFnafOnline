@@ -74,7 +74,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
                 break;
         }
 
-        gameplayLoop = StartCoroutine(GameplayLoop(false));
+        gameplayLoop = StartCoroutine(GameplayLoop());
     }
 
     public virtual void Disable()
@@ -109,19 +109,26 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         TargetPlayer(playerToTarget);
     }
 
-    private protected virtual IEnumerator GameplayLoop(bool isAggro)
+    private protected virtual IEnumerator GameplayLoop()
     {
-        isAggrivated.Value = isAggro;
-        if (isAggro)
-        {
-            currentMovementWaitTime.Value /= 2;
-            currentDifficulty.Value += 5;
-        }
-
         yield return new WaitForSeconds(waitTimeToStartMoving); // 5 seconds default
 
         while (GameManager.Instance.isPlaying && IsServer)
         {
+            bool shouldBeAggrivated = currentNode == PlayerRoleManager.Instance.janitorPlayerBehaviour.insideNode;
+            if (isAggrivated.Value)
+            {
+                isAggrivated.Value = false;
+                currentMovementWaitTime.Value *= 2;
+                currentDifficulty.Value -= 10;
+            }
+            if (shouldBeAggrivated)
+            {
+                isAggrivated.Value = true;
+                currentMovementWaitTime.Value /= 2;
+                currentDifficulty.Value += 10;
+            }
+
             yield return new WaitForSeconds(currentMovementWaitTime.Value); // 5 seconds default
 
             if (currentDifficulty.Value == 0 || currentMovementWaitTime.Value == 0) continue;
@@ -296,7 +303,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     private void AdvanceInPath(Node nodeToGoTo, bool lerpToPosition = false)
     {
-        if (!nodeToGoTo.isOccupied)
+        if (!nodeToGoTo.isOccupied.Value)
         {
             SetNode(nodeToGoTo, lerpToPosition); // Move to the next node in the path
         }
@@ -313,7 +320,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     {
         if (currentNode.neighbouringNodes.Length < 2) return null;
 
-        return currentNode.neighbouringNodes.FirstOrDefault(node => node != dontGoToThisNode && !node.isOccupied);
+        return currentNode.neighbouringNodes.FirstOrDefault(node => node != dontGoToThisNode && !node.isOccupied.Value);
     }
 
     private protected virtual void SetNode(Node nodeToGoTo, bool lerpToPosition = false, bool makeNoise = true)
@@ -332,18 +339,25 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
         GameManager.Instance.OnAnimatronicMoved?.Invoke(currentNode, nodeToSet);
 
-        if (currentNode != null)
+        SwapNodeOccupancy(nodeToSet);
+        HandleMovement(lerpToPosition, nodeToSet, startingNode);
+        HandleMovementAudio(makeNoise);
+    }
+
+    private void HandleMovementAudio(bool makeNoise)
+    {
+        // dont play normal movement noise while entering janitor room
+        if (GameManager.localPlayerBehaviour?.playerRole == PlayerRoles.Janitor) return;
+
+        if (makeNoise && PlayerRoleManager.Instance.IsLocalPlayerAlive() && animatronicModel.gameObject.activeSelf)
         {
-            currentNode.isOccupied = false;
-            currentNode.occupier = null;
-            currentNode = null;
+            animatronicModel.GetComponent<AudioSource>().Play();
+            animatronicModel.GetComponent<AudioSource>().pitch = footStepPitch;
         }
+    }
 
-        nodeToSet.isOccupied = true;
-        nodeToSet.occupier = this;
-        currentNode = nodeToSet;
-
-
+    private void HandleMovement(bool lerpToPosition, Node nodeToSet, Node startingNode)
+    {
         if (lerpToPosition)
         {
             if (lerpingToPosition != null) StopCoroutine(lerpingToPosition);
@@ -353,12 +367,20 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         {
             TeleportToPosition(nodeToSet);
         }
+    }
 
-        if (makeNoise && PlayerRoleManager.Instance.IsLocalPlayerAlive() && GameManager.Instance.isPlaying && animatronicModel.gameObject.activeSelf)
+    private void SwapNodeOccupancy(Node nodeToSet)
+    {
+        if (currentNode != null)
         {
-            animatronicModel.GetComponent<AudioSource>().Play();
-            animatronicModel.GetComponent<AudioSource>().pitch = footStepPitch;
+            currentNode.isOccupied.Value = false;
+            currentNode.occupier = null;
+            currentNode = null;
         }
+
+        nodeToSet.isOccupied.Value = true;
+        nodeToSet.occupier = this;
+        currentNode = nodeToSet;
     }
 
     private protected IEnumerator LerpToPosition(Node startingNode, Node nodeToSet, float lerpSpeed, float movementTime = 1)

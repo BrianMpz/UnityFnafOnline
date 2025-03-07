@@ -10,7 +10,6 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     public Door door;
     [SerializeField] private Light RoomLight;
     [SerializeField] private Light flashLight;
-    [SerializeField] private float timeToWaitBeforeKill;
 
     [ClientRpc]
     public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, ClientRpcParams _)
@@ -75,13 +74,13 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
         GameAudioManager.Instance.StopAllSfx();
         AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
 
-        float elapedTime = 0;
+        float elapsedTime = 0;
 
-        while (elapedTime < .7f)
+        while (elapsedTime < .7f)
         {
             cameraController.LerpTowardsDeathView();
             yield return null;
-            elapedTime += Time.deltaTime;
+            elapsedTime += Time.deltaTime;
         }
         GameAudioManager.Instance.StopSfx(audioSource);
     }
