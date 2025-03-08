@@ -42,12 +42,6 @@ public class CommunicatingPlayer : MonoBehaviour
         eventTrigger.triggers.Add(entry);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void Show(VivoxParticipant vivoxParticipant, PlayerData playerData)
     {
         gameObject.SetActive(true);

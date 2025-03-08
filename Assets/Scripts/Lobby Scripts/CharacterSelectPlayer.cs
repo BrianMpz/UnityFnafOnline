@@ -22,6 +22,7 @@ public class CharacterSelectPlayer : MonoBehaviour
     [SerializeField] private Image HelpySecurityOffice;
     [SerializeField] private Image HelpyPartsAndService;
     [SerializeField] private Image HelpyBackstage;
+    [SerializeField] private Image HelpyJanitor;
 
     [Header("Voice Chat")]
     public Image ChatStateImage;
@@ -99,6 +100,7 @@ public class CharacterSelectPlayer : MonoBehaviour
                     break;
                 case PlayerRoles.Janitor:
                     playerRoleText.text = "Janitor";
+                    HelpyJanitor.enabled = true;
                     break;
                 default:
                     playerRoleText.text = "Spectator";
@@ -198,6 +200,7 @@ public class CharacterSelectPlayer : MonoBehaviour
         HelpySecurityOffice.enabled = false;
         HelpyPartsAndService.enabled = false;
         HelpyBackstage.enabled = false;
+        HelpyJanitor.enabled = false;
     }
 
     private void UpdateChatStateImage()

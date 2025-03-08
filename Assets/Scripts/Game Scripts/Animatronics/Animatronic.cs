@@ -119,13 +119,13 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
             if (isAggrivated.Value)
             {
                 isAggrivated.Value = false;
-                currentMovementWaitTime.Value *= 2;
+                currentMovementWaitTime.Value *= 1.5f;
                 currentDifficulty.Value -= 10;
             }
             if (shouldBeAggrivated)
             {
                 isAggrivated.Value = true;
-                currentMovementWaitTime.Value /= 2;
+                currentMovementWaitTime.Value /= 1.5f;
                 currentDifficulty.Value += 10;
             }
 
@@ -373,12 +373,12 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     {
         if (currentNode != null)
         {
-            currentNode.isOccupied.Value = false;
+            if (IsServer) currentNode.isOccupied.Value = false;
             currentNode.occupier = null;
             currentNode = null;
         }
 
-        nodeToSet.isOccupied.Value = true;
+        if (IsServer) nodeToSet.isOccupied.Value = true;
         nodeToSet.occupier = this;
         currentNode = nodeToSet;
     }

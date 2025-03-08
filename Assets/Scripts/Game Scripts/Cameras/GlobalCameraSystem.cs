@@ -69,7 +69,6 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
             }
         }
 
-        Debug.Log($"{playersWatchingfoxy} players watching foxy");
         OnPlayersWatchingFoxyUpdate?.Invoke(playersWatchingfoxy);
     }
 

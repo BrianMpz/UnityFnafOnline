@@ -29,7 +29,7 @@ public class PlayerComputer : NetworkBehaviour
         playerBehaviour.OnInitialise += Initialise;
         playerBehaviour.OnPowerOn += PlayerBehaviour_OnPowerOn;
         playerBehaviour.OnPowerDown += PlayerBehaviour_OnPowerDown;
-        playerBehaviour.OnPlayerJumpscare += PlayerBehaviour_OnKill;
+        playerBehaviour.OnPlayerJumpscare += PlayerBehaviour_OnJumpscare;
     }
 
     public void Initialise()
@@ -55,10 +55,10 @@ public class PlayerComputer : NetworkBehaviour
         Lock();
     }
 
-    public void PlayerBehaviour_OnKill()
+    public void PlayerBehaviour_OnJumpscare()
     {
-        DisableComputerSystem();
         ForceMonitorDown();
+        DisableComputerSystem();
     }
 
     public void ToggleMonitorFlip()
@@ -81,15 +81,14 @@ public class PlayerComputer : NetworkBehaviour
 
     private void FlipCamera()
     {
+        TriggerFlipAnimation(!isMonitorUp.Value);
         isWaitingForAnimationToFinish = true;
         GameAudioManager.Instance.PlaySfxOneShot("camera flip");
-        TriggerFlipAnimation(!isMonitorUp.Value);
     }
 
     public void TriggerFlipAnimation(bool flip)
     {
         if (animator == null) return;
-
         animator.SetBool("FlipUp", flip);
         TriggerFlipAnimationServerRpc(flip);
     }

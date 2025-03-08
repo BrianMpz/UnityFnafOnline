@@ -13,13 +13,7 @@ public class TrackerButton : MonoBehaviour
     void Start()
     {
         playerMotionDetectionSystem.OnTrackerUpdate += OnTrackerUpdate;
-        playerMotionDetectionSystem.OnTrackerPulse += OnTrackerPulse;
         trackerButton.onClick.AddListener(SetTracker);
-    }
-
-    private void OnTrackerPulse()
-    {
-        if (playerMotionDetectionSystem.currentTrackerButton != this) return;
     }
 
     private void OnTrackerUpdate(TrackerButton button)
@@ -27,24 +21,13 @@ public class TrackerButton : MonoBehaviour
         trackerRadius.enabled = button == this;
     }
 
+    private void Update()
+    {
+        trackerRadius.transform.Rotate(0, 0, 10 * Time.deltaTime);
+    }
+
     private void SetTracker()
     {
-        playerMotionDetectionSystem.SetTracker(this);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    private void Hide()
-    {
-        trackerRadius.enabled = false;
-    }
-
-    private void Show()
-    {
-        trackerRadius.enabled = true;
+        playerMotionDetectionSystem.SetTracker(playerMotionDetectionSystem.currentTrackerButton == this ? null : this);
     }
 }

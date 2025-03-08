@@ -25,7 +25,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public NetworkVariable<float> currentPower = new(writePerm: NetworkVariableWritePermission.Server);
     public NetworkVariable<float> currentPowerUsage = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> isPlayerAlive = new(writePerm: NetworkVariableWritePermission.Owner);
-    private protected NetworkVariable<bool> isPlayerPoweredOn = new(writePerm: NetworkVariableWritePermission.Owner);
+    [SerializeField] private protected NetworkVariable<bool> isPlayerPoweredOn = new(writePerm: NetworkVariableWritePermission.Owner);
 
     // subscribable events
     public Action OnPowerDown;
@@ -150,15 +150,26 @@ public abstract class PlayerBehaviour : NetworkBehaviour
         currentPower.Value -= drainAmount;
     }
 
+    private IEnumerator PlayGoldenFreddyDeathAnimation()
+    {
+        if (!isPlayerAlive.Value) yield break;
+        if (MultiplayerManager.isPlayingOnline) VivoxManager.Instance.SwitchToLobbyChat();
+
+        yield return MiscellaneousGameUI.Instance.gfJumpscareImage.PlayJumpscare();
+    }
+
     [ClientRpc]
     public void DieClientRpc(FixedString64Bytes killer, FixedString64Bytes deathScream, ClientRpcParams _) => StartCoroutine(Die(killer, deathScream));
-    private IEnumerator Die(FixedString64Bytes killer, FixedString64Bytes deathScream)
+    public IEnumerator Die(FixedString64Bytes killer, FixedString64Bytes deathScream = default)
     {
-        if (!IsOwner) yield break;
+        string killerName = killer.ToString();
 
         OnPlayerJumpscare?.Invoke();
-        yield return PlayDeathAnimation(deathScream.ToString()); // each individual subclass determine this behaviour
-        HandleDeath(killer.ToString());
+
+        if (killerName == "Golden Freddy") yield return PlayGoldenFreddyDeathAnimation();
+        else yield return PlayDeathAnimation(deathScream.ToString()); // each individual subclass determine this behaviour
+
+        HandleDeath(killerName);
 
         // wait a sec before cutting mic
         yield return new WaitForSeconds(0.3f);
@@ -185,6 +196,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
         Disable();
         OnPlayerDeath?.Invoke();
+        GameManager.Instance.CheckForGameOverServerRpc();
     }
 
     [ClientRpc]

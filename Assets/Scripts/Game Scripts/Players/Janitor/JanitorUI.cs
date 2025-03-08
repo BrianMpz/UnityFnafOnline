@@ -20,25 +20,32 @@ public class JanitorUI : PlayerUI
     private void ResetCooldown()
     {
         janitorPlayerBehaviour.ResetCooldown();
-        UpdateUIState();
+        UpdateTriggerState();
     }
 
     private void MaskTrigger()
     {
         janitorPlayerBehaviour.MaskTrigger();
-        UpdateUIState();
+        UpdateTriggerState();
     }
 
     private void MonitorTrigger()
     {
         janitorPlayerBehaviour.MonitorTrigger();
-        UpdateUIState();
+        UpdateTriggerState();
     }
 
-    private void UpdateUIState()
+    private void UpdateTriggerState()
     {
         maskTrigger.gameObject.SetActive(!janitorPlayerBehaviour.isMonitorUp && janitorPlayerBehaviour.canToggle);
         monitorTrigger.gameObject.SetActive(!janitorPlayerBehaviour.isWearingMask && janitorPlayerBehaviour.canToggle);
+    }
+
+    public override void UpdatePowerText()
+    {
+        base.UpdatePowerText();
+
+        powerText.text = $"Battery:{Mathf.Round(playerBehaviour.currentPower.Value)}%";
     }
 
     public override void Update()

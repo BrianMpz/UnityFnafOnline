@@ -108,12 +108,386 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: HelpyCloset_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1047
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a0ad7b1923abb9b468923e7f87ce53d0
+      internalID: 204253318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_1
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 1047
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8f34631797ebf8a47a4da3f9420aa308
+      internalID: 1600324582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_2
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 1047
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68aeee4650540bc41a91086b0a60bebf
+      internalID: 494994230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_3
+      rect:
+        serializedVersion: 2
+        x: 1107
+        y: 1047
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9f569c938c794ae4d81bbc5ae5cb940b
+      internalID: -508199830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_4
+      rect:
+        serializedVersion: 2
+        x: 1476
+        y: 1047
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 83fe1bd8fdb7d384bbd99115d32ff42d
+      internalID: 838142941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 698
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd8a33cacdc4ac14a8879dd4e1d4f77d
+      internalID: 1752889452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_6
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 698
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 038a14da02a35634b87846d7a2538288
+      internalID: 484401781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_7
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 698
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f60b91d5fca7d84ca85038c0f2477ee
+      internalID: 420780601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_8
+      rect:
+        serializedVersion: 2
+        x: 1107
+        y: 698
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 04f2fe68c22375741ae3c7862b38ab5d
+      internalID: -2035842037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_9
+      rect:
+        serializedVersion: 2
+        x: 1476
+        y: 698
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1d17b60b3eb77874a845f4f5cfd4486d
+      internalID: 896698240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 349
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 60b168d84439cd9429a71480c950d82e
+      internalID: 266221900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_11
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 349
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2d9b619c336b1424dbb4f59a1177ba84
+      internalID: 268344713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_12
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 349
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5b46065d68717fe41931df8fcc57008b
+      internalID: -1478453026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_13
+      rect:
+        serializedVersion: 2
+        x: 1107
+        y: 349
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e7c5e283e012364fb3d0156a88886c3
+      internalID: -200505260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_14
+      rect:
+        serializedVersion: 2
+        x: 1476
+        y: 349
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ccf6803128b08f140a1363df432f094c
+      internalID: 846159770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5a4593e5ba3de8458e948759b6f4dc4
+      internalID: -799770529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HelpyCloset_16
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 0
+        width: 369
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bb7b96f98909b7c4499f1f1868685345
+      internalID: -1878608795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -122,7 +496,24 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      HelpyCloset_0: 204253318
+      HelpyCloset_1: 1600324582
+      HelpyCloset_10: 266221900
+      HelpyCloset_11: 268344713
+      HelpyCloset_12: -1478453026
+      HelpyCloset_13: -200505260
+      HelpyCloset_14: 846159770
+      HelpyCloset_15: -799770529
+      HelpyCloset_16: -1878608795
+      HelpyCloset_2: 494994230
+      HelpyCloset_3: -508199830
+      HelpyCloset_4: 838142941
+      HelpyCloset_5: 1752889452
+      HelpyCloset_6: 484401781
+      HelpyCloset_7: 420780601
+      HelpyCloset_8: -2035842037
+      HelpyCloset_9: 896698240
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -9,7 +9,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     [Header("Specialised Variables")]
     [SerializeField] private JanitorCameraController janitorCameraController;
     public Animator mask;
-    public NetworkVariable<float> oxygenLevels;
+    public NetworkVariable<float> oxygenLevels = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> isMaskDown = new(writePerm: NetworkVariableWritePermission.Owner);
     public bool isWearingMask;
     public bool isMonitorUp;
@@ -52,7 +52,9 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     private protected override void UpdatePowerUsage()
     {
         currentPowerUsage.Value = 0;
+
         if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value += 2;
+        if (playerComputer.playerMotionDetectionSystem.IsTracking) currentPowerUsage.Value += 1;
     }
 
     private protected override void UpdateCameraView()
@@ -118,15 +120,28 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         if (isWearingMask)
         {
             mask.SetBool("down", true);
+            TriggerMaskAnimationServerRpc(true);
             GameAudioManager.Instance.PlaySfxOneShot("mask down");
             breathingSfx = GameAudioManager.Instance.PlaySfxInterruptable("deep breaths", 0.7f, true);
         }
         else
         {
             mask.SetBool("down", false);
+            TriggerMaskAnimationServerRpc(false);
             GameAudioManager.Instance.PlaySfxOneShot("mask up");
             GameAudioManager.Instance.StopSfx(breathingSfx);
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void TriggerMaskAnimationServerRpc(bool b, ServerRpcParams serverRpcParams = default)
+        => TriggerMaskAnimationClientRpc(b, serverRpcParams.Receive.SenderClientId);
+
+    [ClientRpc]
+    private void TriggerMaskAnimationClientRpc(bool b, ulong ignoreId)
+    {
+        if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
+        mask.SetBool("down", b);
     }
 
     public void MonitorTrigger()
@@ -164,7 +179,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         // if the sign changes from pos to neg then power off
         if (previousValue > 0 && newValue <= 0)
         {
-            HandleDeath("suffocation");
+            StartCoroutine(Die("Golden Freddy"));
         }
     }
 

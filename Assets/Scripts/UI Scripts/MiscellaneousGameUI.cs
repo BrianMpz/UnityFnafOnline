@@ -10,5 +10,5 @@ public class MiscellaneousGameUI : Singleton<MiscellaneousGameUI>
     public GameOverUI gameOverUI;
     public StartingGameUI startingGameUI;
     public WaitToPlayAgainUI waitToPlayAgainUI;
-
+    public GFJumpscareImage gfJumpscareImage;
 }

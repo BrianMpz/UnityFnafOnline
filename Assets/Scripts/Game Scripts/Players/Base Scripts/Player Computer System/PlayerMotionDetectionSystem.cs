@@ -5,13 +5,13 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerMotionDetectionSystem : MonoBehaviour
+public class PlayerMotionDetectionSystem : NetworkBehaviour
 {
     [SerializeField] private TrackerNode[] trackerNodes;
     [SerializeField] private Canvas canvas;
     public event Action<TrackerButton> OnTrackerUpdate;
-    public event Action OnTrackerPulse;
     public TrackerButton currentTrackerButton;
+    public bool IsTracking { get => currentTrackerButton != null; }
     private Coroutine pulseCoroutine;
 
     public void Initialise(Camera playerCamera)
@@ -31,19 +31,33 @@ public class PlayerMotionDetectionSystem : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(2.5f);
             GameAudioManager.Instance.PlaySfxOneShot("camera blip");
 
-            if (currentTrackerButton != null)
-            {
-                foreach (TrackerNode trackerNode in currentTrackerButton.encompassingNodes)
-                {
-                    Node nodeData = AnimatronicManager.Instance.GetNodeFromName(trackerNode.nodeName);
+            if (!IsTracking) continue;
 
-                    if (nodeData.isOccupied.Value) StartCoroutine(trackerNode.Blink());
-                }
+            foreach (TrackerNode trackerNode in currentTrackerButton.encompassingNodes)
+            {
+                Node nodeData = AnimatronicManager.Instance.GetNodeFromName(trackerNode.nodeName);
+
+                if (!nodeData.isOccupied.Value) continue;
+
+                StartCoroutine(trackerNode.Blink());
+                BlinkNodeServerRpc(trackerNodes.ToList().IndexOf(trackerNode));
             }
         }
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    private void BlinkNodeServerRpc(int indexOfNode, ServerRpcParams serverRpcParams = default)
+    => BlinkNodeClientRpc(serverRpcParams.Receive.SenderClientId, indexOfNode);
+
+    [ClientRpc]
+    private void BlinkNodeClientRpc(ulong ignoreId, int indexOfNode)
+    {
+        if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
+        StartCoroutine(trackerNodes[indexOfNode].Blink());
     }
 
     public void Enable()
@@ -83,5 +97,6 @@ public class PlayerMotionDetectionSystem : MonoBehaviour
     {
         if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
         canvas.enabled = false;
+        trackerNodes.ToList().ForEach(Node => Node.GetComponent<Image>().color = new(0, 0, 0, 0));
     }
 }

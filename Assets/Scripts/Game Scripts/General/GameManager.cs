@@ -181,7 +181,7 @@ public class GameManager : NetworkSingleton<GameManager>
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void CheckForGameOverServerRpc()
+    public void CheckForGameOverServerRpc()
     {
         if (playerRoleManager.IsEveryoneDead())
         {

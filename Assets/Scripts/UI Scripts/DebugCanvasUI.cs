@@ -49,6 +49,11 @@ public class DebugCanvasUI : Singleton<DebugCanvasUI>
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha6))
         {
+            if (!GameManager.Instance.IsOwner && PlayerRoleManager.Instance.IsLocalPlayerAlive())
+            {
+                StartCoroutine(PlayerRoleManager.Instance.GetLocalPlayerBehaviour().Die("Golden Freddy"));
+            }
+
             if (debugCanvas.enabled) Hide(); else Show();
         }
     }

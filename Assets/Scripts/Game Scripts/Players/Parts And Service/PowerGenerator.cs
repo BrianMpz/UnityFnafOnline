@@ -43,12 +43,6 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     private void PowerOn()
     {
         generatorOS.SetActive(true);

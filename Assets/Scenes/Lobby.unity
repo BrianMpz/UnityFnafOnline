@@ -500,7 +500,6 @@ MonoBehaviour:
   previousNightButton: {fileID: 1545285309}
   nextNightButton: {fileID: 1309050867}
   nightText: {fileID: 1878676641}
-  isDemo: 0
 --- !u!1 &455330740
 GameObject:
   m_ObjectHideFlags: 0
