@@ -108,7 +108,7 @@ public class Zap : Animatronic
             movementProgress = StartCoroutine(ApproachPlayer());
         }
 
-        if (!GameManager.Instance.IsSpectating || SpectatorUI.Instance.GetCurrentSpectator() != playerNode.playerBehaviour) return;
+        if (!GameManager.Instance.IsSpectating || SpectatorUI.Instance.GetCurrentSpectator().playerRole != PlayerRoles.Backstage) return;
         MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut();
     }
 

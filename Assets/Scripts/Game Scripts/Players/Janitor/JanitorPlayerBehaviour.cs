@@ -94,7 +94,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         }
         else
         {
-            oxygenLevels.Value += 7 * Time.deltaTime;
+            oxygenLevels.Value += 1 * Time.deltaTime;
         }
 
         oxygenLevels.Value = Mathf.Min(oxygenLevels.Value, 100f);

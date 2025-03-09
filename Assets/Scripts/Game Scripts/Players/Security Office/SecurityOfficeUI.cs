@@ -10,7 +10,7 @@ public class SecurityOfficeUI : PlayerUI
     private float cameraFlipCooldownTime = 0.3f;
     private float timeSinceLastCameraFlip;
 
-    private void Start()
+    private void Awake()
     {
         AddListener(monitorFlip, EventTriggerType.PointerEnter, MonitorFlip);
         AddListener(monitorToggle, EventTriggerType.PointerEnter, CameraToggle);

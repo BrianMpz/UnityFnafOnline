@@ -120,13 +120,13 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
             {
                 isAggrivated.Value = false;
                 currentMovementWaitTime.Value *= 1.5f;
-                currentDifficulty.Value -= 10;
+                currentDifficulty.Value -= 20;
             }
             if (shouldBeAggrivated)
             {
                 isAggrivated.Value = true;
                 currentMovementWaitTime.Value /= 1.5f;
-                currentDifficulty.Value += 10;
+                currentDifficulty.Value += 20;
             }
 
             yield return new WaitForSeconds(currentMovementWaitTime.Value); // 5 seconds default

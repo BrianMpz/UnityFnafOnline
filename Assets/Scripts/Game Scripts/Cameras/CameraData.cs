@@ -11,12 +11,14 @@ public class CameraData : MonoBehaviour
     public bool isAudioOnly;
     public bool isSecurityOfficeOnly;
     public Light cameraFlashlight;
-    public float startingRange;
+    [HideInInspector] public float startingRange;
+    [HideInInspector] public float startingIntensity;
 
     private void Awake()
     {
         Cam.targetTexture = cameraTexture;
         startingRange = cameraFlashlight.range;
+        startingIntensity = cameraFlashlight.intensity;
     }
 
     public CameraName GetCameraName() => cameraName;

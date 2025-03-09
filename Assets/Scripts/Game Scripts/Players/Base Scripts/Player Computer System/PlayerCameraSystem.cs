@@ -121,13 +121,13 @@ public class PlayerCameraSystem : NetworkBehaviour
 
         if (canSeeAnyCamera)
         {
-            cameraData.cameraFlashlight.intensity = 5;
+            cameraData.cameraFlashlight.intensity = cameraData.startingIntensity * 3;
             cameraOutputScreen.color = Color.green;
             cameraData.cameraFlashlight.range = cameraData.startingRange * 5f;
         }
         else
         {
-            cameraData.cameraFlashlight.intensity = 1.7f;
+            cameraData.cameraFlashlight.intensity = cameraData.startingIntensity;
             cameraOutputScreen.color = Color.white;
             cameraData.cameraFlashlight.range = cameraData.startingRange;
         }

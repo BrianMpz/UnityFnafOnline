@@ -15,6 +15,8 @@ public class JanitorUI : PlayerUI
         AddListener(triggerToggle, EventTriggerType.PointerEnter, ResetCooldown);
         AddListener(maskTrigger, EventTriggerType.PointerEnter, MaskTrigger);
         AddListener(monitorTrigger, EventTriggerType.PointerEnter, MonitorTrigger);
+
+        oxygenBlackout.color = new(0, 0, 0, 0);
     }
 
     private void ResetCooldown()
@@ -52,6 +54,6 @@ public class JanitorUI : PlayerUI
     {
         base.Update();
 
-        oxygenBlackout.color = new(0, 0, 0, 1.1f - (janitorPlayerBehaviour.oxygenLevels.Value / 100f));
+        oxygenBlackout.color = new(0, 0, 0, 1f - (janitorPlayerBehaviour.oxygenLevels.Value / 100f));
     }
 }
