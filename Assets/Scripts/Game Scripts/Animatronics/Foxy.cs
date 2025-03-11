@@ -92,8 +92,8 @@ public class Foxy : Animatronic
         PlayerNode playerNode = AnimatronicManager.Instance.PlayerNodes.FirstOrDefault(x =>
             x.playerBehaviour != null && x.playerBehaviour.playerRole == playerRole && x.playerBehaviour.isPlayerAlive.Value);
 
-        isAggrivated.Value = true;
-        gameplayLoop = StartCoroutine(GameplayLoop(isAggrivated.Value));
+        isCurrentlyAggrivated.Value = true;
+        gameplayLoop = StartCoroutine(GameplayLoop(isCurrentlyAggrivated.Value));
     }
 
     // Called when players change their view on Foxy in the cameras
@@ -146,11 +146,11 @@ public class Foxy : Animatronic
     // The main loop where Foxy's movements and attacks are handled
     private IEnumerator GameplayLoop(bool isAggro)
     {
-        isAggrivated.Value = isAggro;
+        isCurrentlyAggrivated.Value = isAggro;
 
-        if (isAggrivated.Value)
+        if (isCurrentlyAggrivated.Value)
         {
-            isAggrivated.Value = false;
+            isCurrentlyAggrivated.Value = false;
             currentMovementWaitTime.Value *= 2;
             currentDifficulty.Value -= 10;
         }
@@ -284,7 +284,7 @@ public class Foxy : Animatronic
                     (
                         Time.time > definitiveAttackTime ||
                         GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(backstageHallwayNode) ||
-                        PlayerRoleManager.Instance.backstagePlayerBehaviour.door.doorLight.isFlashingLight.Value
+                        PlayerRoleManager.Instance.backstageBehaviour.door.doorLight.isFlashingLight.Value
                     );
                 });
 
@@ -337,7 +337,7 @@ public class Foxy : Animatronic
                 }
                 break;
             case PlayerRoles.Janitor:
-                JanitorPlayerBehaviour janitorPlayerBehaviour = PlayerRoleManager.Instance.janitorPlayerBehaviour;
+                JanitorPlayerBehaviour janitorPlayerBehaviour = PlayerRoleManager.Instance.janitorBehaviour;
                 if (janitorPlayerBehaviour.isMaskDown.Value)
                 {
                     Blocked(indexOfPlayerNode, pb, false);
@@ -368,7 +368,7 @@ public class Foxy : Animatronic
                 }
                 break;
             case PlayerRoles.Backstage:
-                BackstagePlayerBehaviour backstagePlayerBehaviour = PlayerRoleManager.Instance.backstagePlayerBehaviour;
+                BackstagePlayerBehaviour backstagePlayerBehaviour = PlayerRoleManager.Instance.backstageBehaviour;
 
                 if (backstagePlayerBehaviour.door.isDoorClosed.Value)
                 {
@@ -431,7 +431,7 @@ public class Foxy : Animatronic
         {
             foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", 0.7f);
             yield return new WaitForSeconds(0.2f);
-            foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isAggrivated.Value ? "foxy taunt" : "fire in the hole", 0.3f);
+            foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isCurrentlyAggrivated.Value ? "foxy taunt" : "fire in the hole", 0.3f);
 
             float elapsedTime = 0;
 
@@ -446,7 +446,7 @@ public class Foxy : Animatronic
         {
             foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", 0);
             yield return new WaitForSeconds(0.2f);
-            foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isAggrivated.Value ? "foxy taunt" : "fire in the hole", 0f);
+            foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isCurrentlyAggrivated.Value ? "foxy taunt" : "fire in the hole", 0f);
 
             float elapsedTime = 0;
 

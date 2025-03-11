@@ -46,8 +46,10 @@ public class PlayerUI : MonoBehaviour
 
     public virtual void UpdatePowerText()
     {
-        powerText.text = $"Power:{Mathf.Round(playerBehaviour.currentPower.Value)}%";
-        usageText.text = $"Usage:{Mathf.Round(playerBehaviour.currentPowerUsage.Value)} Units";
+        float positivePowerValue = Mathf.Max(Mathf.Round(playerBehaviour.currentPower.Value), 0);
+
+        powerText.text = $"Power:{positivePowerValue}%";
+        usageText.text = $"Usage:{(int)playerBehaviour.currentPowerUsage.Value} Units";
 
         if (PowerGenerator.Instance.GetIsCharging(playerBehaviour.playerRole).Value)
             powerText.color = Color.green;

@@ -9,7 +9,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 {
 
     [Header("Dynamic Values")]
-    [SerializeField] private protected NetworkVariable<bool> isAggrivated;
+    [SerializeField] private protected NetworkVariable<bool> isCurrentlyAggrivated;
     public NetworkVariable<float> currentDifficulty;
     [SerializeField] private protected NetworkVariable<float> currentMovementWaitTime;
     [SerializeField] private protected PlayerNode targetedPlayer;
@@ -45,32 +45,32 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         switch (GameManager.Instance.gameNight)
         {
             case GameNight.One:
-                currentDifficulty.Value = 1;
-                currentMovementWaitTime.Value = 7;
+                currentDifficulty.Value = 1f;
+                currentMovementWaitTime.Value = 10f;
                 break;
             case GameNight.Two:
-                currentDifficulty.Value = 2;
-                currentMovementWaitTime.Value = 6f;
+                currentDifficulty.Value = 3f;
+                currentMovementWaitTime.Value = 8f;
                 break;
             case GameNight.Three:
-                currentDifficulty.Value = 4;
-                currentMovementWaitTime.Value = 6.5f;
+                currentDifficulty.Value = 5f;
+                currentMovementWaitTime.Value = 6f;
                 break;
             case GameNight.Four:
-                currentDifficulty.Value = 7;
-                currentMovementWaitTime.Value = 5.5f;
+                currentDifficulty.Value = 7f;
+                currentMovementWaitTime.Value = 5f;
                 break;
             case GameNight.Five:
-                currentDifficulty.Value = 11;
-                currentMovementWaitTime.Value = 5;
+                currentDifficulty.Value = 9f;
+                currentMovementWaitTime.Value = 4f;
                 break;
             case GameNight.Six:
-                currentDifficulty.Value = 16;
-                currentMovementWaitTime.Value = 4.5f;
+                currentDifficulty.Value = 16f;
+                currentMovementWaitTime.Value = 4f;
                 break;
             case GameNight.Seven:
-                currentDifficulty.Value = 20;
-                currentMovementWaitTime.Value = 4;
+                currentDifficulty.Value = 20f;
+                currentMovementWaitTime.Value = 4f;
                 break;
         }
 
@@ -100,14 +100,19 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     private void Retarget(PlayerNode playerNode)
     {
-        if (playerNode != targetedPlayer) return;
-        if (isWaitingOnClient) return;
+        if (playerNode != targetedPlayer || isWaitingOnClient) return;
 
-        PlayerNode playerToTarget = AnimatronicManager.Instance.PlayerNodes.FirstOrDefault(x
-            => x.playerBehaviour != null && x.playerBehaviour.playerRole != playerNode.playerBehaviour.playerRole && x.playerBehaviour.isPlayerAlive.Value);
+        // Get a new target (excluding the current player)
+        var alivePlayers = AnimatronicManager.Instance.PlayerNodes
+            .Where(x => x.playerBehaviour != null && x.playerBehaviour.isPlayerAlive.Value && x.playerBehaviour.playerRole != playerNode.playerBehaviour.playerRole)
+            .ToList();
 
-        TargetPlayer(playerToTarget);
+        if (alivePlayers.Count > 0)
+        {
+            TargetPlayer(alivePlayers[UnityEngine.Random.Range(0, alivePlayers.Count)]);
+        }
     }
+
 
     private protected virtual IEnumerator GameplayLoop()
     {
@@ -115,16 +120,16 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
         while (GameManager.Instance.isPlaying && IsServer)
         {
-            bool shouldBeAggrivated = currentNode == PlayerRoleManager.Instance.janitorPlayerBehaviour.insideNode;
-            if (isAggrivated.Value)
+            bool shouldBeAggrivated = currentNode == PlayerRoleManager.Instance.IsAnimatronicAboutToAttack(currentNode);
+            if (isCurrentlyAggrivated.Value)
             {
-                isAggrivated.Value = false;
+                isCurrentlyAggrivated.Value = false;
                 currentMovementWaitTime.Value *= 1.5f;
                 currentDifficulty.Value -= 20;
             }
             if (shouldBeAggrivated)
             {
-                isAggrivated.Value = true;
+                isCurrentlyAggrivated.Value = true;
                 currentMovementWaitTime.Value /= 1.5f;
                 currentDifficulty.Value += 20;
             }
@@ -171,17 +176,15 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     {
         if (PlayerRoleManager.Instance.IsEveryoneDead())
         {
-            StopAllCoroutines();
             TargetPlayer(null);
             return;
         }
 
-        List<PlayerNode> attackablePlayers = AnimatronicManager.Instance.PlayerNodes.Where(x => x.playerBehaviour != null).ToList();
+        var attackablePlayers = AnimatronicManager.Instance.PlayerNodes
+            .Where(x => x.playerBehaviour != null && (includeDeadPeople || x.playerBehaviour.isPlayerAlive.Value))
+            .ToList();
 
-        if (!includeDeadPeople) attackablePlayers = attackablePlayers.Where(x => x.playerBehaviour.isPlayerAlive.Value).ToList();
-
-        if (attackablePlayers.Count == 0) TargetPlayer(null);
-        else TargetPlayer(attackablePlayers[UnityEngine.Random.Range(0, attackablePlayers.Count)]);
+        TargetPlayer(attackablePlayers.Count > 0 ? attackablePlayers[UnityEngine.Random.Range(0, attackablePlayers.Count)] : null);
     }
 
     private void TargetPlayer(PlayerNode playerNode)

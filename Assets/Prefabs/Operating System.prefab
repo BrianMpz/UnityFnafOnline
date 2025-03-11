@@ -1673,8 +1673,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 480113081819031248}
   m_HandleRect: {fileID: 6789277076321509295}
   m_Direction: 2
-  m_Value: 0.99999994
-  m_Size: 0.19906157
+  m_Value: 1
+  m_Size: 0.19906156
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -9683,9 +9683,9 @@ MonoBehaviour:
   staticImage: {fileID: 6665737672086962319}
   staticaudio: {fileID: 0}
   disturbanceAudio: {fileID: 0}
-  fadeOutTime: 0.74
-  minimumAlpha: 0.12
-  minimumVolume: 0.26
+  fadeOutTime: 0.5
+  minimumAlpha: 0.05
+  minimumVolume: 0.2
 --- !u!1 &8780162712911759956
 GameObject:
   m_ObjectHideFlags: 0

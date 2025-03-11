@@ -73,9 +73,11 @@ public class GeneratorPlayerObject : MonoBehaviour
 
     private void Update()
     {
-        float powerFloat = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole).currentPower.Value;
-        string powerValue = powerFloat.ToString("F2"); // Rounds to 2 decimal places
-        power.text = powerValue + "%";
+        float powerValue = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole).currentPower.Value;
+        powerValue = Mathf.Max(powerValue, 0);
+
+        string powerText = powerValue.ToString("F2"); // Rounds to 2 decimal places
+        power.text = powerText + "%";
     }
 
 }

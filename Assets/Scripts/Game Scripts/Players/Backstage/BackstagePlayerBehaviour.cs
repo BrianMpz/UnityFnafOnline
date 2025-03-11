@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class BackstagePlayerBehaviour : PlayerBehaviour
 {
@@ -134,7 +133,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ZapServerRpc(int zapAttempts)
     {
-        currentPower.Value -= zapAttempts * zapAttempts / 2;
+        currentPower.Value -= zapAttempts * zapAttempts / 4;
         zap.ZapAnimatronic();
     }
 
@@ -145,4 +144,10 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
         zapCooldown += Time.deltaTime;
     }
 
+    public override bool IsAnimatronicCloseToAttack(Node currentNode)
+    {
+        if (currentNode == door.linkedNode) return true;
+
+        return false;
+    }
 }

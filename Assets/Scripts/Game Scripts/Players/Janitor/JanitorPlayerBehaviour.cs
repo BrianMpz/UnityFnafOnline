@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -188,5 +189,12 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     {
         GameAudioManager.Instance.PlaySfxOneShot("janitor door close");
         MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(1f);
+    }
+
+    public override bool IsAnimatronicCloseToAttack(Node currentNode)
+    {
+        if (currentNode == insideNode) return true;
+
+        return false;
     }
 }

@@ -36,6 +36,7 @@ public class PlayerComputer : NetworkBehaviour
     {
         selectorCanvas.worldCamera = playerBehaviour.playerCamera;
 
+        selectorCanvas.enabled = false;
         playerCameraSystem.Initialise(playerBehaviour.playerCamera);
         playerCommunicationSystem.Initialise(playerBehaviour.playerCamera);
         playerManual.Initialise(playerBehaviour.playerCamera);

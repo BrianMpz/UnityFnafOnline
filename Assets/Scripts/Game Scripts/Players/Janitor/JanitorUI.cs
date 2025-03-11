@@ -39,8 +39,15 @@ public class JanitorUI : PlayerUI
 
     private void UpdateTriggerState()
     {
-        maskTrigger.gameObject.SetActive(!janitorPlayerBehaviour.isMonitorUp && janitorPlayerBehaviour.canToggle);
-        monitorTrigger.gameObject.SetActive(!janitorPlayerBehaviour.isWearingMask && janitorPlayerBehaviour.canToggle);
+        bool isMonitorUp = janitorPlayerBehaviour.isMonitorUp;
+        bool canToggle = janitorPlayerBehaviour.canToggle;
+        bool isWearingMask = janitorPlayerBehaviour.isWearingMask;
+
+        maskTrigger.enabled = canToggle;
+        monitorTrigger.enabled = canToggle;
+
+        maskTrigger.gameObject.SetActive(!isMonitorUp);
+        monitorTrigger.gameObject.SetActive(!isWearingMask); ;
     }
 
     public override void UpdatePowerText()

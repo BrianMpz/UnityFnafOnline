@@ -10,8 +10,8 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     [SerializeField] private Light RoomLight;
     [SerializeField] private Light flashLight;
     [SerializeField] private Node LeftDoorBlindSpotNode;
-    [SerializeField] private Node LeftDoorwayNode;
     [SerializeField] private Node RightDoorBlindSpotNode;
+    [SerializeField] private Node LeftDoorwayNode;
     [SerializeField] private Node RightDoorwayNode;
 
     private protected override void UpdateCameraView()
@@ -154,5 +154,12 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
         if (AttackingNode == RightDoorBlindSpotNode) return RightDoorwayNode;
 
         return base.GetDoorwayNode(AttackingNode);
+    }
+
+    public override bool IsAnimatronicCloseToAttack(Node currentNode)
+    {
+        if (currentNode == leftDoor.linkedNode || currentNode == rightDoor.linkedNode) return true;
+
+        return false;
     }
 }

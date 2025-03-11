@@ -88,7 +88,7 @@ public class Zap : Animatronic
             int indexOfTargetNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
             ConfirmKillServerRpc(indexOfTargetNode);
 
-            yield return new WaitForSeconds(UnityEngine.Random.Range(5, 60));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(5, 60)); // wait a random amount of time before entering the pizerria
 
             gameplayLoop = StartCoroutine(GameplayLoop());
         }

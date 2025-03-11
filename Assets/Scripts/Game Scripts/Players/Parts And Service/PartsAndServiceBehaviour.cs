@@ -114,4 +114,11 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
         }
         return true;
     }
+
+    public override bool IsAnimatronicCloseToAttack(Node currentNode)
+    {
+        if (currentNode == door.linkedNode) return true;
+
+        return false;
+    }
 }

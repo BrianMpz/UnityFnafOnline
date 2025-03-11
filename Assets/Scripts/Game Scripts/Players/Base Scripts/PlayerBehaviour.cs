@@ -41,6 +41,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     private protected abstract IEnumerator PlayDeathAnimation(string deathScream);
     public abstract IEnumerator WaitUntilKillConditionsAreMet(Node currentNode);
     public abstract bool IsPlayerVulnerable(Node currentNode);
+    public abstract bool IsAnimatronicCloseToAttack(Node currentNode);
 
     void Start()
     {
@@ -145,6 +146,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public void FoxyDrainPowerServerRpc(PlayerRoles playerRole, float drainAmount)
     {
         if (this.playerRole != playerRole) return;
+        if (this.playerRole == PlayerRoles.Janitor) return;
 
         // drain power
         currentPower.Value -= drainAmount;

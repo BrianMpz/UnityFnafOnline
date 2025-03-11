@@ -7066,7 +7066,6 @@ RectTransform:
   - {fileID: 1017715867}
   - {fileID: 633837544}
   - {fileID: 465110492}
-  - {fileID: 784339727}
   m_Father: {fileID: 86899912}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -10794,7 +10793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad822014f00189a48831c6cf8646295a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAggrivated:
+  isCurrentlyAggrivated:
     m_InternalValue: 0
   currentDifficulty:
     m_InternalValue: 0
@@ -12814,14 +12813,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e599ace7635686745b3b53804c51c5f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAggrivated:
+  isCurrentlyAggrivated:
     m_InternalValue: 0
   currentDifficulty:
     m_InternalValue: 0
   currentMovementWaitTime:
     m_InternalValue: 0
   targetedPlayer: {fileID: 0}
-  hourlyDifficultyIncrementAmount: 3
+  hourlyDifficultyIncrementAmount: 2
   waitTimeToStartMoving: 10
   startNode: {fileID: 255704850}
   nodeDatas:
@@ -13418,14 +13417,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02a431a3fcd49d24badeacc33935e4a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAggrivated:
+  isCurrentlyAggrivated:
     m_InternalValue: 0
   currentDifficulty:
     m_InternalValue: 0
   currentMovementWaitTime:
     m_InternalValue: 0
   targetedPlayer: {fileID: 0}
-  hourlyDifficultyIncrementAmount: 3
+  hourlyDifficultyIncrementAmount: 2
   waitTimeToStartMoving: 10
   startNode: {fileID: 1580970636}
   nodeDatas: []
@@ -15142,8 +15141,8 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   securityOfficeBehaviour: {fileID: 1140445850}
   partsAndServiceBehaviour: {fileID: 1701426554}
-  backstagePlayerBehaviour: {fileID: 1326128061}
-  janitorPlayerBehaviour: {fileID: 1778690773}
+  backstageBehaviour: {fileID: 1326128061}
+  janitorBehaviour: {fileID: 1778690773}
 --- !u!114 &719814349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16044,203 +16043,6 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
---- !u!1 &784339726
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 784339727}
-  - component: {fileID: 784339731}
-  - component: {fileID: 784339730}
-  - component: {fileID: 784339729}
-  - component: {fileID: 784339728}
-  m_Layer: 5
-  m_Name: Golden Freddy
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &784339727
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 784339726}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 263313221}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 5, y: 5}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &784339728
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 784339726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2001320647
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
---- !u!114 &784339729
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 784339726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e599ace7635686745b3b53804c51c5f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isAggrivated:
-    m_InternalValue: 0
-  currentDifficulty:
-    m_InternalValue: 0
-  currentMovementWaitTime:
-    m_InternalValue: 0
-  targetedPlayer: {fileID: 0}
-  hourlyDifficultyIncrementAmount: 3
-  waitTimeToStartMoving: 10
-  startNode: {fileID: 255704850}
-  nodeDatas:
-  - name: Stage1
-    node: {fileID: 2144847041}
-    isAllowedToGoTo: 1
-  - name: Stage2
-    node: {fileID: 255704850}
-    isAllowedToGoTo: 1
-  - name: Stage3
-    node: {fileID: 1848919388}
-    isAllowedToGoTo: 1
-  - name: Hall1
-    node: {fileID: 653880182}
-    isAllowedToGoTo: 1
-  - name: Hall2
-    node: {fileID: 1369383395}
-    isAllowedToGoTo: 1
-  - name: Hall3
-    node: {fileID: 2066843624}
-    isAllowedToGoTo: 1
-  - name: Hall4
-    node: {fileID: 1457697958}
-    isAllowedToGoTo: 1
-  - name: Hall5
-    node: {fileID: 1742026147}
-    isAllowedToGoTo: 1
-  - name: Bathroom
-    node: {fileID: 946119274}
-    isAllowedToGoTo: 1
-  - name: LeftHallway1
-    node: {fileID: 72157066}
-    isAllowedToGoTo: 1
-  - name: LeftHallway2
-    node: {fileID: 951405513}
-    isAllowedToGoTo: 1
-  - name: Janitor_Inside
-    node: {fileID: 433876737}
-    isAllowedToGoTo: 1
-  - name: LeftHallway3
-    node: {fileID: 380958109}
-    isAllowedToGoTo: 1
-  - name: SecurityOffice_DoorwayL
-    node: {fileID: 224363542}
-    isAllowedToGoTo: 1
-  - name: RightHallway1
-    node: {fileID: 1708168964}
-    isAllowedToGoTo: 1
-  - name: RightHallway2
-    node: {fileID: 1941218905}
-    isAllowedToGoTo: 1
-  - name: RightHallway3
-    node: {fileID: 1988298912}
-    isAllowedToGoTo: 1
-  - name: SecurityOffice_DoorwayR
-    node: {fileID: 2133127047}
-    isAllowedToGoTo: 1
-  - name: Cove
-    node: {fileID: 1580970636}
-    isAllowedToGoTo: 1
-  - name: BackstageHall1
-    node: {fileID: 1183049558}
-    isAllowedToGoTo: 1
-  - name: BackstageHall2
-    node: {fileID: 1154068155}
-    isAllowedToGoTo: 1
-  - name: PartsAndService
-    node: {fileID: 655731089}
-    isAllowedToGoTo: 1
-  - name: Kitchen
-    node: {fileID: 1425638965}
-    isAllowedToGoTo: 1
-  - name: Janitor
-    node: {fileID: 2023607781}
-    isAllowedToGoTo: 1
-  - name: SecurityOffice
-    node: {fileID: 1970899016}
-    isAllowedToGoTo: 1
-  - name: Backstage
-    node: {fileID: 700935956}
-    isAllowedToGoTo: 1
-  animatronicModel: {fileID: 2070021265}
-  footStepPitch: 0.8
-  deathScream: jumpscare scream
---- !u!114 &784339730
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 784339726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.5754717, g: 0.26196694, b: 0, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &784339731
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 784339726}
-  m_CullTransparentMesh: 1
 --- !u!1 &793248025
 GameObject:
   m_ObjectHideFlags: 0
@@ -21219,14 +21021,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e599ace7635686745b3b53804c51c5f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAggrivated:
+  isCurrentlyAggrivated:
     m_InternalValue: 0
   currentDifficulty:
     m_InternalValue: 0
   currentMovementWaitTime:
     m_InternalValue: 0
   targetedPlayer: {fileID: 0}
-  hourlyDifficultyIncrementAmount: 3
+  hourlyDifficultyIncrementAmount: 2
   waitTimeToStartMoving: 5
   startNode: {fileID: 1848919388}
   nodeDatas:
@@ -24228,8 +24030,8 @@ MonoBehaviour:
   RoomLight: {fileID: 1463935045}
   flashLight: {fileID: 640402355}
   LeftDoorBlindSpotNode: {fileID: 380958109}
-  LeftDoorwayNode: {fileID: 224363542}
   RightDoorBlindSpotNode: {fileID: 1988298912}
+  LeftDoorwayNode: {fileID: 224363542}
   RightDoorwayNode: {fileID: 2133127047}
 --- !u!4 &1140445851
 Transform:
@@ -40369,11 +40171,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_SpotAngle
-      value: 77.37548
+      value: 52.2698
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_InnerSpotAngle
-      value: 64.21087
+      value: 16.291687
       objectReference: {fileID: 0}
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -43302,14 +43104,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e599ace7635686745b3b53804c51c5f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAggrivated:
+  isCurrentlyAggrivated:
     m_InternalValue: 0
   currentDifficulty:
     m_InternalValue: 0
   currentMovementWaitTime:
     m_InternalValue: 0
   targetedPlayer: {fileID: 0}
-  hourlyDifficultyIncrementAmount: 2
+  hourlyDifficultyIncrementAmount: 1
   waitTimeToStartMoving: 5
   startNode: {fileID: 2144847041}
   nodeDatas:
@@ -46619,6 +46421,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8447126760312583067, guid: be66a0674c3b4ee4783181fecf81dcb6, type: 3}
       propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447126760312583067, guid: be66a0674c3b4ee4783181fecf81dcb6, type: 3}
+      propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8447126760312583067, guid: be66a0674c3b4ee4783181fecf81dcb6, type: 3}

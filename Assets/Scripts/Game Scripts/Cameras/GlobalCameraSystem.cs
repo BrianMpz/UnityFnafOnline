@@ -41,6 +41,8 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
         {
             foreach (CameraData cameraData in changableCameraDatas)
             {
+                bool previousIsCurrentlyHiddenValue = cameraData.isCurrentlyHidden; // used to check for a change in camera state
+
                 if (Maintenance.Instance.camerasState.Value != State.ONLINE)
                 {
                     cameraData.isCurrentlyHidden = true;
@@ -49,7 +51,8 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
                 {
                     cameraData.isCurrentlyHidden = cameraData.isAudioOnly;
                 }
-                OnCameraVisibilityChanged?.Invoke(cameraData.GetCameraName());
+
+                if (cameraData.isCurrentlyHidden != previousIsCurrentlyHiddenValue) OnCameraVisibilityChanged?.Invoke(cameraData.GetCameraName());
             }
 
             yield return new WaitForSeconds(2);

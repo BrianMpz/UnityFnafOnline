@@ -12,8 +12,8 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
 {
     public SecurityOfficeBehaviour securityOfficeBehaviour;
     public PartsAndServiceBehaviour partsAndServiceBehaviour;
-    public BackstagePlayerBehaviour backstagePlayerBehaviour;
-    public JanitorPlayerBehaviour janitorPlayerBehaviour;
+    public BackstagePlayerBehaviour backstageBehaviour;
+    public JanitorPlayerBehaviour janitorBehaviour;
 
     private void Start()
     {
@@ -45,8 +45,8 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
     {
         securityOfficeBehaviour.Disable();
         partsAndServiceBehaviour.Disable();
-        backstagePlayerBehaviour.Disable();
-        janitorPlayerBehaviour.Disable();
+        backstageBehaviour.Disable();
+        janitorBehaviour.Disable();
         // expand for other players
     }
 
@@ -57,7 +57,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         if (playerBehaviour != default)
         {
             if (MultiplayerManager.isPlayingOnline) VivoxManager.Instance.SwitchToPrivateChat();
-            Debug.Log(janitorPlayerBehaviour.playerRole);
+            Debug.Log(janitorBehaviour.playerRole);
             playerBehaviour.Initialise();
         }
         else
@@ -79,8 +79,8 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         {
             PlayerRoles.SecurityOffice => securityOfficeBehaviour,
             PlayerRoles.PartsAndService => partsAndServiceBehaviour,
-            PlayerRoles.Backstage => backstagePlayerBehaviour,
-            PlayerRoles.Janitor => janitorPlayerBehaviour,
+            PlayerRoles.Backstage => backstageBehaviour,
+            PlayerRoles.Janitor => janitorBehaviour,
             _ => default,
         };
     }
@@ -155,36 +155,36 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
 
     private void SetBackstageOwnerships(ulong clientId)
     {
-        ChangeOwnership(backstagePlayerBehaviour.GetComponent<NetworkObject>(), clientId);
-        ChangeOwnership(backstagePlayerBehaviour.maintenance.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.maintenance.GetComponent<NetworkObject>(), clientId);
 
-        ChangeOwnership(backstagePlayerBehaviour.door.GetComponent<NetworkObject>(), clientId);
-        ChangeOwnership(backstagePlayerBehaviour.door.doorLight.GetComponent<NetworkObject>(), clientId);
-        ChangeOwnership(backstagePlayerBehaviour.door.doorLight.doorLightButton.GetComponent<NetworkObject>(), clientId);
-        ChangeOwnership(backstagePlayerBehaviour.door.doorButton.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.door.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.door.doorLight.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.door.doorLight.doorLightButton.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.door.doorButton.GetComponent<NetworkObject>(), clientId);
 
-        ChangeOwnership(backstagePlayerBehaviour.playerComputer.GetComponent<NetworkObject>(), clientId);
-        ChangeOwnership(backstagePlayerBehaviour.playerComputer.playerCameraSystem.GetComponent<NetworkObject>(), clientId);
-        ChangeOwnership(backstagePlayerBehaviour.playerComputer.playerCommunicationSystem.GetComponent<NetworkObject>(), clientId);
-        ChangeOwnership(backstagePlayerBehaviour.playerComputer.playerMotionDetectionSystem.GetComponent<NetworkObject>(), clientId);
-        ChangeOwnership(backstagePlayerBehaviour.playerComputer.playerManual.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.playerComputer.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.playerComputer.playerCameraSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.playerComputer.playerCommunicationSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.playerComputer.playerMotionDetectionSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.playerComputer.playerManual.GetComponent<NetworkObject>(), clientId);
 
-        ChangeOwnership(backstagePlayerBehaviour.cameraController.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.cameraController.GetComponent<NetworkObject>(), clientId);
     }
 
     private void SetJanitorOwnerships(ulong clientId)
     {
-        ChangeOwnership(janitorPlayerBehaviour.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorBehaviour.GetComponent<NetworkObject>(), clientId);
 
-        ChangeOwnership(janitorPlayerBehaviour.playerComputer.GetComponent<NetworkObject>(), clientId);
-        ChangeOwnership(janitorPlayerBehaviour.playerComputer.playerCameraSystem.GetComponent<NetworkObject>(), clientId);
-        ChangeOwnership(janitorPlayerBehaviour.playerComputer.playerCommunicationSystem.GetComponent<NetworkObject>(), clientId);
-        ChangeOwnership(janitorPlayerBehaviour.playerComputer.playerMotionDetectionSystem.GetComponent<NetworkObject>(), clientId);
-        ChangeOwnership(janitorPlayerBehaviour.playerComputer.playerManual.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorBehaviour.playerComputer.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorBehaviour.playerComputer.playerCameraSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorBehaviour.playerComputer.playerCommunicationSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorBehaviour.playerComputer.playerMotionDetectionSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorBehaviour.playerComputer.playerManual.GetComponent<NetworkObject>(), clientId);
 
-        ChangeOwnership(janitorPlayerBehaviour.cameraController.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorBehaviour.cameraController.GetComponent<NetworkObject>(), clientId);
 
-        ChangeOwnership(janitorPlayerBehaviour.mask.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorBehaviour.mask.GetComponent<NetworkObject>(), clientId);
     }
 
     private IEnumerator WaitForObjectsToSpawn()
@@ -208,8 +208,8 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
     {
         if (securityOfficeBehaviour.isPlayerAlive.Value) return false;
         if (partsAndServiceBehaviour.isPlayerAlive.Value) return false;
-        if (backstagePlayerBehaviour.isPlayerAlive.Value) return false;
-        if (janitorPlayerBehaviour.isPlayerAlive.Value) return false;
+        if (backstageBehaviour.isPlayerAlive.Value) return false;
+        if (janitorBehaviour.isPlayerAlive.Value) return false;
 
         return true;
     }
@@ -247,17 +247,27 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
             return true;
         }
 
-        if (targetNode.playerBehaviour == backstagePlayerBehaviour && backstagePlayerBehaviour.IsPlayerVulnerable(currentnode))
+        if (targetNode.playerBehaviour == backstageBehaviour && backstageBehaviour.IsPlayerVulnerable(currentnode))
         {
             return true;
         }
 
-        if (targetNode.playerBehaviour == janitorPlayerBehaviour && janitorPlayerBehaviour.IsPlayerVulnerable(currentnode))
+        if (targetNode.playerBehaviour == janitorBehaviour && janitorBehaviour.IsPlayerVulnerable(currentnode))
         {
             return true;
         }
 
         // expand for other players;
+        return false;
+    }
+
+    public bool IsAnimatronicAboutToAttack(Node currentNode)
+    {
+        if (securityOfficeBehaviour.IsAnimatronicCloseToAttack(currentNode)) return true;
+        if (partsAndServiceBehaviour.IsAnimatronicCloseToAttack(currentNode)) return true;
+        if (backstageBehaviour.IsAnimatronicCloseToAttack(currentNode)) return true;
+        if (janitorBehaviour.IsAnimatronicCloseToAttack(currentNode)) return true;
+
         return false;
     }
 }
