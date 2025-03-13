@@ -12,7 +12,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     [SerializeField] private protected NetworkVariable<bool> isCurrentlyAggrivated;
     public NetworkVariable<float> currentDifficulty;
     [SerializeField] private protected NetworkVariable<float> currentMovementWaitTime;
-    [SerializeField] private protected PlayerNode targetedPlayer;
+    [SerializeField] private protected Node target;
 
     [Header("Starting Values")]
     [SerializeField] private int hourlyDifficultyIncrementAmount;
@@ -75,6 +75,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         }
 
         gameplayLoop = StartCoroutine(GameplayLoop());
+        AnimatronicManager.Instance.OnAudioLure += AudioLure_AttractAnimatronic;
     }
 
     public virtual void Disable()
@@ -92,35 +93,37 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     private void GameManager_OnPlayerPowerDown(PlayerRoles playerRole)
     {
-        PlayerNode playerNode = AnimatronicManager.Instance.PlayerNodes.FirstOrDefault(x =>
+        PlayerNode playerToExclude = AnimatronicManager.Instance.PlayerNodes.FirstOrDefault(x =>
             x.playerBehaviour != null && x.playerBehaviour.playerRole == playerRole);
 
-        Retarget(playerNode);
-    }
-
-    private void Retarget(PlayerNode playerNode)
-    {
-        if (playerNode != targetedPlayer || isWaitingOnClient) return;
+        if (playerToExclude != target || isWaitingOnClient) return;
 
         // Get a new target (excluding the current player)
         var alivePlayers = AnimatronicManager.Instance.PlayerNodes
-            .Where(x => x.playerBehaviour != null && x.playerBehaviour.isPlayerAlive.Value && x.playerBehaviour.playerRole != playerNode.playerBehaviour.playerRole)
+            .Where(x => x.playerBehaviour != null && x.playerBehaviour.isPlayerAlive.Value && x.playerBehaviour.playerRole != playerToExclude.playerBehaviour.playerRole)
             .ToList();
 
         if (alivePlayers.Count > 0)
         {
-            TargetPlayer(alivePlayers[UnityEngine.Random.Range(0, alivePlayers.Count)]);
+            PlayerNode randomPlayerWithPower = alivePlayers[UnityEngine.Random.Range(0, alivePlayers.Count)];
+            SetTarget(randomPlayerWithPower);
         }
     }
 
+    public void AudioLure_AttractAnimatronic(Node targetedNode)
+    {
+        SetTarget(targetedNode);
+    }
 
     private protected virtual IEnumerator GameplayLoop()
     {
-        yield return new WaitForSeconds(waitTimeToStartMoving); // 5 seconds default
+        if (currentDifficulty.Value == 0 || currentMovementWaitTime.Value == 0) yield break;
+
+        yield return new WaitForSeconds(waitTimeToStartMoving);
 
         while (GameManager.Instance.isPlaying && IsServer)
         {
-            bool shouldBeAggrivated = currentNode == PlayerRoleManager.Instance.IsAnimatronicAboutToAttack(currentNode);
+            bool shouldBeAggrivated = PlayerRoleManager.Instance.IsAnimatronicAboutToAttack(currentNode);
             if (isCurrentlyAggrivated.Value)
             {
                 isCurrentlyAggrivated.Value = false;
@@ -134,72 +137,48 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
                 currentDifficulty.Value += 20;
             }
 
-            yield return new WaitForSeconds(currentMovementWaitTime.Value); // 5 seconds default
+            yield return new WaitForSeconds(currentMovementWaitTime.Value);
 
-            if (currentDifficulty.Value == 0 || currentMovementWaitTime.Value == 0) continue;
-
-            if (targetedPlayer == null || !targetedPlayer.playerBehaviour.isPlayerAlive.Value) TargetRandomPlayer();
-            else if (UnityEngine.Random.Range(1, 11) <= 2) TargetRandomPlayer();
-
-            if (targetedPlayer == null) continue;
-
-            List<Node> path = AnimatronicManager.Instance.BreadthFirstSearch(currentNode, targetedPlayer, this, true);
-
-            if (path.Count == 0)
+            if (NeedsANewTarget())
             {
-                //Debug.Log("There is no path to this player!");
-
-                continue;
+                TargetRandomPlayer();
             }
+            if (target == null) continue; // No valid target, restart loop
 
-            if (path.Count == 1)
-            {
-                //Debug.Log("Target Reached");
+            List<Node> path = AnimatronicManager.Instance.BreadthFirstSearch(currentNode, target, this, takeOccupancyIntoAccount: true);
 
-                continue;
-            }
+            if (path.Count < 2) continue; // there is no path to the target or has reached target
 
-            if (UnityEngine.Random.Range(1, 21) <= currentDifficulty.Value)
+            if (UnityEngine.Random.Range(1, 21) <= currentDifficulty.Value) // successful movement opportunity
             {
                 yield return MovementOpportunity(path);
             }
-            else
-            {
-                //Debug.Log("Movement Opportunity failed");
-
-                continue;
-            }
         }
     }
 
-    private protected void TargetRandomPlayer(bool includeDeadPeople = false)
+    private bool NeedsANewTarget() => target == null || UnityEngine.Random.Range(1, 11) > 2;
+
+    private protected void TargetRandomPlayer()
     {
         if (PlayerRoleManager.Instance.IsEveryoneDead())
         {
-            TargetPlayer(null);
-            return;
+            SetTarget(null);
         }
+        else
+        {
+            var attackablePlayers = AnimatronicManager.Instance.PlayerNodes
+                .Where(x => x.playerBehaviour != null && x.playerBehaviour.isPlayerAlive.Value)
+                .ToList();
 
-        var attackablePlayers = AnimatronicManager.Instance.PlayerNodes
-            .Where(x => x.playerBehaviour != null && (includeDeadPeople || x.playerBehaviour.isPlayerAlive.Value))
-            .ToList();
+            PlayerNode randomAttackablePlayer = attackablePlayers.Count > 0 ? attackablePlayers[UnityEngine.Random.Range(0, attackablePlayers.Count)] : null;
 
-        TargetPlayer(attackablePlayers.Count > 0 ? attackablePlayers[UnityEngine.Random.Range(0, attackablePlayers.Count)] : null);
+            SetTarget(randomAttackablePlayer);
+        }
     }
 
-    private void TargetPlayer(PlayerNode playerNode)
+    private void SetTarget(Node targetNode)
     {
-        targetedPlayer = null;
-        if (playerNode == null) return;
-
-        targetedPlayer = playerNode;
-        TargetPlayerClientRpc(playerNode.playerBehaviour.playerRole);
-    }
-
-    [ClientRpc]
-    private void TargetPlayerClientRpc(PlayerRoles playerRole)
-    {
-        if (!IsServer) targetedPlayer = AnimatronicManager.Instance.GetPlayerNodeFromPlayerRole(playerRole);
+        target = targetNode;
     }
 
     private IEnumerator MovementOpportunity(List<Node> path)

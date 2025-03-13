@@ -103,7 +103,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
     public void ResetCooldown()
     {
-        timeSinceLastTrigger = triggerCooldownTime; // Instantly allows next toggle
+        timeSinceLastTrigger = triggerCooldownTime; // Instantly allows toggle
         canToggle = true;
     }
 

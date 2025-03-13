@@ -11,6 +11,7 @@ public class PlayerComputer : NetworkBehaviour
     public PlayerCommunicationSystem playerCommunicationSystem;
     public PlayerManual playerManual;
     public PlayerMotionDetectionSystem playerMotionDetectionSystem;
+    public PlayerAudioLureSystem playerAudioLureSystem;
 
     [SerializeField] private Canvas selectorCanvas;
     public NetworkVariable<ComputerScreen> currentComputerScreen = new(writePerm: NetworkVariableWritePermission.Owner);
@@ -41,6 +42,7 @@ public class PlayerComputer : NetworkBehaviour
         playerCommunicationSystem.Initialise(playerBehaviour.playerCamera);
         playerManual.Initialise(playerBehaviour.playerCamera);
         playerMotionDetectionSystem.Initialise(playerBehaviour.playerCamera);
+        playerAudioLureSystem.Initialise(playerBehaviour.playerCamera);
 
         currentComputerScreen.Value = ComputerScreen.None;
     }
@@ -168,11 +170,14 @@ public class PlayerComputer : NetworkBehaviour
             case ComputerScreen.Comms:
                 playerCommunicationSystem.Enable();
                 break;
-            case ComputerScreen.Manual:
-                playerManual.Enable();
-                break;
             case ComputerScreen.MotionDetection:
                 playerMotionDetectionSystem.Enable();
+                break;
+            case ComputerScreen.AudioLure:
+                playerAudioLureSystem.Enable();
+                break;
+            case ComputerScreen.Manual:
+                playerManual.Enable();
                 break;
         }
 
@@ -183,8 +188,9 @@ public class PlayerComputer : NetworkBehaviour
     {
         playerCameraSystem.Disable();
         playerCommunicationSystem.Disable();
-        playerManual.Disable();
         playerMotionDetectionSystem.Disable();
+        playerAudioLureSystem.Disable();
+        playerManual.Disable();
     }
 }
 

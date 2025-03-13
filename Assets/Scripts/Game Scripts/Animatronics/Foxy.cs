@@ -144,9 +144,9 @@ public class Foxy : Animatronic
     }
 
     // The main loop where Foxy's movements and attacks are handled
-    private IEnumerator GameplayLoop(bool isAggro)
+    private IEnumerator GameplayLoop(bool shouldBeAggrivated)
     {
-        isCurrentlyAggrivated.Value = isAggro;
+        isCurrentlyAggrivated.Value = shouldBeAggrivated;
 
         if (isCurrentlyAggrivated.Value)
         {
@@ -154,7 +154,7 @@ public class Foxy : Animatronic
             currentMovementWaitTime.Value *= 2;
             currentDifficulty.Value -= 10;
         }
-        if (isAggro)
+        if (shouldBeAggrivated)
         {
             currentMovementWaitTime.Value /= 2;
             currentDifficulty.Value += 10;
@@ -165,28 +165,26 @@ public class Foxy : Animatronic
 
         TargetRandomPlayer();
 
-        if (targetedPlayer != null) SetFoxyProgressClientRpc(0, targetedPlayer.playerBehaviour.playerRole);
+        if (target == null) yield break; // everyone is dead
+
+        PlayerNode playerNode = target.GetComponent<PlayerNode>();
+
+        SetFoxyProgressClientRpc(0, playerNode.playerBehaviour.playerRole);
 
         while (GameManager.Instance.isPlaying)
         {
             yield return new WaitForSeconds(currentMovementWaitTime.Value); // Delay before each movement attempt
 
-            if (targetedPlayer == null) continue;
-
             if (UnityEngine.Random.Range(1, 21) <= currentDifficulty.Value)
             {
                 if (!isLocked)
                 {
-                    yield return MovementOpportunity(targetedPlayer);
+                    yield return MovementOpportunity(playerNode);
                 }
                 else
                 {
                     //Debug.Log("Foxy is locked by camera.");
                 }
-            }
-            else
-            {
-                //Debug.Log("Movement Opportunity failed.");
             }
         }
     }
@@ -194,13 +192,13 @@ public class Foxy : Animatronic
     private IEnumerator MovementOpportunity(PlayerNode playerNode)
     {
         float newFoxyProgress = foxyProgress + 1; // Increase Foxy's progress towards attack
-        SetFoxyProgressClientRpc(newFoxyProgress, targetedPlayer.playerBehaviour.playerRole);
+        SetFoxyProgressClientRpc(newFoxyProgress, playerNode.playerBehaviour.playerRole);
         //Debug.Log($"Foxy is now at stage {newFoxyProgress}!");
 
         // If Foxy reaches phase 5 (attack phase)
         if (newFoxyProgress >= 5)
         {
-            SetFoxyProgressClientRpc(0, targetedPlayer.playerBehaviour.playerRole);
+            SetFoxyProgressClientRpc(0, playerNode.playerBehaviour.playerRole);
             yield return WaitToAttack(playerNode);
             //Debug.Log("Foxy is in attack phase!");
         }
@@ -308,7 +306,9 @@ public class Foxy : Animatronic
 
         PlayAttackVisual(playerNode);
         StartCoroutine(PlayAttackAudio(playerNode));
-        if (targetedPlayer.playerBehaviour == GameManager.localPlayerBehaviour) StartCoroutine(CheckPlayerCondition(playerNode));
+
+        // if foxy is targeting the local player handle the logic
+        if (playerNode.playerBehaviour == GameManager.localPlayerBehaviour) StartCoroutine(CheckPlayerCondition(playerNode));
     }
 
     private IEnumerator CheckPlayerCondition(PlayerNode playerNode)

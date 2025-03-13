@@ -9,8 +9,8 @@ public class PlayerMotionDetectionSystem : NetworkBehaviour
 {
     [SerializeField] private TrackerNode[] trackerNodes;
     [SerializeField] private Canvas canvas;
+    [HideInInspector] public TrackerButton currentTrackerButton;
     public event Action<TrackerButton> OnTrackerUpdate;
-    public TrackerButton currentTrackerButton;
     public bool IsTracking { get => currentTrackerButton != null; }
     private Coroutine pulseCoroutine;
 

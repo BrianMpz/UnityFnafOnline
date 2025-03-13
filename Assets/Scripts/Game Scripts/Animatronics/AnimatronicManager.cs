@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
 {
@@ -13,6 +15,7 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
     {
         get => GetComponentsInChildren<PlayerNode>().ToList();
     }
+    public event Action<Node> OnAudioLure;
 
     private void Start()
     {
@@ -71,6 +74,7 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
             // Sort neighbors based on distance to target
             neighbors = neighbors.OrderBy(neighbor => targetDistances.ContainsKey(neighbor) ? targetDistances[neighbor] : int.MaxValue).ToList();
 
+            // pick a more efficient route if the difficulty is higher
             if (UnityEngine.Random.Range(1, 21) >= animatronic.currentDifficulty.Value)
             {
                 neighbors.Reverse();
@@ -134,6 +138,17 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
     public Node GetNodeFromName(NodeName nodeName)
     {
         return Nodes.FirstOrDefault(node => node.nodeName == nodeName);
+    }
+
+    public void PlayAudioLure(NodeName nodeName, AudioClip audioClip)
+    {
+        Node node = GetNodeFromName(nodeName);
+        AudioSource audioSource = node.physicalTransform.GetComponent<AudioSource>();
+
+        audioSource.clip = audioClip;
+        audioSource.Play();
+
+        OnAudioLure?.Invoke(node);
     }
 }
 
