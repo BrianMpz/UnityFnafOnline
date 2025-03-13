@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class CameraData : MonoBehaviour
 {
-    private Camera Cam { get => GetComponent<Camera>(); }
+    private Camera cam;
     [SerializeField] private CameraName cameraName;
     [SerializeField] private RenderTexture cameraTexture;
     public Node[] nodesVisibleOnCamera;
@@ -16,12 +16,13 @@ public class CameraData : MonoBehaviour
 
     private void Awake()
     {
-        Cam.targetTexture = cameraTexture;
+        cam = GetComponent<Camera>();
+        cam.targetTexture = cameraTexture;
         startingRange = cameraFlashlight.range;
         startingIntensity = cameraFlashlight.intensity;
     }
 
     public CameraName GetCameraName() => cameraName;
     public RenderTexture GetRenderTexture() => cameraTexture;
-    public Camera GetCamera() => Cam;
+    public Camera GetCamera() => cam;
 }

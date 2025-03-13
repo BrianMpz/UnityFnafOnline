@@ -185,7 +185,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -609,7 +609,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -2560,7 +2560,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -2572,20 +2572,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -2977,7 +2986,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
@@ -2992,7 +3001,19 @@ PrefabInstance:
       value: 104.53336
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Antialiasing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_RenderPostProcessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresDepthTextureOption
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresOpaqueTextureOption
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
@@ -3059,6 +3080,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[0]'
       value: 
       objectReference: {fileID: 946119274}
+    - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_TargetTexture
       value: 
@@ -3315,7 +3340,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -3590,7 +3615,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -3654,7 +3679,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
@@ -3669,7 +3694,19 @@ PrefabInstance:
       value: 104.53336
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Antialiasing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_RenderPostProcessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresDepthTextureOption
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresOpaqueTextureOption
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
@@ -3751,6 +3788,10 @@ PrefabInstance:
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_TargetTexture
@@ -3997,7 +4038,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -4105,7 +4146,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -4508,7 +4549,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -4718,7 +4759,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Version: 3
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 0
   m_LightLayerMask: 1
   m_RenderingLayers: 1
   m_CustomShadowLayers: 0
@@ -4744,8 +4785,8 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
-    m_Resolution: -1
+    m_Type: 1
+    m_Resolution: 128
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.05
@@ -4858,7 +4899,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -4966,7 +5007,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -5074,7 +5115,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -5476,7 +5517,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -5674,6 +5715,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 0
   DefaultAudioListener: {fileID: 1701351607}
+  DefaultCamera: {fileID: 886649345}
   playerRoleManager: {fileID: 719814348}
   currentHour:
     m_InternalValue: 0
@@ -6069,7 +6111,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -6313,7 +6355,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -6510,7 +6552,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -6618,7 +6660,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -6762,7 +6804,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -7355,7 +7397,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -7463,7 +7505,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -7571,7 +7613,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -7856,7 +7898,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -7868,20 +7910,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -8179,7 +8230,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -8287,7 +8338,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -8395,7 +8446,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -8503,7 +8554,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -8950,7 +9001,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -9266,7 +9317,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -9615,7 +9666,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -9891,7 +9942,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Version: 3
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 0
   m_LightLayerMask: 1
   m_RenderingLayers: 1
   m_CustomShadowLayers: 0
@@ -9917,8 +9968,8 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
-    m_Resolution: -1
+    m_Type: 1
+    m_Resolution: 128
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.05
@@ -10574,7 +10625,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -10802,7 +10853,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -10814,20 +10865,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -10943,7 +11003,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -11150,7 +11210,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -11395,7 +11455,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -11488,7 +11548,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -12023,7 +12083,6 @@ MonoBehaviour:
   animatronicModel: {fileID: 1644602682}
   footStepPitch: 0.7
   deathScream: sister location scream
-  isReleased: 0
   playerNode: {fileID: 700935956}
   startingPosition: {x: 0.8, y: 0.125, z: -30}
   endingPosition: {x: 0.8, y: 0.125, z: -24.5}
@@ -12191,7 +12250,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
@@ -12202,7 +12261,19 @@ PrefabInstance:
       value: 115.1243
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Antialiasing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_RenderPostProcessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresDepthTextureOption
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresOpaqueTextureOption
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
@@ -12277,6 +12348,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[1]'
       value: 
       objectReference: {fileID: 1742026147}
+    - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_TargetTexture
       value: 
@@ -12587,7 +12662,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -12887,7 +12962,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -12980,7 +13055,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -13234,7 +13309,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -13702,7 +13777,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -14016,7 +14091,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -14028,20 +14103,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -15022,7 +15106,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -15569,7 +15653,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -16025,7 +16109,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -16199,7 +16283,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -16211,20 +16295,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -16455,7 +16548,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -16563,7 +16656,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -16968,7 +17061,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -16980,20 +17073,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -17590,7 +17692,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -17602,20 +17704,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -17992,7 +18103,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -18004,20 +18115,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -18133,7 +18253,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -19941,7 +20061,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -20049,7 +20169,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -20157,7 +20277,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -20265,7 +20385,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -20358,7 +20478,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -20579,7 +20699,7 @@ Camera:
   m_GameObject: {fileID: 886649343}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -20649,8 +20769,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RenderShadows: 1
-  m_RequiresDepthTextureOption: 2
-  m_RequiresOpaqueTextureOption: 2
+  m_RequiresDepthTextureOption: 0
+  m_RequiresOpaqueTextureOption: 0
   m_CameraType: 0
   m_Cameras: []
   m_RendererIndex: -1
@@ -20746,7 +20866,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -20919,7 +21039,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -20931,20 +21051,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -21060,7 +21189,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -21446,7 +21575,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -21554,7 +21683,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -22104,7 +22233,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -22212,7 +22341,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -22969,7 +23098,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -23636,7 +23765,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -23648,20 +23777,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -24110,7 +24248,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -24218,7 +24356,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -24435,7 +24573,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -24543,7 +24681,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -24651,7 +24789,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -24966,7 +25104,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -24978,20 +25116,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -25304,7 +25451,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -25316,20 +25463,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -25631,7 +25787,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -25643,20 +25799,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -25772,7 +25937,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -25880,7 +26045,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -25988,7 +26153,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -26449,7 +26614,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -26461,20 +26626,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -26627,7 +26801,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -27370,7 +27544,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -27669,7 +27843,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -27777,7 +27951,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -27959,7 +28133,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
@@ -27974,7 +28148,19 @@ PrefabInstance:
       value: 81.04102
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Antialiasing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_RenderPostProcessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresDepthTextureOption
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresOpaqueTextureOption
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
@@ -28041,6 +28227,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[2]'
       value: 
       objectReference: {fileID: 2066843624}
+    - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8710303589972899109, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Name
       value: Two
@@ -28226,7 +28416,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -28345,7 +28535,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -28760,7 +28950,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -29208,7 +29398,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -29546,7 +29736,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -29654,7 +29844,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -29819,7 +30009,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -29927,7 +30117,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -30035,7 +30225,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -30143,7 +30333,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -30336,7 +30526,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -30645,7 +30835,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -30657,20 +30847,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -30786,7 +30985,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -31052,7 +31251,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -31160,7 +31359,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -31268,7 +31467,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -31376,7 +31575,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -31883,7 +32082,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -31895,20 +32094,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -32756,7 +32964,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -33237,7 +33445,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -33410,7 +33618,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -33422,20 +33630,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -33767,7 +33984,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -33856,7 +34073,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Version: 3
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 0
   m_LightLayerMask: 1
   m_RenderingLayers: 1
   m_CustomShadowLayers: 0
@@ -33883,7 +34100,7 @@ Light:
   m_CookieSize: 10
   m_Shadows:
     m_Type: 1
-    m_Resolution: -1
+    m_Resolution: 128
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.05
@@ -34179,7 +34396,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -34272,7 +34489,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -34485,6 +34702,10 @@ PrefabInstance:
     - target: {fileID: 4433794247578170, guid: da536aa57b3c6824093ab141245a54ba, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 23761541718629926, guid: da536aa57b3c6824093ab141245a54ba, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -34813,7 +35034,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
@@ -34828,7 +35049,19 @@ PrefabInstance:
       value: 44.85434
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Antialiasing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_RenderPostProcessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresDepthTextureOption
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresOpaqueTextureOption
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
@@ -34903,6 +35136,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[1]'
       value: 
       objectReference: {fileID: 2066843624}
+    - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_TargetTexture
       value: 
@@ -35229,7 +35466,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -35241,20 +35478,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -35370,7 +35616,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -35602,7 +35848,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -35691,7 +35937,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Version: 3
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 0
   m_LightLayerMask: 1
   m_RenderingLayers: 1
   m_CustomShadowLayers: 0
@@ -35717,8 +35963,8 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
-    m_Resolution: -1
+    m_Type: 1
+    m_Resolution: 128
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.05
@@ -35831,7 +36077,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -36731,7 +36977,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -36843,7 +37089,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Version: 3
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 0
   m_LightLayerMask: 1
   m_RenderingLayers: 1
   m_CustomShadowLayers: 0
@@ -36869,8 +37115,8 @@ Light:
   m_InnerSpotAngle: 113.4117
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
-    m_Resolution: -1
+    m_Type: 1
+    m_Resolution: 128
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.05
@@ -36998,7 +37244,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -37262,7 +37508,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -37544,7 +37790,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -37556,20 +37802,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -38351,7 +38606,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -38459,7 +38714,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -38533,7 +38788,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Version: 3
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 0
   m_LightLayerMask: 1
   m_RenderingLayers: 1
   m_CustomShadowLayers: 0
@@ -38559,8 +38814,8 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
-    m_Resolution: -1
+    m_Type: 1
+    m_Resolution: 128
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.05
@@ -38688,7 +38943,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -38998,7 +39253,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -39010,20 +39265,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -39139,7 +39403,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -39247,7 +39511,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -39655,7 +39919,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -39965,7 +40229,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
@@ -39980,7 +40244,19 @@ PrefabInstance:
       value: 4.524915
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Antialiasing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_RenderPostProcessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresDepthTextureOption
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresOpaqueTextureOption
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
@@ -40047,6 +40323,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[0]'
       value: 
       objectReference: {fileID: 1580970636}
+    - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_TargetTexture
       value: 
@@ -40334,7 +40614,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -40346,20 +40626,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -40611,7 +40900,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -40750,7 +41039,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -40923,7 +41212,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -40935,20 +41224,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -41605,7 +41903,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
@@ -41624,7 +41922,19 @@ PrefabInstance:
       value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Antialiasing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_RenderPostProcessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresDepthTextureOption
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresOpaqueTextureOption
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
@@ -41699,6 +42009,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[2]'
       value: 
       objectReference: {fileID: 1988298912}
+    - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_TargetTexture
       value: 
@@ -41855,6 +42169,10 @@ PrefabInstance:
     - target: {fileID: 4433794247578170, guid: da536aa57b3c6824093ab141245a54ba, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 23761541718629926, guid: da536aa57b3c6824093ab141245a54ba, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -42553,7 +42871,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -42761,7 +43079,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -42773,20 +43091,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -42902,7 +43229,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -43334,7 +43661,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -43346,20 +43673,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -43475,7 +43811,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -43583,7 +43919,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -43676,7 +44012,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -43896,7 +44232,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -44452,7 +44788,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
@@ -44467,7 +44803,19 @@ PrefabInstance:
       value: 16.291687
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Antialiasing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_RenderPostProcessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresDepthTextureOption
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresOpaqueTextureOption
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
@@ -44557,6 +44905,10 @@ PrefabInstance:
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_TargetTexture
@@ -44682,7 +45034,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -44790,7 +45142,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -44898,7 +45250,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -45143,7 +45495,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -45399,7 +45751,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -45507,7 +45859,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -45715,7 +46067,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -45976,7 +46328,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -46099,7 +46451,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -46282,7 +46634,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -46455,7 +46807,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -46467,20 +46819,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -47072,7 +47433,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -47653,7 +48014,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -47876,7 +48237,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -48140,7 +48501,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -48386,6 +48747,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 23761541718629926, guid: da536aa57b3c6824093ab141245a54ba, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -48598,7 +48963,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -48824,7 +49189,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -49401,7 +49766,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -49715,7 +50080,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 52.8
+  MaxDistance: 51.58
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -49727,20 +50092,29 @@ AudioSource:
     - serializedVersion: 3
       time: 0.06209506
       value: 1
-      inSlope: -4.0209475
-      outSlope: -4.0209475
+      inSlope: -4.663669
+      outSlope: -4.663669
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.03789041
+      outWeight: 0.053476263
     - serializedVersion: 3
-      time: 0.9981079
-      value: 0
-      inSlope: -0.29438367
-      outSlope: -0.29438367
+      time: 0.28185213
+      value: 0.110262774
+      inSlope: -0.09274784
+      outSlope: -0.09274784
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.010005164
+      inWeight: 0.33333334
+      outWeight: 0.25971937
+    - serializedVersion: 3
+      time: 0.9954834
+      value: 0.0039367676
+      inSlope: 0.06946673
+      outSlope: 0.06946673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31637424
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -50242,7 +50616,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -52303,14 +52677,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
       value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Antialiasing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_RenderPostProcessing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresDepthTextureOption
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_RequiresOpaqueTextureOption
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
@@ -52369,6 +52755,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[2]'
       value: 
       objectReference: {fileID: 1848919388}
+    - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8710303589972899109, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Name
       value: One

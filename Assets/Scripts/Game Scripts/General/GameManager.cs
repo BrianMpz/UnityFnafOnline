@@ -7,6 +7,8 @@ using UnityEngine;
 public class GameManager : NetworkSingleton<GameManager>
 {
     public AudioListener DefaultAudioListener;
+    public Camera DefaultCamera;
+
     public static PlayerBehaviour localPlayerBehaviour;
     [SerializeField] private PlayerRoleManager playerRoleManager;
     public const float MaxGameLength = 360f;

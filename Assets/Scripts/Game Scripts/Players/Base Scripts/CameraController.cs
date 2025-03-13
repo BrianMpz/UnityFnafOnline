@@ -23,16 +23,22 @@ public abstract class CameraController : MonoBehaviour
         GameManager.Instance.DefaultAudioListener.enabled = false;
         audioListener.enabled = true;
 
+        GameManager.Instance.DefaultCamera.enabled = false;
         cam.enabled = true;
+
         canPlayerControlCamera = true;
     }
 
     public virtual void Disable()
     {
-        if (GameManager.localPlayerBehaviour == playerBehaviour) GameManager.Instance.DefaultAudioListener.enabled = true;
+        if (GameManager.localPlayerBehaviour != playerBehaviour) return;
+
+        GameManager.Instance.DefaultAudioListener.enabled = true;
         audioListener.enabled = false;
 
+        GameManager.Instance.DefaultCamera.enabled = true;
         cam.enabled = false;
+
         canPlayerControlCamera = false;
     }
 }

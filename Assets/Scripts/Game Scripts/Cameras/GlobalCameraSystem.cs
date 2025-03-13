@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
 {
@@ -24,8 +25,9 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
 
     private void Start()
     {
-        playerComputers = PlayerRoleManager.Instance.GetComponentsInChildren<PlayerComputer>().ToList();
         GameManager.Instance.OnGameStarted += () => { StartCoroutine(SetCameraVisibilities()); };
+        playerComputers = PlayerRoleManager.Instance.GetComponentsInChildren<PlayerComputer>().ToList();
+        DisableAllCameraComponents();
     }
 
     private void Update()
@@ -75,23 +77,25 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
         OnPlayersWatchingFoxyUpdate?.Invoke(playersWatchingfoxy);
     }
 
-    public void DisableLights()
+    public void DisableAllCameraComponents()
     {
         CameraDatas.ForEach(cam => cam.cameraFlashlight.enabled = false);
+        CameraDatas.ForEach(cam => cam.GetCamera().enabled = false);
+    }
+
+    public void EnableCameraComponent(CameraData cameraData)
+    {
+        DisableAllCameraComponents();
+
+        cameraData.cameraFlashlight.enabled = true;
+        cameraData.GetCamera().enabled = true;
     }
 
     public bool CheckIfAnyoneWatchingHallwayNode(Node hallwayNode)
     {
-        foreach (PlayerComputer playerComputer in playerComputers)
-        {
-            if (playerComputer.playerCameraSystem.CheckIfAnyoneWatchingHallwayNode(hallwayNode))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return playerComputers.Any(pc => pc.playerCameraSystem.CheckIfAnyoneWatchingHallwayNode(hallwayNode));
     }
+
 }
 
 public enum CameraName

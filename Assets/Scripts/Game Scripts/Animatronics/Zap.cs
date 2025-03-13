@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Zap : Animatronic
 {
-    [SerializeField] private bool isReleased;
     [SerializeField] private PlayerNode playerNode;
     [SerializeField] private Vector3 startingPosition;
     [SerializeField] private Vector3 endingPosition;
@@ -16,8 +15,6 @@ public class Zap : Animatronic
     public override void Initialise() // dont call base class
     {
         if (!IsServer) return;
-
-        isReleased = false;
 
         GameManager.Instance.currentHour.OnValueChanged += (currentValue, newValue) => { IncreaseAnimatronicDifficulty(); };
         DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
@@ -94,7 +91,6 @@ public class Zap : Animatronic
             yield return new WaitForSeconds(UnityEngine.Random.Range(5, 60)); // wait a random amount of time before entering the pizerria
 
             gameplayLoop = StartCoroutine(GameplayLoop()); // is released
-            isReleased = true;
         }
     }
 

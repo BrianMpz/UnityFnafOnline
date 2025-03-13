@@ -9823,7 +9823,7 @@ MonoBehaviour:
   staticImage: {fileID: 6665737672086962319}
   staticaudio: {fileID: 0}
   disturbanceAudio: {fileID: 0}
-  fadeOutTime: 0.5
+  fadeOutTime: 1
   minimumAlpha: 0.05
   minimumVolume: 0.2
 --- !u!1 &8780162712911759956

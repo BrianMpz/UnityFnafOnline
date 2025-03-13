@@ -140,8 +140,9 @@ public class SpectatorUI : Singleton<SpectatorUI>
 
         if (playerBehaviour.playerComputer.isMonitorUp.Value)
         {
-            CameraName currentCamera = playerBehaviour.playerComputer.playerCameraSystem.currentCameraName.Value;
-            GlobalCameraSystem.Instance.GetCameraDataFromCameraName(currentCamera).cameraFlashlight.enabled = true;
+            CameraName currentCameraName = playerBehaviour.playerComputer.playerCameraSystem.currentCameraName.Value;
+            CameraData cameraData = GlobalCameraSystem.Instance.GetCameraDataFromCameraName(currentCameraName);
+            GlobalCameraSystem.Instance.EnableCameraComponent(cameraData);
         }
 
         playerBehaviour.isPlayerAlive.OnValueChanged += CheckPlayerAliveStatus;
@@ -156,7 +157,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
 
         playerBehaviour.spectatorCamera.enabled = false;
 
-        GlobalCameraSystem.Instance.DisableLights();
+        GlobalCameraSystem.Instance.DisableAllCameraComponents();
 
         playerBehaviour.isPlayerAlive.OnValueChanged -= CheckPlayerAliveStatus;
     }

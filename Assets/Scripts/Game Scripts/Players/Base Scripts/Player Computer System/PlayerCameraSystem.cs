@@ -72,7 +72,7 @@ public class PlayerCameraSystem : NetworkBehaviour
         canvas.enabled = false;
         cameraOutputScreen.enabled = false;
 
-        GlobalCameraSystem.Instance.DisableLights();
+        GlobalCameraSystem.Instance.DisableAllCameraComponents();
 
         DisableServerRpc(); // for spectators
     }
@@ -105,19 +105,15 @@ public class PlayerCameraSystem : NetworkBehaviour
 
         SetCameraServerRpc(cameraName); // for spectators
 
-        EnableCurrentLights(cameraData);
+        EnableCamera(cameraData, canSeeAnyCamera);
 
         if (cameraStatic.disturbanceAudio != null)
             cameraStatic.disturbanceAudio.mute = !isHidingCurrentCamera;
     }
 
-    public void EnableCurrentLights(CameraData cameraData)
+    private void EnableCamera(CameraData cameraData, bool canSeeAnyCamera)
     {
-        PlayerRoles playerRole = playerComputer.playerBehaviour.playerRole;
-        bool canSeeAnyCamera = playerRole == PlayerRoles.SecurityOffice;
-
-        GlobalCameraSystem.Instance.DisableLights();
-        cameraData.cameraFlashlight.enabled = true;
+        GlobalCameraSystem.Instance.EnableCameraComponent(cameraData);
 
         if (canSeeAnyCamera)
         {
@@ -253,8 +249,8 @@ public class PlayerCameraSystem : NetworkBehaviour
         canvas.enabled = false;
         cameraOutputScreen.enabled = false;
 
-        if (!GameManager.Instance.IsSpectating || SpectatorUI.Instance.GetCurrentSpectator() != playerComputer.playerBehaviour) return;
-        GlobalCameraSystem.Instance.DisableLights();
+        bool isSpectatingThisPlayer = GameManager.Instance.IsSpectating && SpectatorUI.Instance.GetCurrentSpectator() == playerComputer.playerBehaviour;
+        if (isSpectatingThisPlayer) GlobalCameraSystem.Instance.DisableAllCameraComponents();
     }
 
     [ClientRpc]
@@ -270,8 +266,7 @@ public class PlayerCameraSystem : NetworkBehaviour
 
         UpdateCameraUI(cameraData);
 
-        if (!GameManager.Instance.IsSpectating || SpectatorUI.Instance.GetCurrentSpectator() != playerComputer.playerBehaviour) return;
-
-        EnableCurrentLights(cameraData);
+        bool isSpectatingThisPlayer = GameManager.Instance.IsSpectating && SpectatorUI.Instance.GetCurrentSpectator() == playerComputer.playerBehaviour;
+        if (isSpectatingThisPlayer) GlobalCameraSystem.Instance.EnableCameraComponent(cameraData);
     }
 }

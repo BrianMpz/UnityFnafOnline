@@ -57,7 +57,6 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         if (playerBehaviour != default)
         {
             if (MultiplayerManager.isPlayingOnline) VivoxManager.Instance.SwitchToPrivateChat();
-            Debug.Log(janitorBehaviour.playerRole);
             playerBehaviour.Initialise();
         }
         else
