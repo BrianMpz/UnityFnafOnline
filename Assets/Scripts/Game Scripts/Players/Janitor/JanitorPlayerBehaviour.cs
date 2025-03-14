@@ -56,6 +56,10 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
         if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value += 2;
         if (playerComputer.playerMotionDetectionSystem.IsTracking) currentPowerUsage.Value += 1;
+
+        if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 1;
+
+        base.UpdatePowerUsage();
     }
 
     private protected override void UpdateCameraView()
@@ -91,7 +95,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
         if (isMaskDown.Value)
         {
-            oxygenLevels.Value -= 5 * Time.deltaTime;
+            oxygenLevels.Value -= 10 * Time.deltaTime;
         }
         else
         {
@@ -172,6 +176,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
     private void CheckInsideNodeForAnimatronicEntry(bool previousValue, bool newValue)
     {
+        if (!isPlayerAlive.Value) return;
         if (newValue) GameAudioManager.Instance.PlaySfxOneShot("janitor door open");
     }
 

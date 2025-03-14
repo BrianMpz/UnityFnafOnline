@@ -39,6 +39,8 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
         if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value += 1f;
 
         if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 4;
+
+        base.UpdatePowerUsage();
     }
 
     public override IEnumerator WaitUntilKillConditionsAreMet(Node currentNode)
@@ -133,7 +135,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ZapServerRpc(int zapAttempts)
     {
-        currentPower.Value -= zapAttempts * zapAttempts / 4;
+        currentPower.Value -= zapAttempts * zapAttempts / 3;
         zap.ZapAnimatronic();
     }
 

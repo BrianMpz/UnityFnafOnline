@@ -16,12 +16,13 @@ public class SpectatorUI : Singleton<SpectatorUI>
     [SerializeField] private Button previousPlayerButton;
     [SerializeField] private Button nextPlayerButton;
     [SerializeField] private TMP_Text currentPlayerSpectatingText;
+    [SerializeField] private TMP_Text hourText;
+    [SerializeField] private TMP_Text timeLeftText;
+    [SerializeField] private TMP_Text currentPlayerPowerText;
     [SerializeField] private List<SpectatingPlayer> spectatingPlayerList;
     private List<PlayerRoles> playerList;
     private int currentPlayerSpectatingIndex;
 
-    [SerializeField] private TMP_Text hourText;
-    [SerializeField] private TMP_Text currentPlayerPowerText;
 
 
     private void Start()
@@ -56,6 +57,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
     {
         if (!isSpectatingAPlayer) return;
         if (!isSpectating) return;
+
         PlayerBehaviour playerBehaviour = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerList[currentPlayerSpectatingIndex]);
         if (playerBehaviour == default) return;
 
@@ -63,6 +65,9 @@ public class SpectatorUI : Singleton<SpectatorUI>
             currentPlayerPowerText.text = $"Player Power: {playerBehaviour.currentPower.Value:F1}%";
         else
             currentPlayerPowerText.text = "";
+
+        float timeLeft = Mathf.Max(360 - GameManager.Instance.currentGameTime.Value, 0);
+        timeLeftText.text = $"{timeLeft:F1}";
     }
 
     private void UpdateGameTimeText(int previousHour, int currentHour)

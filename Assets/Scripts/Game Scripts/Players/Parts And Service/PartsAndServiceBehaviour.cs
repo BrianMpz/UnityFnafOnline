@@ -36,6 +36,8 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
         if (Maintenance.Instance.powerGeneratorState.Value == State.ONLINE) currentPowerUsage.Value += 1f;
 
         if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 4;
+
+        base.UpdatePowerUsage();
     }
 
     public override void PowerOn()

@@ -333,7 +333,7 @@ public class Foxy : Animatronic
                 }
                 else
                 {
-                    ResetFoxyServerRpc(false, indexOfPlayerNode);
+                    ResetFoxyServerRpc();
                 }
                 break;
             case PlayerRoles.Janitor:
@@ -348,7 +348,7 @@ public class Foxy : Animatronic
                 }
                 else
                 {
-                    ResetFoxyServerRpc(false, indexOfPlayerNode);
+                    ResetFoxyServerRpc();
                 }
                 break;
             case PlayerRoles.PartsAndService:
@@ -364,7 +364,7 @@ public class Foxy : Animatronic
                 }
                 else
                 {
-                    ResetFoxyServerRpc(false, indexOfPlayerNode);
+                    ResetFoxyServerRpc();
                 }
                 break;
             case PlayerRoles.Backstage:
@@ -380,7 +380,7 @@ public class Foxy : Animatronic
                 }
                 else
                 {
-                    ResetFoxyServerRpc(false, indexOfPlayerNode);
+                    ResetFoxyServerRpc();
                 }
                 break;
         }
@@ -388,9 +388,9 @@ public class Foxy : Animatronic
 
     private void Blocked(int indexOfPlayerNode, PlayerBehaviour pb, bool playBlockAudio = true)
     {
-        PlayThunkAudio(1);
+        PlayThunkAudio(pb);
         OnFoxyPowerDrain.Invoke(pb.playerRole, CalculatePowerDrain());
-        ResetFoxyServerRpc(playBlockAudio, indexOfPlayerNode);
+        ResetFoxyServerRpc(playBlockAudio, indexOfPlayerNode: indexOfPlayerNode);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -405,13 +405,14 @@ public class Foxy : Animatronic
         PlayerNode playerNode = AnimatronicManager.Instance.PlayerNodes[indexOfPlayerNode];
         string killerName = gameObject.name;
 
+        PlayScreamClientRpc(indexOfPlayerNode);
         playerNode.playerBehaviour.DieClientRpc(killerName, deathScream, MultiplayerManager.NewClientRpcSendParams(playerNode.playerBehaviour.OwnerClientId));
 
         SetNode(playerNode, true);
 
         yield return new WaitForSeconds(10);
 
-        ResetFoxyServerRpc();
+        ResetFoxyServerRpc(indexOfPlayerNode: indexOfPlayerNode);
     }
 
     [ClientRpc]
@@ -430,7 +431,7 @@ public class Foxy : Animatronic
         if (!playerNode.playerBehaviour.IsOwner)
         {
             foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", 0.7f);
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.4f);
             foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isCurrentlyAggrivated.Value ? "foxy taunt" : "fire in the hole", 0.3f);
 
             float elapsedTime = 0;
@@ -445,7 +446,7 @@ public class Foxy : Animatronic
         else
         {
             foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", 0);
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.3f);
             foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isCurrentlyAggrivated.Value ? "foxy taunt" : "fire in the hole", 0f);
 
             float elapsedTime = 0;
@@ -496,12 +497,12 @@ public class Foxy : Animatronic
         if (playerNode.playerBehaviour.IsOwner) return;
         if (GameManager.Instance.IsSpectating) return;
 
-        PlayThunkAudio(0.3f); // set for players that arent the target
+        PlayThunkAudio(playerNode.playerBehaviour, 0.3f); // set for players that arent the target
     }
 
-    public void PlayThunkAudio(float volume)
+    public void PlayThunkAudio(PlayerBehaviour playerBehaviour, float volume = 1)
     {
-        if (GameManager.localPlayerBehaviour?.playerRole == PlayerRoles.Janitor)
+        if (GameManager.localPlayerBehaviour?.playerRole == PlayerRoles.Janitor && playerBehaviour.playerRole == PlayerRoles.Janitor)
         {
             GameAudioManager.Instance.PlaySfxOneShot("janitor door close");
             MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(1f);
@@ -510,5 +511,16 @@ public class Foxy : Animatronic
         GameAudioManager.Instance.StopSfx(foxyRunAudio);
         GameAudioManager.Instance.StopSfx(foxyTauntAudio);
         thunkAudio = thunkAudio != null ? thunkAudio : GameAudioManager.Instance.PlaySfxInterruptable("thunk", volume);
+    }
+
+    [ClientRpc]
+    private void PlayScreamClientRpc(int indexOfPlayerNode = -1)
+    {
+        PlayerNode playerNode = AnimatronicManager.Instance.PlayerNodes[indexOfPlayerNode];
+
+        if (playerNode.playerBehaviour.IsOwner) return;
+        if (GameManager.Instance.IsSpectating) return;
+
+        GameAudioManager.Instance.PlaySfxInterruptable(deathScream, 0.1f); // exclude the person getting jumpscared
     }
 }

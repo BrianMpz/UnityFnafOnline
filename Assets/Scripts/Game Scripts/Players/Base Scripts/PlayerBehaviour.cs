@@ -36,7 +36,6 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public event Action OnPlayerJumpscare;
 
     // abstract classes
-    private protected abstract void UpdatePowerUsage();
     private protected abstract void UpdateCameraView();
     private protected abstract IEnumerator PlayDeathAnimation(string deathScream);
     public abstract IEnumerator WaitUntilKillConditionsAreMet(Node currentNode);
@@ -146,7 +145,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public void FoxyDrainPowerServerRpc(PlayerRoles playerRole, float drainAmount)
     {
         if (this.playerRole != playerRole) return;
-        if (this.playerRole == PlayerRoles.Janitor) return;
+        if (this.playerRole == PlayerRoles.Janitor) return; // janitor doest have a door
 
         // drain power
         currentPower.Value -= drainAmount;
@@ -212,5 +211,11 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     {
         // if this base method is called then animatronicsCanStandInDoorway is set to true without setting a doorway node
         throw new Exception("animatronicsCanStandInDoorway is set to true without setting a doorway node!");
+    }
+
+
+    private protected virtual void UpdatePowerUsage()
+    {
+        if (!isPlayerAlive.Value) currentPowerUsage.Value = 1;
     }
 }

@@ -75,7 +75,7 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
             neighbors = neighbors.OrderBy(neighbor => targetDistances.ContainsKey(neighbor) ? targetDistances[neighbor] : int.MaxValue).ToList();
 
             // pick a more efficient route if the difficulty is higher
-            if (UnityEngine.Random.Range(1, 21) >= animatronic.currentDifficulty.Value)
+            if (UnityEngine.Random.Range(1, 20 + 1) >= animatronic.currentDifficulty.Value)
             {
                 neighbors.Reverse();
             }

@@ -145,13 +145,12 @@ public class PlayerCommunicationSystem : NetworkBehaviour
         VivoxManager.Instance.ChannelJoined -= OnCallJoined;
 
         isConnectedToCall = true;
-
         callAllPlayersButton.enabled = true;
 
-        if (playerComputer.currentComputerScreen.Value == ComputerScreen.Comms) return;
+        if (playerComputer.currentComputerScreen.Value != ComputerScreen.Comms || !playerComputer.isMonitorUp.Value) return;
 
-        commsCanvas.enabled = isConnectedToCall;
-        joinCommsCanvas.enabled = !isConnectedToCall;
+        commsCanvas.enabled = true;
+        joinCommsCanvas.enabled = false;
     }
 
     private void OnCallLeave(bool systemDown = false)
@@ -160,7 +159,6 @@ public class PlayerCommunicationSystem : NetworkBehaviour
         if (!isConnectedToCall) return;
 
         isConnectedToCall = false;
-
         joinCommsButton.enabled = false;
 
         string joinLeaveText = systemDown ? "Connection Lost..." : "Leaving Call...";
@@ -170,10 +168,10 @@ public class PlayerCommunicationSystem : NetworkBehaviour
 
         StartCoroutine(WaitForCallLeave());
 
-        if (playerComputer.currentComputerScreen.Value == ComputerScreen.Comms) return;
+        if (playerComputer.currentComputerScreen.Value != ComputerScreen.Comms || !playerComputer.isMonitorUp.Value) return;
 
-        commsCanvas.enabled = isConnectedToCall;
-        joinCommsCanvas.enabled = !isConnectedToCall;
+        commsCanvas.enabled = false;
+        joinCommsCanvas.enabled = true;
     }
 
     private IEnumerator WaitForCallLeave()

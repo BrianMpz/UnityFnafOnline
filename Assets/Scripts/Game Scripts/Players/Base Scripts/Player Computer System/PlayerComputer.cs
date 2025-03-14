@@ -44,7 +44,7 @@ public class PlayerComputer : NetworkBehaviour
         playerMotionDetectionSystem.Initialise(playerBehaviour.playerCamera);
         playerAudioLureSystem.Initialise(playerBehaviour.playerCamera);
 
-        currentComputerScreen.Value = ComputerScreen.None;
+        currentComputerScreen.Value = ComputerScreen.Manual;
     }
 
     public void PlayerBehaviour_OnPowerOn()
@@ -145,14 +145,12 @@ public class PlayerComputer : NetworkBehaviour
     public void EnableComputerSystem()
     {
         isMonitorUp.Value = true;
-        selectorCanvas.enabled = true;
         SetComputerScreen(currentComputerScreen.Value);
     }
 
     public void DisableComputerSystem()
     {
         isMonitorUp.Value = isMonitorAlwaysUp;
-        selectorCanvas.enabled = false;
         DisableAllComputerScreens();
     }
 
@@ -162,6 +160,7 @@ public class PlayerComputer : NetworkBehaviour
 
         currentComputerScreen.Value = computerScreen;
 
+        selectorCanvas.enabled = true;
         switch (currentComputerScreen.Value)
         {
             case ComputerScreen.Cameras:
@@ -191,6 +190,7 @@ public class PlayerComputer : NetworkBehaviour
         playerMotionDetectionSystem.Disable();
         playerAudioLureSystem.Disable();
         playerManual.Disable();
+        selectorCanvas.enabled = false;
     }
 }
 
@@ -201,5 +201,4 @@ public enum ComputerScreen
     Manual,
     MotionDetection,
     AudioLure,
-    None,
 }

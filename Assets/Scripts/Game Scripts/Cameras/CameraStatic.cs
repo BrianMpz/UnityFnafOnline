@@ -21,7 +21,7 @@ public class CameraStatic : MonoBehaviour
     {
         staticImage.enabled = true;
         staticImage.color = new Color(staticImage.color.r, staticImage.color.g, staticImage.color.b, 1f);
-        if (staticaudio != null) staticaudio.volume = 1;
+        if (staticaudio != null) staticaudio.volume = 0.5f;
 
         float elapsedTime = 0f;
 

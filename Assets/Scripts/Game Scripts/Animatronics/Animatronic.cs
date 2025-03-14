@@ -139,24 +139,21 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
             yield return new WaitForSeconds(currentMovementWaitTime.Value);
 
-            if (NeedsANewTarget())
-            {
-                TargetRandomPlayer();
-            }
+            if (NeedsANewTarget()) TargetRandomPlayer();
             if (target == null) continue; // No valid target, restart loop
 
-            List<Node> path = AnimatronicManager.Instance.BreadthFirstSearch(currentNode, target, this, takeOccupancyIntoAccount: true);
+            List<Node> path = AnimatronicManager.Instance.BreadthFirstSearch(currentNode, target, this, takeOccupancyIntoAccount: false);
 
             if (path.Count < 2) continue; // there is no path to the target or has reached target
 
-            if (UnityEngine.Random.Range(1, 21) <= currentDifficulty.Value) // successful movement opportunity
+            if (UnityEngine.Random.Range(1, 20 + 1) <= currentDifficulty.Value) // successful movement opportunity
             {
                 yield return MovementOpportunity(path);
             }
         }
     }
 
-    private bool NeedsANewTarget() => target == null || UnityEngine.Random.Range(1, 11) > 2;
+    private bool NeedsANewTarget() => target == null || UnityEngine.Random.Range(1, 10 + 1) < 2;
 
     private protected void TargetRandomPlayer()
     {
@@ -185,10 +182,11 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     {
         Node nodeToGoTo = path[1];
 
-        if (nodeToGoTo.GetComponent<PlayerNode>() != null) // about to attack a player
-        {
-            PlayerNode playerNode = nodeToGoTo.GetComponent<PlayerNode>();
+        bool aboutToAttackPlayer = nodeToGoTo.TryGetComponent(out PlayerNode playerNode);
+        bool movingIntoAttackPosition = path.Count == 3 && path[2].GetComponent<PlayerNode>() != null;
 
+        if (aboutToAttackPlayer) // about to attack a player
+        {
             if (PlayerRoleManager.Instance.IsPlayerVulnerableToAttack(currentNode, playerNode) && playerNode.IsAlive)
             {
                 yield return KillPlayer(playerNode);
@@ -202,7 +200,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
                 AdvanceInPath(nodeToGoTo);
             }
         }
-        else if (path[2].GetComponent<PlayerNode>() != null) // moving to attack position
+        else if (movingIntoAttackPosition) // moving to attack position
         {
             AdvanceInPath(nodeToGoTo, true);
         }
@@ -210,6 +208,8 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         {
             AdvanceInPath(nodeToGoTo);
         }
+
+        // the gameplay loop coroutine continues...
     }
 
     private IEnumerator KillPlayer(PlayerNode playerNode)
@@ -289,20 +289,6 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         {
             SetNode(nodeToGoTo, lerpToPosition); // Move to the next node in the path
         }
-        else
-        {
-            Node randomNode = GetRandomAvailableNode(nodeToGoTo);
-            if (randomNode == null || randomNode.GetComponent<PlayerNode>() != null) return;
-
-            AdvanceInPath(randomNode, lerpToPosition);
-        }
-    }
-
-    private Node GetRandomAvailableNode(Node dontGoToThisNode)
-    {
-        if (currentNode.neighbouringNodes.Length < 2) return null;
-
-        return currentNode.neighbouringNodes.FirstOrDefault(node => node != dontGoToThisNode && !node.isOccupied.Value);
     }
 
     private protected virtual void SetNode(Node nodeToGoTo, bool lerpToPosition = false, bool makeNoise = true)

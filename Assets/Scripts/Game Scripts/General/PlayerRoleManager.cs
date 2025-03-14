@@ -126,6 +126,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         ChangeOwnership(securityOfficeBehaviour.playerComputer.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(securityOfficeBehaviour.playerComputer.playerCameraSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(securityOfficeBehaviour.playerComputer.playerCommunicationSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(securityOfficeBehaviour.playerComputer.playerAudioLureSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(securityOfficeBehaviour.playerComputer.playerMotionDetectionSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(securityOfficeBehaviour.playerComputer.playerManual.GetComponent<NetworkObject>(), clientId);
 
@@ -145,6 +146,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         ChangeOwnership(partsAndServiceBehaviour.playerComputer.playerCameraSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(partsAndServiceBehaviour.playerComputer.playerCommunicationSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(partsAndServiceBehaviour.playerComputer.playerMotionDetectionSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(partsAndServiceBehaviour.playerComputer.playerAudioLureSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(partsAndServiceBehaviour.playerComputer.playerManual.GetComponent<NetworkObject>(), clientId);
 
         ChangeOwnership(partsAndServiceBehaviour.generator.GetComponent<NetworkObject>(), clientId);
@@ -166,6 +168,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         ChangeOwnership(backstageBehaviour.playerComputer.playerCameraSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(backstageBehaviour.playerComputer.playerCommunicationSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(backstageBehaviour.playerComputer.playerMotionDetectionSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(backstageBehaviour.playerComputer.playerAudioLureSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(backstageBehaviour.playerComputer.playerManual.GetComponent<NetworkObject>(), clientId);
 
         ChangeOwnership(backstageBehaviour.cameraController.GetComponent<NetworkObject>(), clientId);
@@ -179,6 +182,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         ChangeOwnership(janitorBehaviour.playerComputer.playerCameraSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(janitorBehaviour.playerComputer.playerCommunicationSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(janitorBehaviour.playerComputer.playerMotionDetectionSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorBehaviour.playerComputer.playerAudioLureSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(janitorBehaviour.playerComputer.playerManual.GetComponent<NetworkObject>(), clientId);
 
         ChangeOwnership(janitorBehaviour.cameraController.GetComponent<NetworkObject>(), clientId);

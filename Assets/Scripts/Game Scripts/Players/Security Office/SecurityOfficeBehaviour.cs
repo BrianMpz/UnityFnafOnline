@@ -31,6 +31,8 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
 
         if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value++;
         if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 5;
+
+        base.UpdatePowerUsage();
     }
 
     public override bool IsPlayerVulnerable(Node currentNode)

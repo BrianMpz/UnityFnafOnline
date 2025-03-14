@@ -48,7 +48,7 @@ public class JanitorUI : PlayerUI
 
         maskTrigger.gameObject.SetActive(!isMonitorUp);
         monitorTrigger.gameObject.SetActive(!isWearingMask); ;
-        triggerToggle.gameObject.SetActive(!canToggle); ;
+        triggerToggle.gameObject.SetActive(!canToggle);
     }
 
     public override void UpdatePowerText()

@@ -365,6 +365,7 @@ RectTransform:
   m_Children:
   - {fileID: 4442727220153976612}
   - {fileID: 5328803359216852692}
+  - {fileID: 7515214819118591863}
   m_Father: {fileID: 5562486912162743588}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -385,6 +386,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 1713433423678060427}
+  scrollbar: {fileID: 2529583264784900035}
+  scrollValue:
+    m_InternalValue: 0
+  audioToggleButton: {fileID: 7983203150349915575}
 --- !u!223 &1713433423678060427
 Canvas:
   m_ObjectHideFlags: 0
@@ -1670,7 +1675,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 673.6, y: 0.000007093}
+  m_AnchoredPosition: {x: 673.6, y: 0}
   m_SizeDelta: {x: 20, y: 700}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4011776400997933506
@@ -1755,7 +1760,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 6789277076321509295}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.19906156
+  m_Size: 0.15555553
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2021,7 +2026,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1250, y: 3516.5}
+  m_SizeDelta: {x: 1250, y: 4500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6325749466298082967
 CanvasRenderer:
@@ -2051,12 +2056,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\n\n**Facility Operations Manual**\r\n\r\nThe security of this facility
-    relies on the coordinated efforts of three primary operational roles: Security
-    Office Operator, Parts and Service Operator, and Backstage Operator. Each role
+  m_text: "\n\nFacility Operations Manual\r\n\r\nWelcome to the Facility Operations
+    Manual. This guide outlines the essential roles and responsibilities within our
+    facility to ensure smooth operations and security. Each role is designed to maintain
+    surveillance, power distribution, and system integrity in response to potential
+    threats. Adherence to these protocols is crucial for maintaining safety and efficiency
+    in our work environment.\r\n\r\nThe security of this facility relies on the coordinated
+    efforts of four primary operational roles: Security Office Operator, Parts and
+    Service Operator, Mobile Audio Specialist, and Backstage Operator. Each role
     is crucial in maintaining surveillance, power distribution, and system integrity
-    to ensure continued operations and protection against potential threats.\r\n\r\n**Security
-    Office Operator**\r\n\r\nThe Security Office Operator is responsible for monitoring
+    to ensure continued operations and protection against potential threats.\r\n\r\nSecurity
+    Office Operator\r\n\r\nThe Security Office Operator is responsible for monitoring
     the facility\u2019s surveillance system and tracking the movement of threats.
     The operator must maintain constant vigilance through the camera network to detect
     early signs of intrusion. They have the highest level of camera access and must
@@ -2064,25 +2074,32 @@ MonoBehaviour:
     situational updates to the team. In the event of a primary system failure, the
     operator has access to a backup camera system to maintain surveillance. Strict
     adherence to monitoring protocols is essential to identifying and mitigating
-    threats before they can compromise facility security.\r\n\n**Parts and Service
-    Operator**\r\n\r\nThe Parts and Service Operator oversees the facility\u2019s
-    power distribution and maintenance systems. This role is critical, as the operator
+    threats before they can compromise facility security.\r\n\r\nParts and Service
+    Operator\r\n\r\nThe Parts and Service Operator oversees the facility\u2019s power
+    distribution and maintenance systems. This role is critical, as the operator
     has direct control over the power generator, allowing them to allocate energy
     to specific offices as needed. Due to a recent security compromise, facility
     technicians are reconfiguring camera access permissions, leading to restricted
-    visibility\u2014including the area directly outside the Parts and Service door.
-    As a result, operators may need to manually check this blind spot to assess potential
+    visibility--including the area directly outside the Parts and Service door. As
+    a result, operators may need to manually check this blind spot to assess potential
     threats. Extreme caution is advised when doing so, as this area may become a
-    vulnerability if hostile entities are present.\r\n\r\n **Backstage Operator**\r\n\r\nThe
+    vulnerability if hostile entities are present.\r\n\r\nBackstage Operator\r\n\r\nThe
     Backstage Operator is responsible for maintaining the facility\u2019s core support
-    systems. At random intervals, critical systems\u2014including communications,
-    cameras, and the power generator\u2014may fail. The operator must use the maintenance
-    interface to reboot these systems swiftly, ensuring that other personnel can
-    continue their duties without disruption. Attention must remain focused during
-    the reboot process to prevent system corruption. Behind the operator is an emergency
-    shock system designed to deter threats sensitive to electrical surges. However,
-    this function drains power exponentially and should only be used as a last resort.
-    Fortunately, no known threats currently necessitate such drastic action.\r\n\r\n**Conclusion**\r\n\r\nWe
+    systems. At random intervals, critical systems--including communications, cameras,
+    and the power generator--may fail. The operator must use the maintenance interface
+    to reboot these systems swiftly, ensuring that other personnel can continue their
+    duties without disruption. Attention must remain focused during the reboot process
+    to prevent system corruption. Behind the operator is an emergency shock system
+    designed to deter threats sensitive to electrical surges. However, this function
+    drains power exponentially and should only be used as a last resort. Fortunately,
+    no known threats currently necessitate such drastic action. But if there were,
+    one must only administer a controlled shock when the threat is fully visible.\r\n\r\nAudio
+    Specialist\r\n\r\nGiven any unauthorised personnel enter the facility, one would
+    rely on the Audio Specialist to deter threats. Due to construction, they are
+    situated in the Janitor's closet. The Audio Specialist is responsible for detecting
+    motion throughout the facility and playing audio to lure them to certain areas.
+    Should the threat run into you, put on the Fred bear mask to trick them into
+    thinking you are an animatronic costume (works on 100% of the blind population).\r\n\r\nConclusion\r\n\r\nWe
     take pride in our unwavering commitment to operational excellence and workplace
     safety. Each role outlined above is essential in maintaining our high standards
     of security and efficiency. While minor system failures, power disruptions, and
@@ -3941,8 +3958,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1408.2501}
-  m_SizeDelta: {x: 1250, y: 3516.5}
+  m_AnchoredPosition: {x: 0, y: -1900}
+  m_SizeDelta: {x: 1250, y: 4500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3171936127805523217
 GameObject:
@@ -7265,7 +7282,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6201714122355944731}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}
@@ -7696,6 +7713,81 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: d4ebce17bc3eac04a9256290cd9d7339, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!1 &6575492007646485242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3455988562772269259}
+  - component: {fileID: 6556826419763142860}
+  - component: {fileID: 4400706860795934779}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3455988562772269259
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6575492007646485242}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.26, y: 0.26, z: 0.26}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 7515214819118591863}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &6556826419763142860
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6575492007646485242}
+  m_CullTransparentMesh: 1
+--- !u!114 &4400706860795934779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6575492007646485242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 0640b514c129e42f2b9f781322b59182, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8792,6 +8884,127 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 164103171475256012}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &7960387303280128482
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7515214819118591863}
+  - component: {fileID: 2400827675457344613}
+  - component: {fileID: 5311943171906860413}
+  - component: {fileID: 7983203150349915575}
+  m_Layer: 5
+  m_Name: Button
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7515214819118591863
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7960387303280128482}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2.96, y: 2.96, z: 2.96}
+  m_ConstrainProportionsScale: 1
+  m_Children:
+  - {fileID: 3455988562772269259}
+  m_Father: {fileID: 8436478180641041206}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -751, y: 0}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &2400827675457344613
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7960387303280128482}
+  m_CullTransparentMesh: 1
+--- !u!114 &5311943171906860413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7960387303280128482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7983203150349915575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7960387303280128482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 5311943171906860413}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []

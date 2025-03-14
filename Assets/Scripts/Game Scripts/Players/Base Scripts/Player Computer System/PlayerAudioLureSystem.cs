@@ -52,7 +52,7 @@ public class PlayerAudioLureSystem : NetworkBehaviour
         canvas.enabled = false;
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void PlayLureServerRpc(NodeName nodeName)
     {
         if (!isPlayingLure) StartCoroutine(PlayLure(nodeName));
@@ -69,7 +69,7 @@ public class PlayerAudioLureSystem : NetworkBehaviour
     [ClientRpc]
     public void PlayLureClientRpc(NodeName nodeName, float lureDuration)
     {
-        OnLurePlayed?.Invoke(nodeName, lureDuration);
         AnimatronicManager.Instance.PlayAudioLure(nodeName, audioClips[UnityEngine.Random.Range(0, audioClips.Length)]);
+        OnLurePlayed?.Invoke(nodeName, lureDuration);
     }
 }
