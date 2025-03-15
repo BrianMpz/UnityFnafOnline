@@ -61,15 +61,18 @@ public class PlayerAudioLureSystem : NetworkBehaviour
     private IEnumerator PlayLure(NodeName nodeName)
     {
         isPlayingLure = true;
+
         PlayLureClientRpc(nodeName, lureDuration);
+        AnimatronicManager.Instance.PlayAudioLure(nodeName, audioClips[UnityEngine.Random.Range(0, audioClips.Length)]);
+
         yield return new WaitForSeconds(lureDuration);
+
         isPlayingLure = false;
     }
 
     [ClientRpc]
     public void PlayLureClientRpc(NodeName nodeName, float lureDuration)
     {
-        AnimatronicManager.Instance.PlayAudioLure(nodeName, audioClips[UnityEngine.Random.Range(0, audioClips.Length)]);
         OnLurePlayed?.Invoke(nodeName, lureDuration);
     }
 }

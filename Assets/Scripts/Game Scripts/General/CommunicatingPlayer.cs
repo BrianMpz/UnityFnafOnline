@@ -7,8 +7,8 @@ using UnityEngine.UI;
 
 public class CommunicatingPlayer : MonoBehaviour
 {
-    public PlayerRoles playerRole;
     [SerializeField] private TMP_Text playerNameText;
+    [SerializeField] private TMP_Text playerRoleText;
 
     [Header("Voice Chat")]
     [SerializeField] private Image ChatStateImage;
@@ -16,7 +16,14 @@ public class CommunicatingPlayer : MonoBehaviour
     [SerializeField] private Sprite NotSpeakingImage;
     [SerializeField] private Sprite MutedImage;
     public EventTrigger MuteButton;
-    [SerializeField] private VivoxParticipant Participant;
+    public VivoxParticipant Participant;
+
+    [Header("Helpy Animations")]
+    [SerializeField] private Image HelpySecurityOffice;
+    [SerializeField] private Image HelpyPartsAndService;
+    [SerializeField] private Image HelpyBackstage;
+    [SerializeField] private Image HelpyJanitor;
+    [SerializeField] private Image HelpySpectator;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -35,31 +42,50 @@ public class CommunicatingPlayer : MonoBehaviour
         if (participantPlayerData.role == localPlayerData.role) VivoxManager.Instance.ToggleMute();
     }
 
-    public void AddListener(EventTrigger eventTrigger, EventTriggerType triggerType, UnityEngine.Events.UnityAction callback)
-    {
-        EventTrigger.Entry entry = new() { eventID = triggerType };
-        entry.callback.AddListener(_ => callback());
-        eventTrigger.triggers.Add(entry);
-    }
-
     public void Show(VivoxParticipant vivoxParticipant, PlayerData playerData)
     {
         gameObject.SetActive(true);
 
         Participant = vivoxParticipant;
         playerNameText.text = playerData.playerName.ToString();
+        playerRoleText.text = playerData.role.ToString();
 
         Participant.ParticipantMuteStateChanged += UpdateChatStateImage;
         Participant.ParticipantSpeechDetected += UpdateChatStateImage;
 
         UpdateChatStateImage();
+
+        DisableAllHelpys();
+        switch (playerData.role)
+        {
+            case PlayerRoles.SecurityOffice:
+                playerRoleText.text = "Security Office";
+                HelpySecurityOffice.enabled = true;
+                break;
+            case PlayerRoles.PartsAndService:
+                playerRoleText.text = "Parts And Service";
+                HelpyPartsAndService.enabled = true;
+                break;
+            case PlayerRoles.Backstage:
+                playerRoleText.text = "Back Stage";
+                HelpyBackstage.enabled = true;
+                break;
+            case PlayerRoles.Janitor:
+                playerRoleText.text = "Janitor";
+                HelpyJanitor.enabled = true;
+                break;
+            default:
+                playerRoleText.text = "Spectator";
+                HelpySpectator.enabled = true;
+                break;
+        }
     }
 
     public void Hide()
     {
         if (Participant != null)
         {
-            Participant.ParticipantMuteStateChanged += UpdateChatStateImage;
+            Participant.ParticipantMuteStateChanged -= UpdateChatStateImage;
             Participant.ParticipantSpeechDetected -= UpdateChatStateImage;
             Participant = null;
         }
@@ -68,12 +94,7 @@ public class CommunicatingPlayer : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (Participant != null)
-        {
-            Participant.ParticipantMuteStateChanged += UpdateChatStateImage;
-            Participant.ParticipantSpeechDetected -= UpdateChatStateImage;
-            Participant = null;
-        }
+        Hide();
     }
 
     private void UpdateChatStateImage()
@@ -102,5 +123,21 @@ public class CommunicatingPlayer : MonoBehaviour
         {
             ChatStateImage.sprite = MutedImage;
         }
+    }
+
+    private void DisableAllHelpys()
+    {
+        HelpySecurityOffice.enabled = false;
+        HelpyPartsAndService.enabled = false;
+        HelpyBackstage.enabled = false;
+        HelpyJanitor.enabled = false;
+        HelpySpectator.enabled = false;
+    }
+
+    public void AddListener(EventTrigger eventTrigger, EventTriggerType triggerType, UnityEngine.Events.UnityAction callback)
+    {
+        EventTrigger.Entry entry = new() { eventID = triggerType };
+        entry.callback.AddListener(_ => callback());
+        eventTrigger.triggers.Add(entry);
     }
 }

@@ -20,36 +20,44 @@ public class MainMenuUI : MonoBehaviour
 
         CanPlayOnline = canPlayOnline;
 
-        playButton.onClick.AddListener(() =>
-        {
-            if (!CanPlayOnline)
-            {
-                NotImplementedInBuildUI.Instance.Show();
-                return;
-            }
+        playButton.onClick.AddListener(PlayOnline);
+        playOfflineButton.onClick.AddListener(PlayOffline);
 
-            if (playerNameInputField.text != "")
-                PlayerPrefs.SetString(MultiplayerManager.PlayerprefsPlayerNameLocation, playerNameInputField.text);
-
-            MultiplayerManager.isPlayingOnline = true;
-            Loader.LoadScene(Loader.Scene.Matchmaking);
-
-        });
-
-        settingsButton.onClick.AddListener(() =>
-        {
-            SettingsUI.Instance.Show();
-        });
-
-        playOfflineButton.onClick.AddListener(() =>
-        {
-            if (playerNameInputField.text != "")
-                PlayerPrefs.SetString(MultiplayerManager.PlayerprefsPlayerNameLocation, playerNameInputField.text);
-
-            MultiplayerManager.isPlayingOnline = false;
-            Loader.LoadScene(Loader.Scene.Matchmaking);
-        });
+        settingsButton.onClick.AddListener(SettingsUI.Instance.Show);
 
         quitButton.onClick.AddListener(Application.Quit);
+
+        playerNameInputField.onValueChanged.AddListener(s => { TruncateUsername(s); });
+    }
+
+    private void PlayOffline()
+    {
+        if (playerNameInputField.text != "")
+            PlayerPrefs.SetString(MultiplayerManager.PlayerprefsPlayerNameLocation, playerNameInputField.text);
+
+        MultiplayerManager.isPlayingOnline = false;
+        Loader.LoadScene(Loader.Scene.Matchmaking);
+    }
+
+    private void PlayOnline()
+    {
+        if (!CanPlayOnline)
+        {
+            NotImplementedInBuildUI.Instance.Show();
+            return;
+        }
+
+        if (playerNameInputField.text != "") PlayerPrefs.SetString(MultiplayerManager.PlayerprefsPlayerNameLocation, playerNameInputField.text);
+
+        MultiplayerManager.isPlayingOnline = true;
+        Loader.LoadScene(Loader.Scene.Matchmaking);
+
+    }
+
+    private void TruncateUsername(string input) // set max username length to 14
+    {
+        if (string.IsNullOrEmpty(input) || input.Length <= 14) return;
+
+        playerNameInputField.text = input[..14];
     }
 }

@@ -36,7 +36,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
             joinCommsButton.onClick.AddListener(OnJoiningCall);
             callAllPlayersButton.onClick.AddListener(() => { StartCoroutine(CallAllPlayers()); });
 
-            communicatingPlayerList.ForEach(spectatingPlayer => spectatingPlayer.Hide());
+            communicatingPlayerList.ForEach(player => player.Hide());
             StartCoroutine(PerpetuallyUpdateCommunicatingPlayers());
             VivoxService.Instance.ParticipantAddedToChannel += OnParticipantJoined;
         }
@@ -84,7 +84,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.2f);
             UpdateCommunicatingPlayers();
         }
     }
@@ -95,13 +95,13 @@ public class PlayerCommunicationSystem : NetworkBehaviour
 
         List<VivoxParticipant> currentChannel = VivoxManager.Instance.GetChannel(VivoxManager.Instance.gameChatName);
 
-        communicatingPlayerList.ForEach(communicatingPlayer => communicatingPlayer.Hide());
+        communicatingPlayerList.ForEach(player => player.Hide());
 
         foreach (VivoxParticipant participant in currentChannel)
         {
             PlayerData playerData = MultiplayerManager.Instance.GetPlayerDataFromVivoxId(participant.PlayerId);
 
-            communicatingPlayerList.First(communicatingPlayer => communicatingPlayer.playerRole == playerData.role).Show(participant, playerData);
+            communicatingPlayerList.First(player => player.Participant == null).Show(participant, playerData);
         }
     }
 

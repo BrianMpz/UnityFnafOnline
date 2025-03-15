@@ -783,6 +783,9 @@ MonoBehaviour:
   hostImage: {fileID: 0}
   HelpySecurityOffice: {fileID: 428097203677809712}
   HelpyPartsAndService: {fileID: 1033342847741167584}
+  HelpyBackstage: {fileID: 0}
+  HelpyJanitor: {fileID: 0}
+  HelpySpectator: {fileID: 0}
   ChatStateImage: {fileID: 3228812050862819548}
   MuteButton: {fileID: 0}
   SpeakingImage: {fileID: 21300000, guid: 0640b514c129e42f2b9f781322b59182, type: 3}

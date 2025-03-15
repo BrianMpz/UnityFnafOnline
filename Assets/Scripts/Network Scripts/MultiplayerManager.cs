@@ -259,21 +259,12 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         return GetLocalPlayerData().role;
     }
 
-    private ulong GetClientIdFromRole(PlayerRoles role) // only one player will have a role each
+    public void ChangePlayerRole(int playerIndex, bool next)
     {
-        foreach (PlayerData data in playerDataList)
-        {
-            if (data.role == role)
-            {
-                return data.clientId;
-            }
-        }
-        return default;
-    }
+        PlayerData playerData = GetPlayerDataFromPlayerIndex(playerIndex);
 
-    public void ChangePlayerRole(PlayerRoles currentRole, bool next)
-    {
-        ulong senderId = GetClientIdFromRole(currentRole);
+        ulong senderId = playerData.clientId;
+        PlayerRoles currentRole = playerData.role;
         do
         {
             // true = get next role else get prev role
@@ -308,6 +299,8 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
     private bool IsRoleAvailable(PlayerRoles role)
     {
+        if (role == PlayerRoles.None) return true;
+
         foreach (PlayerData playerData in playerDataList)
         {
             if (playerData.role == role)
@@ -320,8 +313,9 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
     private PlayerRoles GetRandomUnusedPlayerRole()
     {
-        IEnumerable<PlayerRoles> playerRoles = (IEnumerable<PlayerRoles>)Enum.GetValues(typeof(PlayerRoles));
-        IEnumerable<PlayerRoles> shuffledPlayerRoles = playerRoles.ToList().OrderBy(x => UnityEngine.Random.value);
+        PlayerRoles[] playerRoles = (PlayerRoles[])Enum.GetValues(typeof(PlayerRoles));
+        List<PlayerRoles> shuffledPlayerRoles = playerRoles.OrderBy(x => UnityEngine.Random.value).ToList();
+        shuffledPlayerRoles.Remove(PlayerRoles.None);
 
         foreach (PlayerRoles role in shuffledPlayerRoles)
         {
@@ -331,18 +325,17 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
             }
         }
 
-        // there are not enough roles for the amount of players in the lobby
-        throw new Exception("Not enough roles for the number of players in the lobby! Increase role count");
+        return PlayerRoles.None;
     }
 
-    public void DisallowHavingNoRole() // when starting the game the player cant have a spectator
+    public void DisallowNobodyHavingARole() // when starting the game the player cant have a spectator
     {
-        PlayerData playerData = GetLocalPlayerData();
-
-        if (playerDataList.Count == 1 && (playerData.role == PlayerRoles.None))
+        foreach (PlayerData playerData in playerDataList)
         {
-            SetPlayerRole(NetworkManager.Singleton.LocalClientId, PlayerRoles.SecurityOffice);
+            if (playerData.role != PlayerRoles.None) return; // at least one person has a role
         }
+
+        ShufflePlayerRoles();
     }
 
     public void ShufflePlayerRoles() // gives each player a random role

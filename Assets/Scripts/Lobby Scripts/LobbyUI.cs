@@ -63,11 +63,10 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
         shuffleRolesButton.onClick.AddListener(MultiplayerManager.Instance.ShufflePlayerRoles);
         startButton.onClick.AddListener(() =>
         {
-            MultiplayerManager.Instance.DisallowHavingNoRole();
-            if (currentLobbyState == LobbyState.WaitingToStart)
-                StartGameCountdown();
-            else if (currentLobbyState == LobbyState.Starting)
-                CancelStartGameCountdown();
+            MultiplayerManager.Instance.DisallowNobodyHavingARole();
+
+            if (currentLobbyState == LobbyState.WaitingToStart) StartGameCountdown();
+            else if (currentLobbyState == LobbyState.Starting) CancelStartGameCountdown();
         });
 
         ToggleStartButton();

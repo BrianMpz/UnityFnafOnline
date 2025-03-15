@@ -10,8 +10,9 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     [Header("Dynamic Values")]
     [SerializeField] private protected NetworkVariable<bool> isCurrentlyAggrivated;
-    public NetworkVariable<float> currentDifficulty;
     [SerializeField] private protected NetworkVariable<float> currentMovementWaitTime;
+    [SerializeField] private protected NetworkVariable<float> audioLureResistance;
+    public NetworkVariable<float> currentDifficulty;
     [SerializeField] private protected Node target;
 
     [Header("Starting Values")]
@@ -39,6 +40,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         GameManager.Instance.currentHour.OnValueChanged += (currentValue, newValue) => { IncreaseAnimatronicDifficulty(); };
         DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
         GameManager.Instance.OnPlayerPowerDown += GameManager_OnPlayerPowerDown;
+        AnimatronicManager.Instance.OnAudioLure += AudioLure_AttractAnimatronic;
 
         SetNode(startNode, false, false);
 
@@ -75,7 +77,15 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         }
 
         gameplayLoop = StartCoroutine(GameplayLoop());
-        AnimatronicManager.Instance.OnAudioLure += AudioLure_AttractAnimatronic;
+    }
+
+    private void Update()
+    {
+        if (!IsServer) return;
+
+        audioLureResistance.Value -= 1 * Time.deltaTime;
+
+        audioLureResistance.Value = Mathf.Clamp(audioLureResistance.Value, 0f, 100f);
     }
 
     public virtual void Disable()
@@ -112,7 +122,17 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     public void AudioLure_AttractAnimatronic(Node targetedNode)
     {
-        SetTarget(targetedNode);
+        bool canResistLure = (int)audioLureResistance.Value > UnityEngine.Random.Range(0, 100); // 0 to 99
+
+        if (!canResistLure)
+        {
+            SetTarget(targetedNode);
+            audioLureResistance.Value += Mathf.Lerp(40f, 80f, currentDifficulty.Value / 20f);
+        }
+        else
+        {
+            print("resisted audioLure");
+        }
     }
 
     private protected virtual IEnumerator GameplayLoop()

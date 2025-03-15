@@ -23,6 +23,7 @@ public class CharacterSelectPlayer : MonoBehaviour
     [SerializeField] private Image HelpyPartsAndService;
     [SerializeField] private Image HelpyBackstage;
     [SerializeField] private Image HelpyJanitor;
+    [SerializeField] private Image HelpySpectator;
 
     [Header("Voice Chat")]
     public Image ChatStateImage;
@@ -39,12 +40,12 @@ public class CharacterSelectPlayer : MonoBehaviour
 
         leftOptionButton.onClick.AddListener(() =>
         {
-            MultiplayerManager.Instance.ChangePlayerRole(GetPlayerDataFromPlayerIndex().role, next: false);
+            MultiplayerManager.Instance.ChangePlayerRole(playerIndex, next: false);
         });
 
         rightOptionButton.onClick.AddListener(() =>
         {
-            MultiplayerManager.Instance.ChangePlayerRole(GetPlayerDataFromPlayerIndex().role, next: true);
+            MultiplayerManager.Instance.ChangePlayerRole(playerIndex, next: true);
         });
 
         MultiplayerManager.Instance.OnPlayerDataListChanged += MultiplayerManager_OnPLayerDataListChanged;
@@ -65,7 +66,7 @@ public class CharacterSelectPlayer : MonoBehaviour
 
         PlayerData participantPlayerData = MultiplayerManager.Instance.GetPlayerDataFromVivoxId(Participant.PlayerId);
         PlayerData localPlayerData = MultiplayerManager.Instance.GetLocalPlayerData();
-        if (participantPlayerData.role == localPlayerData.role) VivoxManager.Instance.ToggleMute();
+        if (participantPlayerData.vivoxId == localPlayerData.vivoxId) VivoxManager.Instance.ToggleMute();
     }
 
     private void MultiplayerManager_OnPLayerDataListChanged()
@@ -103,7 +104,8 @@ public class CharacterSelectPlayer : MonoBehaviour
                     HelpyJanitor.enabled = true;
                     break;
                 default:
-                    playerRoleText.text = "Spectator";
+                    playerRoleText.text = "Spectate (dead)";
+                    HelpySpectator.enabled = true;
                     break;
             }
 
@@ -201,6 +203,7 @@ public class CharacterSelectPlayer : MonoBehaviour
         HelpyPartsAndService.enabled = false;
         HelpyBackstage.enabled = false;
         HelpyJanitor.enabled = false;
+        HelpySpectator.enabled = false;
     }
 
     private void UpdateChatStateImage()

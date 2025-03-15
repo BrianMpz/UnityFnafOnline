@@ -34,12 +34,17 @@ public class SpectatorUI : Singleton<SpectatorUI>
         GameManager.Instance.OnGameWin += Hide;
         GameManager.Instance.currentHour.OnValueChanged += UpdateGameTimeText;
 
-        if (MultiplayerManager.isPlayingOnline)
-        {
-            StartCoroutine(PerpetuallyUpdateCommunicatingPlayers());
-        }
+        if (MultiplayerManager.isPlayingOnline) StartCoroutine(PerpetuallyUpdateCommunicatingPlayers());
 
         currentPlayerSpectatingIndex = 0;
+
+        CreatePlayerList();
+
+        Hide();
+    }
+
+    private void CreatePlayerList()
+    {
         playerList = new();
 
         foreach (PlayerData playerData in MultiplayerManager.Instance.playerDataList)
@@ -49,8 +54,6 @@ public class SpectatorUI : Singleton<SpectatorUI>
 
             else playerList.Add(playerData.role);
         }
-
-        Hide();
     }
 
     void Update()
@@ -79,7 +82,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
     {
         while (true)
         {
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.5f);
             UpdateCommunicatingPlayers();
         }
     }
@@ -96,7 +99,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
         {
             PlayerData playerData = MultiplayerManager.Instance.GetPlayerDataFromVivoxId(participant.PlayerId);
 
-            spectatingPlayerList.First(spectatingPlayer => spectatingPlayer.playerRole == playerData.role).Show(participant, playerData);
+            spectatingPlayerList.First(spectatingPlayer => spectatingPlayer.Participant == null).Show(participant, playerData);
         }
     }
 
