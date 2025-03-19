@@ -204,8 +204,6 @@ public class SpectatorUI : Singleton<SpectatorUI>
 
     public PlayerBehaviour GetCurrentSpectator()
     {
-        PlayerBehaviour playerBehaviour = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerList[currentPlayerSpectatingIndex]);
-        if (playerBehaviour == default) return default;
-        else return playerBehaviour;
+        return PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerList[currentPlayerSpectatingIndex]);
     }
 }

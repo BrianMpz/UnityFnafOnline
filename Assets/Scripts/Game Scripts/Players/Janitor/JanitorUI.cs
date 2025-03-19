@@ -1,9 +1,11 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class JanitorUI : PlayerUI
 {
+    [SerializeField] private TMP_Text oxygenText;
     [SerializeField] private JanitorPlayerBehaviour janitorPlayerBehaviour;
     [SerializeField] private EventTrigger maskTrigger;
     [SerializeField] private EventTrigger monitorTrigger;
@@ -56,12 +58,14 @@ public class JanitorUI : PlayerUI
         base.UpdatePowerText();
 
         powerText.text = $"Battery:{Mathf.Round(playerBehaviour.currentPower.Value)}%";
+        oxygenText.text = $"Oxygen:{janitorPlayerBehaviour.oxygenLevels.Value:F1}%";
     }
 
     public override void Update()
     {
         base.Update();
 
+        oxygenBlackout.enabled = playerBehaviour.isPlayerAlive.Value && (PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.Janitor) || GameManager.localPlayerBehaviour == playerBehaviour);
         oxygenBlackout.color = new(0, 0, 0, 1f - (janitorPlayerBehaviour.oxygenLevels.Value / 100f));
     }
 }

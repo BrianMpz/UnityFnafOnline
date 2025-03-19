@@ -81,6 +81,7 @@ public class CharacterSelectPlayer : MonoBehaviour
             PlayerData playerData = GetPlayerDataFromPlayerIndex();
 
             playerNameText.text = playerData.playerName.ToString();
+
             if (playerData.clientId == NetworkManager.Singleton.LocalClientId) playerNameText.color = Color.yellow;
             if (playerData.clientId == 0) hostImage.enabled = true; else hostImage.enabled = false;
 
@@ -104,17 +105,14 @@ public class CharacterSelectPlayer : MonoBehaviour
                     HelpyJanitor.enabled = true;
                     break;
                 default:
-                    playerRoleText.text = "Spectate (dead)";
+                    playerRoleText.text = "Spectator (dead)";
                     HelpySpectator.enabled = true;
                     break;
             }
 
             Show();
         }
-        else
-        {
-            Hide();
-        }
+        else Hide();
     }
 
     private PlayerData GetPlayerDataFromPlayerIndex()

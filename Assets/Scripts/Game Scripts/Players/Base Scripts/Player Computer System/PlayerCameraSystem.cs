@@ -249,8 +249,7 @@ public class PlayerCameraSystem : NetworkBehaviour
         canvas.enabled = false;
         cameraOutputScreen.enabled = false;
 
-        bool isSpectatingThisPlayer = GameManager.Instance.IsSpectating && SpectatorUI.Instance.GetCurrentSpectator() == playerComputer.playerBehaviour;
-        if (isSpectatingThisPlayer) GlobalCameraSystem.Instance.DisableAllCameraComponents();
+        if (PlayerRoleManager.Instance.IsSpectatingPlayer(playerComputer.playerBehaviour.playerRole)) GlobalCameraSystem.Instance.DisableAllCameraComponents();
     }
 
     [ClientRpc]
@@ -266,7 +265,6 @@ public class PlayerCameraSystem : NetworkBehaviour
 
         UpdateCameraUI(cameraData);
 
-        bool isSpectatingThisPlayer = GameManager.Instance.IsSpectating && SpectatorUI.Instance.GetCurrentSpectator() == playerComputer.playerBehaviour;
-        if (isSpectatingThisPlayer) GlobalCameraSystem.Instance.EnableCameraComponent(cameraData);
+        if (PlayerRoleManager.Instance.IsSpectatingPlayer(playerComputer.playerBehaviour.playerRole)) GlobalCameraSystem.Instance.EnableCameraComponent(cameraData);
     }
 }

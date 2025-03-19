@@ -2098,8 +2098,9 @@ MonoBehaviour:
     rely on the Audio Specialist to deter threats. Due to construction, they are
     situated in the Janitor's closet. The Audio Specialist is responsible for detecting
     motion throughout the facility and playing audio to lure them to certain areas.
-    Should the threat run into you, put on the Fred bear mask to trick them into
-    thinking you are an animatronic costume (works on 100% of the blind population).\r\n\r\nConclusion\r\n\r\nWe
+    DONT OVERUSE THE LURE THEY ARE ALIVE THEY ARE AWARE THEY WILL FIND YOU. Should
+    the threat run into you, put on the Fred bear mask to trick them into thinking
+    you are an animatronic costume (works on 100% of the blind population).\r\n\r\nConclusion\r\n\r\nWe
     take pride in our unwavering commitment to operational excellence and workplace
     safety. Each role outlined above is essential in maintaining our high standards
     of security and efficiency. While minor system failures, power disruptions, and
@@ -7274,7 +7275,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b967e1b7ad68f0048832ef216efb5d5f, type: 3}
   canvas: {fileID: 8595409959016705370}
   isPlayingLure: 0
-  lureDuration: 30
+  lureDuration: 15
 --- !u!223 &8595409959016705370
 Canvas:
   m_ObjectHideFlags: 0

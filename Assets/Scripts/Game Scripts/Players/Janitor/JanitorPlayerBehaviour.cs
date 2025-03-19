@@ -11,6 +11,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     [SerializeField] private JanitorCameraController janitorCameraController;
     public Animator mask;
     public NetworkVariable<float> oxygenLevels = new(writePerm: NetworkVariableWritePermission.Owner);
+    public NetworkVariable<float> animatronicRecognitionPossibility = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> isMaskDown = new(writePerm: NetworkVariableWritePermission.Owner);
     public bool isWearingMask;
     public bool isMonitorUp;
@@ -22,7 +23,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
     public override bool IsPlayerVulnerable(Node currentNode)
     {
-        return !isMaskDown.Value;
+        return !isMaskDown.Value || UnityEngine.Random.Range(0f, 1f) <= animatronicRecognitionPossibility.Value;
     }
 
     public override IEnumerator WaitUntilKillConditionsAreMet(Node currentNode)
@@ -36,8 +37,9 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         if (!isPlayerAlive.Value) yield break;
 
         GameAudioManager.Instance.StopAllSfx();
-        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
         mask.gameObject.SetActive(false);
+        oxygenLevels.Value = 100;
+        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
 
         float elapsedTime = 0;
 
@@ -54,8 +56,8 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     {
         currentPowerUsage.Value = 0;
 
-        if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value += 2;
-        if (playerComputer.playerMotionDetectionSystem.IsTracking) currentPowerUsage.Value += 1;
+        if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value += 3;
+        if (playerComputer.playerMotionDetectionSystem.IsTracking) currentPowerUsage.Value += 2;
 
         if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 1;
 
@@ -102,7 +104,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
             oxygenLevels.Value += 1 * Time.deltaTime;
         }
 
-        oxygenLevels.Value = Mathf.Min(oxygenLevels.Value, 100f);
+        oxygenLevels.Value = Mathf.Max(oxygenLevels.Value, 0f);
     }
 
     public void ResetCooldown()
@@ -177,7 +179,34 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     private void CheckInsideNodeForAnimatronicEntry(bool previousValue, bool newValue)
     {
         if (!isPlayerAlive.Value) return;
-        if (newValue) GameAudioManager.Instance.PlaySfxOneShot("janitor door open");
+        if (newValue)
+        {
+            GameAudioManager.Instance.PlaySfxOneShot("janitor door open");
+            StartCoroutine(CalculateRecognitionPossibility());
+        }
+    }
+
+    private IEnumerator CalculateRecognitionPossibility()
+    {
+        for (float timeElapsed = 0f; timeElapsed < 4.99f; timeElapsed += Time.deltaTime)
+        {
+            // Check if the denominator is zero to avoid division by zero
+            if (Mathf.Approximately(timeElapsed - 5f, 0f))
+            {
+                yield break; // Exit the coroutine if denominator would be zero
+            }
+
+            if (isMaskDown.Value)
+            {
+                yield return null;
+                continue;
+            }
+
+            // Calculate the recognition possibility using the given formula
+            animatronicRecognitionPossibility.Value = Mathf.Clamp((0.3f / Mathf.Pow(timeElapsed - 5f, 2)) - 0.01481f, 0, 1); // 0.5s grace period
+
+            yield return null;
+        }
     }
 
     private void CheckOxygenValue(float previousValue, float newValue)
@@ -194,6 +223,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     {
         GameAudioManager.Instance.PlaySfxOneShot("janitor door close");
         MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(1f);
+        animatronicRecognitionPossibility.Value = 0; // 0.5s grace period
     }
 
     public override bool IsAnimatronicCloseToAttack(Node currentNode)

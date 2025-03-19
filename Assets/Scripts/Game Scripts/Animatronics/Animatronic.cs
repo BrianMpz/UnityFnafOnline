@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Unity.Netcode;
+using System.IO.Pipes;
 
 public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS runs on server
 {
@@ -132,6 +133,8 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         else
         {
             print("resisted audioLure");
+
+            SetTarget(AnimatronicManager.Instance.GetPlayerNodeFromPlayerRole(PlayerRoles.Janitor)); // beeline towards janitor
         }
     }
 

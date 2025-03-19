@@ -135,6 +135,11 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
         return PlayerNodes.FirstOrDefault(playerNode => playerNode.playerBehaviour != null && playerNode.playerBehaviour.playerRole == playerRole);
     }
 
+    public PlayerNode GetPlayerNodeFromName(NodeName nodeName)
+    {
+        return PlayerNodes.FirstOrDefault(playerNode => playerNode.playerBehaviour != null && playerNode.nodeName == nodeName);
+    }
+
     public Node GetNodeFromName(NodeName nodeName)
     {
         return Nodes.FirstOrDefault(node => node.nodeName == nodeName);

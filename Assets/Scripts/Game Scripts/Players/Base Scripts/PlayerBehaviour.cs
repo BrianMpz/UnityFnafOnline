@@ -139,6 +139,8 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
         // drain power
         currentPower.Value -= drainRate * currentPowerUsage.Value;
+
+        currentPower.Value = Mathf.Min(currentPower.Value, 100f);
     }
 
     [ServerRpc(RequireOwnership = false)]
