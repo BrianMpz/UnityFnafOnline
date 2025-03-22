@@ -89,7 +89,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
     {
         yield return WaitForObjectsToSpawn();
 
-        foreach (PlayerData data in MultiplayerManager.Instance.playerDataList) // foreach player, their resective office is set to alive
+        foreach (PlayerData data in MultiplayerManager.Instance.playerDataList) // for each player, their resective office is set to alive
         {
             switch (data.role) // extend to other offices
             {

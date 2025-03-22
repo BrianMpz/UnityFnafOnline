@@ -17,6 +17,7 @@ public class GameDisconnectedUI : MonoBehaviour
     {
         NetworkManager.Singleton.OnTransportFailure += NetworkManager_OnTransportFailure;
         NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnDisconnectCallback;
+        MultiplayerManager.Instance.OnKick += MultiplayerManager_OnKick;
 
         if (MultiplayerManager.isPlayingOnline)
         {
@@ -53,7 +54,7 @@ public class GameDisconnectedUI : MonoBehaviour
         if (clientId == 0 && clientId != NetworkManager.Singleton.LocalClientId)
         {
             DestroyGame();
-            disconnectReason.text = "The host has disconnected!";
+            disconnectReason.text = "The Host has disconnected!";
         }
 
         else if (clientId == NetworkManager.Singleton.LocalClientId)
@@ -67,6 +68,12 @@ public class GameDisconnectedUI : MonoBehaviour
     {
         DestroyGame();
         disconnectReason.text = "Lost connection to Online Service!";
+    }
+
+    private void MultiplayerManager_OnKick()
+    {
+        DestroyGame();
+        disconnectReason.text = "You have been Kicked from the Server!";
     }
 
     private void DestroyGame()

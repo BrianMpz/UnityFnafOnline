@@ -11,9 +11,11 @@ using UnityEngine.UI;
 
 public class CharacterSelectPlayer : MonoBehaviour
 {
+    [Header("Images")]
     [SerializeField] private int playerIndex;
     [SerializeField] private Button leftOptionButton;
     [SerializeField] private Button rightOptionButton;
+    [SerializeField] private Button kickButton;
     [SerializeField] private TMP_Text playerNameText;
     [SerializeField] private TMP_Text playerRoleText;
     [SerializeField] private Image hostImage;
@@ -26,17 +28,17 @@ public class CharacterSelectPlayer : MonoBehaviour
     [SerializeField] private Image HelpySpectator;
 
     [Header("Voice Chat")]
-    public Image ChatStateImage;
-    public EventTrigger MuteButton;
-    public Sprite SpeakingImage;
-    public Sprite NotSpeakingImage;
+    [SerializeField] private Image ChatStateImage;
+    [SerializeField] private EventTrigger MuteButton;
+    [SerializeField] private Sprite SpeakingImage;
+    [SerializeField] private Sprite NotSpeakingImage;
     [SerializeField] private Sprite MutedImage;
     public VivoxParticipant Participant;
 
     private void Start()
     {
-        LobbyUI.Instance.AboutToStartGame += HideSelectButtons;
-        LobbyUI.Instance.CancelToStartGame += ShowSelectButtons;
+        LobbyUI.Instance.AboutToStartGame += HideHostOnlyButtons;
+        LobbyUI.Instance.CancelToStartGame += ShowHostOnlyButtons;
 
         leftOptionButton.onClick.AddListener(() =>
         {
@@ -48,13 +50,18 @@ public class CharacterSelectPlayer : MonoBehaviour
             MultiplayerManager.Instance.ChangePlayerRole(playerIndex, next: true);
         });
 
-        MultiplayerManager.Instance.OnPlayerDataListChanged += MultiplayerManager_OnPLayerDataListChanged;
-        UpdatePlayer();
+        kickButton.onClick.AddListener(() =>
+        {
+            MultiplayerManager.Instance.KickPlayer(playerIndex);
+        });
 
         if (!MultiplayerManager.isPlayingOnline)
         {
             ChatStateImage.enabled = false;
         }
+
+        MultiplayerManager.Instance.OnPlayerDataListChanged += MultiplayerManager_OnPLayerDataListChanged;
+        UpdatePlayer();
 
         AddListener(MuteButton, EventTriggerType.PointerClick, ToggleMute);
     }
@@ -83,7 +90,9 @@ public class CharacterSelectPlayer : MonoBehaviour
             playerNameText.text = playerData.playerName.ToString();
 
             if (playerData.clientId == NetworkManager.Singleton.LocalClientId) playerNameText.color = Color.yellow;
-            if (playerData.clientId == 0) hostImage.enabled = true; else hostImage.enabled = false;
+
+            hostImage.enabled = playerData.clientId == 0;
+            kickButton.gameObject.SetActive(playerData.clientId == 0);
 
             DisableAllHelpys();
             switch (playerData.role)
@@ -126,11 +135,11 @@ public class CharacterSelectPlayer : MonoBehaviour
 
         if (NetworkManager.Singleton.IsServer)
         {
-            ShowSelectButtons();
+            ShowHostOnlyButtons();
         }
         else
         {
-            HideSelectButtons();
+            HideHostOnlyButtons();
         }
 
         StartCoroutine(GetSpeechData());
@@ -160,22 +169,27 @@ public class CharacterSelectPlayer : MonoBehaviour
         UpdateChatStateImage();
     }
 
-    private void ShowSelectButtons()
+    private void ShowHostOnlyButtons()
     {
         leftOptionButton.gameObject.SetActive(true);
         rightOptionButton.gameObject.SetActive(true);
+
+        if (!MultiplayerManager.Instance.IsPlayerIndexConnected(playerIndex)) return;
+
+        PlayerData playerData = GetPlayerDataFromPlayerIndex();
+        kickButton.gameObject.SetActive(playerData.clientId != 0);
     }
 
-    private void HideSelectButtons()
+    private void HideHostOnlyButtons()
     {
         leftOptionButton.gameObject.SetActive(false);
         rightOptionButton.gameObject.SetActive(false);
+        kickButton.gameObject.SetActive(false);
     }
 
     private void Hide()
     {
         gameObject.SetActive(false);
-        HideSelectButtons();
 
         if (Participant != null)
         {
@@ -208,7 +222,6 @@ public class CharacterSelectPlayer : MonoBehaviour
     {
         if (!MultiplayerManager.isPlayingOnline) return;
         if (ChatStateImage == null) return;
-
 
         if (VivoxService.Instance == null)
         {

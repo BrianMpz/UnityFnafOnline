@@ -20,6 +20,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
     public event Action<bool> OnTryingToJoinGame;
     public event Action<PlayerData> Game_ClientDisconnect;
     public event Action OnPlayerDataListChanged;
+    public event Action OnKick;
 
     public NetworkVariable<GameNight> gameNight = new(writePerm: NetworkVariableWritePermission.Server);
     public NetworkList<PlayerData> playerDataList = new(writePerm: NetworkVariableWritePermission.Server);
@@ -37,6 +38,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
     private void InitialisePlayerList()
     {
+        playersLoadedIntoGameSceneDictionary = new();
         playerDataList = new();
         playerDataList.OnListChanged += PlayerDataList_OnListChanged;
     }
@@ -346,6 +348,18 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         }
     }
 
+    public void KickPlayer(int playerIndex)
+    {
+        ulong clientId = GetPlayerDataFromPlayerIndex(playerIndex).clientId;
+        KickPlayerClientRpc(NewClientRpcSendParams(clientId));
+    }
+
+    [ClientRpc]
+    public void KickPlayerClientRpc(ClientRpcParams clientRpcParams)
+    {
+        OnKick?.Invoke();
+    }
+
     public void ResetPlayersLoadedIntoGameSceneDictionary() // called when about to load into the game scene
     {
         playersLoadedIntoGameSceneDictionary = new();
@@ -377,7 +391,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         StartCoroutine(GameManager.Instance.Initalise(gameNight.Value));
     }
 
-    public static ClientRpcParams NewClientRpcSendParams(ulong recipientId)
+    public static ClientRpcParams NewClientRpcSendParams(ulong recipientId) // used when sending clienrrpcs
     {
         return new()
         {
@@ -398,5 +412,4 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
             }
         };
     }
-
 }

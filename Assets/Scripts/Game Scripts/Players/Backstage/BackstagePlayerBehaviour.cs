@@ -135,7 +135,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ZapServerRpc(int zapAttempts)
     {
-        currentPower.Value -= zapAttempts * zapAttempts / 3;
+        currentPower.Value -= (zapAttempts * zapAttempts) / 2;
         zap.ZapAnimatronic();
     }
 

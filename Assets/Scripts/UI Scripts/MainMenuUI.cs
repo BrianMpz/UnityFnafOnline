@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -12,6 +13,10 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private TMP_InputField playerNameInputField;
+    [SerializeField] private TMP_Text ClearDataText;
+
+    private const float ClearDataKeyHoldLength = 2.5f;
+    private Coroutine clearDataCoroutine;
 
     private void Start()
     {
@@ -32,8 +37,7 @@ public class MainMenuUI : MonoBehaviour
 
     private void PlayOffline()
     {
-        if (playerNameInputField.text != "")
-            PlayerPrefs.SetString(MultiplayerManager.PlayerprefsPlayerNameLocation, playerNameInputField.text);
+        if (playerNameInputField.text != "") PlayerPrefs.SetString(MultiplayerManager.PlayerprefsPlayerNameLocation, playerNameInputField.text);
 
         MultiplayerManager.isPlayingOnline = false;
         Loader.LoadScene(Loader.Scene.Matchmaking);
@@ -54,10 +58,59 @@ public class MainMenuUI : MonoBehaviour
 
     }
 
-    private void TruncateUsername(string input) // set max username length to 14
+    private void TruncateUsername(string input)
     {
-        if (string.IsNullOrEmpty(input) || input.Length <= 14) return;
+        int maxUsernameLength = 12;
 
-        playerNameInputField.text = input[..14];
+        if (string.IsNullOrEmpty(input) || input.Length <= maxUsernameLength) return;
+
+        playerNameInputField.text = input[..maxUsernameLength];
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.D) && clearDataCoroutine == null)
+        {
+            clearDataCoroutine = StartCoroutine(ClearDataCountdown());
+        }
+
+        if (Input.GetKeyUp(KeyCode.D) && clearDataCoroutine != null)
+        {
+            StopCoroutine(clearDataCoroutine);
+            clearDataCoroutine = null;
+            ClearDataText.text = "Hold 'D' to clear Save Data";
+        }
+    }
+
+    private IEnumerator ClearDataCountdown()
+    {
+        float elapsedTime = 0f;
+
+        yield return new WaitForSeconds(0.5f);
+
+        while (elapsedTime < ClearDataKeyHoldLength)
+        {
+            if (!Input.GetKey(KeyCode.D))
+            {
+                yield break; // Stop if key is released
+            }
+
+            ClearDataText.text = "Clearing Data...";
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        ClearData();
+    }
+
+    private void ClearData()
+    {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+
+        ClearDataText.text = "Save Data has been Cleared!";
+        playerNameInputField.text = "";
+
+        clearDataCoroutine = null; // Reset coroutine reference
     }
 }

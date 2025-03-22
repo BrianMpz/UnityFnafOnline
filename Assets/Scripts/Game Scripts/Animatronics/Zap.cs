@@ -9,7 +9,7 @@ public class Zap : Animatronic
     [SerializeField] private Vector3 startingPosition;
     [SerializeField] private Vector3 endingPosition;
     [SerializeField] private float moveSpeed;
-    private NetworkVariable<bool> isBeingWatched = new(writePerm: NetworkVariableWritePermission.Server);
+    [SerializeField] private NetworkVariable<bool> isBeingWatched = new(writePerm: NetworkVariableWritePermission.Server);
     Coroutine movementProgress;
 
     public override void Initialise() // dont call base class
@@ -24,30 +24,37 @@ public class Zap : Animatronic
             case GameNight.One:
                 currentDifficulty.Value = 1;
                 currentMovementWaitTime.Value = 4;
+                moveSpeed = 1;
                 break;
             case GameNight.Two:
                 currentDifficulty.Value = 2;
                 currentMovementWaitTime.Value = 4f;
+                moveSpeed = 3;
                 break;
             case GameNight.Three:
                 currentDifficulty.Value = 4;
                 currentMovementWaitTime.Value = 4f;
+                moveSpeed = 5;
                 break;
             case GameNight.Four:
                 currentDifficulty.Value = 7;
                 currentMovementWaitTime.Value = 4f;
+                moveSpeed = 7;
                 break;
             case GameNight.Five:
                 currentDifficulty.Value = 11;
                 currentMovementWaitTime.Value = 4f;
+                moveSpeed = 7;
                 break;
             case GameNight.Six:
                 currentDifficulty.Value = 16;
                 currentMovementWaitTime.Value = 4f;
+                moveSpeed = 9;
                 break;
             case GameNight.Seven:
                 currentDifficulty.Value = 20;
                 currentMovementWaitTime.Value = 4f;
+                moveSpeed = 11;
                 break;
         }
 
@@ -68,19 +75,18 @@ public class Zap : Animatronic
 
         while (elapsedTime < duration)
         {
+            yield return null;
+
             if (isBeingWatched.Value)
             {
-                yield return null;
                 continue;
             }
 
             Vector3 newPostion = Vector3.Lerp(startingPosition, endingPosition, elapsedTime / duration);
             animatronicModel.localPosition = newPostion;
 
-            yield return null;
-
             elapsedTime += Time.deltaTime;
-            duration = 900 / currentDifficulty.Value / moveSpeed;
+            duration = 354f / moveSpeed;
         }
 
         if (IsServer)

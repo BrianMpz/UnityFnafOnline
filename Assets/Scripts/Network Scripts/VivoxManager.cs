@@ -5,6 +5,7 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
 using Unity.Services.Vivox;
+using Unity.Services.Vivox.AudioTaps;
 using UnityEngine;
 
 public class VivoxManager : Singleton<VivoxManager>
@@ -18,9 +19,12 @@ public class VivoxManager : Singleton<VivoxManager>
 
     public string currentChannelName;
 
+    private AudioHighPassFilter audioLowPassFilter;
+
 
     private void Awake()
     {
+        audioLowPassFilter = GetComponent<AudioHighPassFilter>();
         if (MultiplayerManager.isPlayingOnline) DontDestroyOnLoad(gameObject); else Destroy(gameObject);
     }
 
@@ -63,6 +67,8 @@ public class VivoxManager : Singleton<VivoxManager>
     {
         lobbyChatName = roomCode + "_LobbyChat";
         gameChatName = roomCode + "_GameChat";
+
+        //gamechatAudioTap.ChannelName = gameChatName;
     }
 
     // Switch chat based on game state
@@ -87,16 +93,19 @@ public class VivoxManager : Singleton<VivoxManager>
 
         await LeaveCurrentChannel(currentChannelName);
 
-        currentChannelName = channelName;
-
         if (!VivoxService.Instance.IsLoggedIn) await LogInAsync();
 
-        if (GetChannel(currentChannelName) == null) await VivoxService.Instance.JoinGroupChannelAsync(channelName, ChatCapability.TextAndAudio);
+        if (GetChannel(channelName) == null) await VivoxService.Instance.JoinGroupChannelAsync(channelName, ChatCapability.AudioOnly);
+
+        currentChannelName = channelName;
 
         VivoxService.Instance.DisableAcousticEchoCancellation();
 
-        Debug.Log($"joined {channelName}");
         VivoxService.Instance.UnmuteOutputDevice();
+
+        Debug.Log($"joined {channelName}");
+
+        audioLowPassFilter.enabled = channelName == gameChatName;
     }
 
     public bool IsInChannel(string channel)
