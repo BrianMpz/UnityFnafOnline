@@ -85,15 +85,15 @@ public class Maintenance : NetworkSingleton<Maintenance>
 
     private void CancelReboot()
     {
-        if (restoreSystemCoroutine == null) return;
+        if (!isRebooting) return;
 
         StopCoroutine(restoreSystemCoroutine);
-        EnableButtons();
         isRebooting = false;
 
-        if (GetSystemState(SystemType.Cameras) == State.REBOOTING) SetSystemState(SystemType.Cameras, State.OFFLINE);
-        if (GetSystemState(SystemType.Comms) == State.REBOOTING) SetSystemState(SystemType.Comms, State.OFFLINE);
-        if (GetSystemState(SystemType.PowerGenerator) == State.REBOOTING) SetSystemState(SystemType.PowerGenerator, State.OFFLINE);
+        EnableButtons();
+        SetAllSystemsState(State.OFFLINE);
+
+        GameAudioManager.Instance.PlaySfxOneShot("failed sfx");
     }
 
     private void CommunicationsStateChanged(State previousValue, State newValue)
@@ -154,18 +154,15 @@ public class Maintenance : NetworkSingleton<Maintenance>
         if (isRebooting) yield break; // Prevent multiple reboots at the same time
 
         GameAudioManager.Instance.PlaySfxOneShot("camera blip");
-        SetSystemState(SystemType.Cameras, State.REBOOTING);
-        SetSystemState(SystemType.Comms, State.REBOOTING);
-        SetSystemState(SystemType.PowerGenerator, State.REBOOTING);
+        SetAllSystemsState(State.REBOOTING);
         DisableButtons();
         isRebooting = true;
 
         yield return new WaitForSeconds(rebootLength);
 
         GameAudioManager.Instance.PlaySfxOneShot("camera blip");
-        SetSystemState(SystemType.Cameras, State.ONLINE);
-        SetSystemState(SystemType.Comms, State.ONLINE);
-        SetSystemState(SystemType.PowerGenerator, State.ONLINE);
+        SetAllSystemsState(State.ONLINE);
+
         EnableButtons();
         isRebooting = false;
 
@@ -186,6 +183,13 @@ public class Maintenance : NetworkSingleton<Maintenance>
                 powerGeneratorState.Value = newState;
                 break;
         }
+    }
+
+    private void SetAllSystemsState(State newState)
+    {
+        SetSystemState(SystemType.Cameras, newState);
+        SetSystemState(SystemType.Comms, newState);
+        SetSystemState(SystemType.PowerGenerator, newState);
     }
 
     private State GetSystemState(SystemType systemType)

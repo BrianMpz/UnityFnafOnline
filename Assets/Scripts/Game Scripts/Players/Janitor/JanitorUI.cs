@@ -58,7 +58,7 @@ public class JanitorUI : PlayerUI
         base.UpdatePowerText();
 
         powerText.text = $"Battery:{Mathf.Round(playerBehaviour.currentPower.Value)}%";
-        oxygenText.text = $"Oxygen:{janitorPlayerBehaviour.oxygenLevels.Value:F1}%";
+        oxygenText.text = $"Oxygen:{Mathf.Min(janitorPlayerBehaviour.oxygenLevels.Value, 100):F1}%";
     }
 
     public override void Update()
