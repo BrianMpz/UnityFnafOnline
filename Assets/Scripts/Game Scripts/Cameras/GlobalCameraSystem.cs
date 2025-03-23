@@ -21,6 +21,7 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
     private List<PlayerComputer> playerComputers;
     public Action<int> OnPlayersWatchingFoxyUpdate;
     public Action<CameraName> OnCameraVisibilityChanged;
+    public float timeSinceLastFoxyCheck;
 
 
     private void Start()
@@ -66,13 +67,17 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
         if (!IsServer) return;
 
         int playersWatchingfoxy = 0;
+
         foreach (PlayerComputer playerComputer in playerComputers)
         {
             if (playerComputer.playerCameraSystem.isWatchingFoxy.Value)
             {
                 playersWatchingfoxy++;
+                timeSinceLastFoxyCheck = 0;
             }
         }
+
+        timeSinceLastFoxyCheck += Time.deltaTime;
 
         OnPlayersWatchingFoxyUpdate?.Invoke(playersWatchingfoxy);
     }

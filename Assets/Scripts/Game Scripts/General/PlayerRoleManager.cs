@@ -222,6 +222,12 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         return GameManager.Instance.IsSpectating && SpectatorUI.Instance.GetCurrentSpectator().playerRole == playerRole;
     }
 
+    public bool IsSpectatingOrControllingThisPlayer(PlayerRoles playerRole)
+    {
+        PlayerBehaviour playerBehaviour = GetPlayerBehaviourFromRole(playerRole);
+        return playerBehaviour.isPlayerAlive.Value && (IsSpectatingPlayer(playerRole) || GameManager.localPlayerBehaviour == playerBehaviour);
+    }
+
     public bool IsPlayerDead(PlayerBehaviour playerBehaviour)
     {
         if (playerBehaviour == null) return true;

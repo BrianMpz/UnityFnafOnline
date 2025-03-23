@@ -19,6 +19,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
     [SerializeField] private TMP_Text hourText;
     [SerializeField] private TMP_Text timeLeftText;
     [SerializeField] private TMP_Text currentPlayerPowerText;
+    [SerializeField] private protected TMP_Text nightText;
     [SerializeField] private List<SpectatingPlayer> spectatingPlayerList;
     private List<PlayerRoles> playerList;
     private int currentPlayerSpectatingIndex;
@@ -33,6 +34,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
         GameManager.Instance.OnGameOver += Hide;
         GameManager.Instance.OnGameWin += Hide;
         GameManager.Instance.currentHour.OnValueChanged += UpdateGameTimeText;
+        GameManager.Instance.OnGameStarted += SetNightText;
 
         if (MultiplayerManager.isPlayingOnline) StartCoroutine(PerpetuallyUpdateCommunicatingPlayers());
 
@@ -69,13 +71,18 @@ public class SpectatorUI : Singleton<SpectatorUI>
         else
             currentPlayerPowerText.text = "";
 
-        float timeLeft = Mathf.Max(360 - GameManager.Instance.currentGameTime.Value, 0);
+        float timeLeft = Mathf.Max(359.9f - GameManager.Instance.currentGameTime.Value, 0);
         timeLeftText.text = $"{timeLeft:F1}";
     }
 
     private void UpdateGameTimeText(int previousHour, int currentHour)
     {
         hourText.text = $"{currentHour}AM";
+    }
+
+    private void SetNightText()
+    {
+        nightText.text = $"Night {GameManager.Instance.gameNight}";
     }
 
     private IEnumerator PerpetuallyUpdateCommunicatingPlayers()

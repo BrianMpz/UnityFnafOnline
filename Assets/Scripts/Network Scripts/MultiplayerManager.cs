@@ -72,7 +72,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
             {
                 playerName = name,
                 clientId = srp.Receive.SenderClientId,
-                role = GetRandomUnusedPlayerRole(),
+                role = srp.Receive.SenderClientId == 0 ? PlayerRoles.SecurityOffice : GetRandomUnusedPlayerRole(),
                 vivoxId = vId
             });
         else
@@ -317,7 +317,8 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
     {
         PlayerRoles[] playerRoles = (PlayerRoles[])Enum.GetValues(typeof(PlayerRoles));
         List<PlayerRoles> shuffledPlayerRoles = playerRoles.OrderBy(x => UnityEngine.Random.value).ToList();
-        shuffledPlayerRoles.Remove(PlayerRoles.None);
+
+        shuffledPlayerRoles.Remove(PlayerRoles.None); // we dont want to randomly select it
 
         foreach (PlayerRoles role in shuffledPlayerRoles)
         {
@@ -327,7 +328,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
             }
         }
 
-        return PlayerRoles.None;
+        return PlayerRoles.None; // only select it if there is no other choice
     }
 
     public void DisallowNobodyHavingARole() // when starting the game the player cant have a spectator

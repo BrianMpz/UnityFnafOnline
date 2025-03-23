@@ -10,6 +10,8 @@ public class Zap : Animatronic
     [SerializeField] private Vector3 endingPosition;
     [SerializeField] private float moveSpeed;
     [SerializeField] private NetworkVariable<bool> isBeingWatched = new(writePerm: NetworkVariableWritePermission.Server);
+    [SerializeField] private NetworkVariable<bool> isApproachingPlayer = new(writePerm: NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> movementProgressValue = new(writePerm: NetworkVariableWritePermission.Server);
     Coroutine movementProgress;
 
     public override void Initialise() // dont call base class
@@ -44,31 +46,27 @@ public class Zap : Animatronic
             case GameNight.Five:
                 currentDifficulty.Value = 11;
                 currentMovementWaitTime.Value = 4f;
-                moveSpeed = 7;
+                moveSpeed = 9;
                 break;
             case GameNight.Six:
                 currentDifficulty.Value = 16;
                 currentMovementWaitTime.Value = 4f;
-                moveSpeed = 9;
+                moveSpeed = 10;
                 break;
             case GameNight.Seven:
                 currentDifficulty.Value = 20;
                 currentMovementWaitTime.Value = 4f;
-                moveSpeed = 11;
+                moveSpeed = 10;
                 break;
         }
 
-        ApproachPlayerClientRpc();
-    }
-
-    [ClientRpc]
-    private void ApproachPlayerClientRpc()
-    {
         movementProgress = StartCoroutine(ApproachPlayer());
     }
 
     private IEnumerator ApproachPlayer()
     {
+        isApproachingPlayer.Value = true;
+
         animatronicModel.position = startingPosition;
         float elapsedTime = 0;
         float duration = Mathf.Infinity;
@@ -82,39 +80,51 @@ public class Zap : Animatronic
                 continue;
             }
 
-            Vector3 newPostion = Vector3.Lerp(startingPosition, endingPosition, elapsedTime / duration);
-            animatronicModel.localPosition = newPostion;
+            movementProgressValue.Value = elapsedTime / duration; // server authoritative
 
             elapsedTime += Time.deltaTime;
             duration = 354f / moveSpeed;
         }
+
+        isApproachingPlayer.Value = false;
 
         if (IsServer)
         {
             int indexOfTargetNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
             ConfirmKillServerRpc(indexOfTargetNode);
 
-            yield return new WaitForSeconds(UnityEngine.Random.Range(5, 60)); // wait a random amount of time before entering the pizerria
+            yield return new WaitForSeconds(Mathf.Lerp(5, 60, 1 - currentDifficulty.Value / 20f)); // wait a random amount of time before entering the facility
 
-            gameplayLoop = StartCoroutine(GameplayLoop()); // is released
+            gameplayLoop = StartCoroutine(GameplayLoop()); // is released into facility
         }
     }
 
-    public void ZapAnimatronic()
+    private void Update()
     {
-        ZapAnimatronicClientRpc();
+        if (!isApproachingPlayer.Value) return;
+
+        Vector3 newPostion = Vector3.Lerp(startingPosition, endingPosition, movementProgressValue.Value);
+        animatronicModel.localPosition = newPostion;
     }
 
-    [ClientRpc]
-    public void ZapAnimatronicClientRpc()
+    public void GetZapped()
     {
         if (movementProgress != null)
         {
             StopCoroutine(movementProgress);
+            isApproachingPlayer.Value = false;
+
             movementProgress = StartCoroutine(ApproachPlayer());
         }
 
+        GetZappedClientRpc();
+    }
+
+    [ClientRpc]
+    public void GetZappedClientRpc()
+    {
         if (PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.Backstage)) MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut();
+        // play zap animation later
     }
 
     [ServerRpc(RequireOwnership = false)]

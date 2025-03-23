@@ -123,18 +123,36 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     public void AudioLure_AttractAnimatronic(Node targetedNode)
     {
-        bool canResistLure = (int)audioLureResistance.Value > UnityEngine.Random.Range(0, 100); // 0 to 99
+        bool alreadyAtThisNode = targetedNode == target;
+        bool canResistLure = (int)audioLureResistance.Value >= UnityEngine.Random.Range(0, 100); // 0 to 99
 
-        if (!canResistLure)
+        if (!canResistLure || alreadyAtThisNode)
         {
             SetTarget(targetedNode);
-            audioLureResistance.Value += Mathf.Lerp(40f, 80f, currentDifficulty.Value / 20f);
+
+            audioLureResistance.Value += Mathf.Lerp(0f, 80f, currentDifficulty.Value / 20f);
         }
         else
         {
             print("resisted audioLure");
 
             SetTarget(AnimatronicManager.Instance.GetPlayerNodeFromPlayerRole(PlayerRoles.Janitor)); // beeline towards janitor
+        }
+    }
+
+    private protected void HandleAggrivation(bool shouldBeAggrivated, float aggrivatedDifficultyAdditionAmount = 20, float aggrivatedWaitTimeCoefficient = 1.5f)
+    {
+        if (isCurrentlyAggrivated.Value)
+        {
+            isCurrentlyAggrivated.Value = false;
+            currentMovementWaitTime.Value *= aggrivatedWaitTimeCoefficient;
+            currentDifficulty.Value -= aggrivatedDifficultyAdditionAmount;
+        }
+        if (shouldBeAggrivated)
+        {
+            isCurrentlyAggrivated.Value = true;
+            currentMovementWaitTime.Value /= aggrivatedWaitTimeCoefficient;
+            currentDifficulty.Value += aggrivatedDifficultyAdditionAmount;
         }
     }
 
@@ -147,18 +165,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         while (GameManager.Instance.isPlaying && IsServer)
         {
             bool shouldBeAggrivated = PlayerRoleManager.Instance.IsAnimatronicAboutToAttack(currentNode);
-            if (isCurrentlyAggrivated.Value)
-            {
-                isCurrentlyAggrivated.Value = false;
-                currentMovementWaitTime.Value *= 1.5f;
-                currentDifficulty.Value -= 20;
-            }
-            if (shouldBeAggrivated)
-            {
-                isCurrentlyAggrivated.Value = true;
-                currentMovementWaitTime.Value /= 1.5f;
-                currentDifficulty.Value += 20;
-            }
+            HandleAggrivation(shouldBeAggrivated);
 
             yield return new WaitForSeconds(currentMovementWaitTime.Value);
 

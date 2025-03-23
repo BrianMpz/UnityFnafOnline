@@ -92,8 +92,7 @@ public class Foxy : Animatronic
         PlayerNode playerNode = AnimatronicManager.Instance.PlayerNodes.FirstOrDefault(x =>
             x.playerBehaviour != null && x.playerBehaviour.playerRole == playerRole && x.playerBehaviour.isPlayerAlive.Value);
 
-        isCurrentlyAggrivated.Value = true;
-        gameplayLoop = StartCoroutine(GameplayLoop(isCurrentlyAggrivated.Value));
+        gameplayLoop = StartCoroutine(GameplayLoop(true));
     }
 
     // Called when players change their view on Foxy in the cameras
@@ -146,20 +145,9 @@ public class Foxy : Animatronic
     // The main loop where Foxy's movements and attacks are handled
     private IEnumerator GameplayLoop(bool shouldBeAggrivated)
     {
-        isCurrentlyAggrivated.Value = shouldBeAggrivated;
+        HandleAggrivation(shouldBeAggrivated || GlobalCameraSystem.Instance.timeSinceLastFoxyCheck > 30);
 
-        if (isCurrentlyAggrivated.Value)
-        {
-            isCurrentlyAggrivated.Value = false;
-            currentMovementWaitTime.Value *= 2;
-            currentDifficulty.Value -= 10;
-        }
-        if (shouldBeAggrivated)
-        {
-            currentMovementWaitTime.Value /= 2;
-            currentDifficulty.Value += 10;
-        }
-        else yield return new WaitForSeconds(waitTimeToStartMoving); // Initial wait before starting movement
+        yield return new WaitForSeconds(waitTimeToStartMoving); // Initial wait before starting movement
 
         currentAttackAttempt.Value++;
 
@@ -175,7 +163,7 @@ public class Foxy : Animatronic
         {
             yield return new WaitForSeconds(currentMovementWaitTime.Value); // Delay before each movement attempt
 
-            if (UnityEngine.Random.Range(1, 21) <= currentDifficulty.Value)
+            if (UnityEngine.Random.Range(1, 20 + 1) <= currentDifficulty.Value)
             {
                 if (!isLocked)
                 {

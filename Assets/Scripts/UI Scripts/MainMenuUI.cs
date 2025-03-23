@@ -27,8 +27,7 @@ public class MainMenuUI : MonoBehaviour
 
         playButton.onClick.AddListener(PlayOnline);
         playOfflineButton.onClick.AddListener(PlayOffline);
-
-        settingsButton.onClick.AddListener(SettingsUI.Instance.Show);
+        settingsButton.onClick.AddListener(NotImplementedInBuildUI.Instance.Show);
 
         quitButton.onClick.AddListener(Application.Quit);
 

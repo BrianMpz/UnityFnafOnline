@@ -92,7 +92,7 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
 
         float elapsedTime = 0;
 
-        while (elapsedTime < .7f)
+        while (elapsedTime < .6f)
         {
             cameraController.LerpTowardsDeathView();
             yield return null;

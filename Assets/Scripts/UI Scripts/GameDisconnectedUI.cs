@@ -76,8 +76,9 @@ public class GameDisconnectedUI : MonoBehaviour
         disconnectReason.text = "You have been Kicked from the Server!";
     }
 
-    private void DestroyGame()
+    private async void DestroyGame()
     {
+        if (MultiplayerManager.isPlayingOnline) await VivoxManager.Instance.LogOutAsync();
         NetworkManager.Singleton.Shutdown();
         Show();
     }

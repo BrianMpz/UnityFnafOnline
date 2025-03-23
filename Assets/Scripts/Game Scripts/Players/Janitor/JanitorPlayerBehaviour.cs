@@ -97,11 +97,11 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
         if (isMaskDown.Value)
         {
-            oxygenLevels.Value -= 10 * Time.deltaTime;
+            oxygenLevels.Value -= 8 * Time.deltaTime;
         }
         else
         {
-            oxygenLevels.Value += 1 * Time.deltaTime;
+            oxygenLevels.Value += 0.5f * Time.deltaTime;
         }
 
         oxygenLevels.Value = Mathf.Max(oxygenLevels.Value, 0f);

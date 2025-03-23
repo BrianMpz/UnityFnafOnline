@@ -6,12 +6,61 @@ using UnityEngine;
 public class BackstagePlayerBehaviour : PlayerBehaviour
 {
     [Header("Specialised Variables")]
+    [SerializeField] private BackstageCameraController backstageCameraController;
+    [SerializeField] private Light RoomLight;
     public Maintenance maintenance;
     public Door door;
     public Zap zap;
-    [SerializeField] private Light RoomLight;
     private float zapCooldown;
     private int zapAttempts;
+
+
+    public override void Initialise()
+    {
+        base.Initialise();
+
+        if (!IsOwner) return;
+
+        StartCoroutine(HandleZapWarningAudio());
+    }
+
+    private IEnumerator HandleZapWarningAudio()
+    {
+        AudioSource freddles = GameAudioManager.Instance.PlaySfxInterruptable("freddles", volume: 0f, loop: true);
+
+        float volumeIncreasePerSecond = 0.025f; // Increase by 2.5% per second
+        float currentVolume = 0f;
+
+        while (freddles != null && isPlayerAlive.Value)
+        {
+            Transform currentView = backstageCameraController.CurrentView;
+            Transform shockView = backstageCameraController.ShockView;
+
+            if (currentView != shockView)
+            {
+                // If the player is not watching the animatronic, increase the volume constantly
+                currentVolume += volumeIncreasePerSecond * Time.deltaTime * GetZapWarningAudioIncreaseCoefficient();
+            }
+            else
+            {
+                yield return new WaitForSeconds(0.2f);
+                // If the player is looking at the animatronic, reset the volume
+                currentVolume = 0f;
+            }
+
+            // Clamp the volume to prevent it from going over 1
+            freddles.volume = Mathf.Clamp(currentVolume - 0.2f, 0f, 1f);
+
+            yield return null;
+        }
+    }
+
+    private float GetZapWarningAudioIncreaseCoefficient()
+    {
+        if (zap == null) return 1;
+
+        return Mathf.Lerp(1, 4, zap.movementProgressValue.Value);
+    }
 
     public override bool IsPlayerVulnerable(Node currentNode)
     {
@@ -88,9 +137,9 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
 
         RoomLight.intensity = 4;
 
-        PowerOnServerRpc();
-
         AudioSource ambiance = GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
+
+        PowerOnServerRpc();
     }
     [ServerRpc(RequireOwnership = false)]
     private void PowerOnServerRpc(ServerRpcParams serverRpcParams = default) => PowerOnClientRpc(serverRpcParams.Receive.SenderClientId);
@@ -116,7 +165,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
 
     public void Zap()
     {
-        if (zapCooldown < 10)
+        if (zapCooldown < 10 || !isPlayerPoweredOn.Value)
         {
             GameAudioManager.Instance.PlaySfxOneShot("button error");
             return;
@@ -135,8 +184,9 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ZapServerRpc(int zapAttempts)
     {
-        currentPower.Value -= (zapAttempts * zapAttempts) / 2;
-        zap.ZapAnimatronic();
+        if (!isPlayerPoweredOn.Value) return;
+        currentPower.Value -= zapAttempts * zapAttempts / 2;
+        zap.GetZapped();
     }
 
     public override void Update()
