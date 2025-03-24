@@ -136,7 +136,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         {
             print("resisted audioLure");
 
-            SetTarget(AnimatronicManager.Instance.GetPlayerNodeFromPlayerRole(PlayerRoles.Janitor)); // beeline towards janitor
+            TargetRandomPlayer();
         }
     }
 

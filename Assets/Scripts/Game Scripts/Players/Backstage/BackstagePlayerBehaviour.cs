@@ -135,33 +135,25 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
 
         playerComputer.EnableComputerSystem();
 
-        RoomLight.intensity = 4;
-
-        AudioSource ambiance = GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
-
-        PowerOnServerRpc();
+        GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
     }
-    [ServerRpc(RequireOwnership = false)]
-    private void PowerOnServerRpc(ServerRpcParams serverRpcParams = default) => PowerOnClientRpc(serverRpcParams.Receive.SenderClientId);
-    [ClientRpc]
-    private void PowerOnClientRpc(ulong ignoreId)
-    { if (NetworkManager.Singleton.LocalClientId == ignoreId) return; RoomLight.intensity = 4; }
 
     public override void PowerOff()
     {
         base.PowerOff();
 
         playerComputer.DisableComputerSystem();
-
-        RoomLight.intensity = 0.3f;
-
-        PowerOffServerRpc();
     }
-    [ServerRpc(RequireOwnership = false)]
-    private void PowerOffServerRpc(ServerRpcParams serverRpcParams = default) => PowerOffClientRpc(serverRpcParams.Receive.SenderClientId);
-    [ClientRpc]
-    private void PowerOffClientRpc(ulong ignoreId)
-    { if (NetworkManager.Singleton.LocalClientId == ignoreId) return; RoomLight.intensity = 0.3f; }
+
+    public override void Update()
+    {
+        base.Update();
+
+        zapCooldown += Time.deltaTime;
+
+        RoomLight.enabled = isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.Backstage);
+        RoomLight.intensity = isPlayerPoweredOn.Value ? 4f : 0.3f;
+    }
 
     public void Zap()
     {
@@ -187,13 +179,6 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
         if (!isPlayerPoweredOn.Value) return;
         currentPower.Value -= zapAttempts * zapAttempts / 2;
         zap.GetZapped();
-    }
-
-    public override void Update()
-    {
-        base.Update();
-
-        zapCooldown += Time.deltaTime;
     }
 
     public override bool IsAnimatronicCloseToAttack(Node currentNode)

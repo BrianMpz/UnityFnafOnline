@@ -43,29 +43,21 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     public override void PowerOn()
     {
         base.PowerOn();
-        RoomLight.enabled = true;
-        flashLight.enabled = false;
-        PowerOnServerRpc();
         GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
     }
-    [ServerRpc(RequireOwnership = false)]
-    private void PowerOnServerRpc(ServerRpcParams serverRpcParams = default) => PowerOnClientRpc(serverRpcParams.Receive.SenderClientId);
-    [ClientRpc]
-    private void PowerOnClientRpc(ulong ignoreId)
-    { if (NetworkManager.Singleton.LocalClientId == ignoreId) return; RoomLight.enabled = true; flashLight.enabled = false; }
 
     public override void PowerOff()
     {
         base.PowerOff();
-        RoomLight.enabled = false;
-        flashLight.enabled = true;
-        PowerOffServerRpc();
     }
-    [ServerRpc(RequireOwnership = false)]
-    private void PowerOffServerRpc(ServerRpcParams serverRpcParams = default) => PowerOffClientRpc(serverRpcParams.Receive.SenderClientId);
-    [ClientRpc]
-    private void PowerOffClientRpc(ulong ignoreId)
-    { if (NetworkManager.Singleton.LocalClientId == ignoreId) return; RoomLight.enabled = false; flashLight.enabled = true; }
+
+    public override void Update()
+    {
+        base.Update();
+
+        RoomLight.enabled = isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.PartsAndService);
+        flashLight.enabled = !isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.PartsAndService);
+    }
 
     private protected override IEnumerator PlayDeathAnimation(string deathScream)
     {

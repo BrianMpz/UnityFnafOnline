@@ -16,8 +16,9 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public CameraController cameraController;
     public Camera playerCamera;
     public Camera spectatorCamera;
-    public bool animatronicsCanStandInDoorway;
+    [SerializeField] private protected GameObject playerModel;
     [SerializeField] private protected float timeToWaitBeforeKill;
+    public bool animatronicsCanStandInDoorway;
 
 
     [Header("Dynamic Attributes")]
@@ -78,6 +79,8 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
     public virtual void Update()
     {
+        playerModel.SetActive(PlayerRoleManager.Instance.IsSpectatingPlayer(playerRole));
+
         HandlePlayerUpdate();
     }
 

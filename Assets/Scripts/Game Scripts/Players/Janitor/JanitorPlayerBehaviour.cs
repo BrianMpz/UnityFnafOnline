@@ -18,6 +18,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     public bool canToggle;
     [SerializeField] private float triggerCooldownTime = 0.3f;
     [SerializeField] private float timeSinceLastTrigger;
+    [SerializeField] private Light RoomLight;
     private AudioSource breathingSfx;
     public Node insideNode;
 
@@ -88,6 +89,8 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     {
         base.Update();
 
+        RoomLight.enabled = PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.Janitor);
+
         if (!IsOwner) return;
         if (!isPlayerAlive.Value) return;
 
@@ -105,6 +108,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         }
 
         oxygenLevels.Value = Mathf.Max(oxygenLevels.Value, 0f);
+
     }
 
     public void ResetCooldown()

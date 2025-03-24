@@ -7,6 +7,6 @@ public class FreddyNose : MonoBehaviour
     {
         GameAudioManager.Instance.PlaySfxOneShot("freddy nose honk");
 
-        if (Random.Range(1, 100 + 1) <= 5) StartCoroutine(freddyPoster.KillPlayer());
+        if (Random.Range(1, 100 + 1) == 1) StartCoroutine(freddyPoster.KillPlayer());
     }
 }
