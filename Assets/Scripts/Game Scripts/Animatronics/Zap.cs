@@ -67,7 +67,7 @@ public class Zap : Animatronic
     {
         isApproachingPlayer.Value = true;
 
-        animatronicModel.position = startingPosition;
+        movementProgressValue.Value = 0;
         float elapsedTime = 0;
         float duration = Mathf.Infinity;
 
@@ -113,7 +113,6 @@ public class Zap : Animatronic
         {
             StopCoroutine(movementProgress);
             isApproachingPlayer.Value = false;
-
             movementProgress = StartCoroutine(ApproachPlayer());
         }
 

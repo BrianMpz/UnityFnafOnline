@@ -2071,6 +2071,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7515214819118591863, guid: be66a0674c3b4ee4783181fecf81dcb6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -791
+      objectReference: {fileID: 0}
     - target: {fileID: 7562082900136682876, guid: be66a0674c3b4ee4783181fecf81dcb6, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
@@ -20774,6 +20778,18 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7515214819118591863, guid: be66a0674c3b4ee4783181fecf81dcb6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7515214819118591863, guid: be66a0674c3b4ee4783181fecf81dcb6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -794
+      objectReference: {fileID: 0}
+    - target: {fileID: 7515214819118591863, guid: be66a0674c3b4ee4783181fecf81dcb6, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0
+      objectReference: {fileID: 0}
     - target: {fileID: 7562082900136682876, guid: be66a0674c3b4ee4783181fecf81dcb6, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
@@ -27616,6 +27632,16 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 44ba5bf3ddd711c479648b035142cefd, type: 3}
   - name: freddles
     audioClip: {fileID: 8300000, guid: 97270927303142544a916bcd0a24f939, type: 3}
+  - name: walk0
+    audioClip: {fileID: 8300000, guid: 21a114e1e8788834799eba6356f9f51d, type: 3}
+  - name: walk1
+    audioClip: {fileID: 8300000, guid: 1dbd707c29b66b043b44f2de7508c44f, type: 3}
+  - name: walk2
+    audioClip: {fileID: 8300000, guid: df568c664c9be1d4aad82ef3ca7e22e0, type: 3}
+  - name: walk3
+    audioClip: {fileID: 8300000, guid: 3796155c1ee698a4fa2045c97ee052fe, type: 3}
+  - name: walk4
+    audioClip: {fileID: 8300000, guid: b4437efb3db843d43a049c0d545b5f40, type: 3}
   musicSource: {fileID: 281946428}
   sfxOneShotSource: {fileID: 1994852700}
 --- !u!4 &1108993104
@@ -35537,7 +35563,7 @@ Light:
   serializedVersion: 11
   m_Type: 2
   m_Color: {r: 0.6673193, g: 0.8506549, b: 0.8679245, a: 1}
-  m_Intensity: 0.5
+  m_Intensity: 1
   m_Range: 6.7
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208

@@ -397,7 +397,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 628253515971436668}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}
@@ -3610,7 +3610,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3073651387098290907}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}
@@ -7275,7 +7275,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b967e1b7ad68f0048832ef216efb5d5f, type: 3}
   canvas: {fileID: 8595409959016705370}
   isPlayingLure: 0
-  lureDuration: 15
+  lureDuration: 25
 --- !u!223 &8595409959016705370
 Canvas:
   m_ObjectHideFlags: 0
@@ -10038,7 +10038,7 @@ MonoBehaviour:
   staticaudio: {fileID: 0}
   disturbanceAudio: {fileID: 0}
   fadeOutTime: 1
-  minimumAlpha: 0.05
+  minimumAlpha: 0.1
   minimumVolume: 0.2
 --- !u!1 &8780162712911759956
 GameObject:

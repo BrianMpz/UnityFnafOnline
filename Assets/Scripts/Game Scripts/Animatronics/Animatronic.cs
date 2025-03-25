@@ -123,12 +123,13 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     public void AudioLure_AttractAnimatronic(Node targetedNode)
     {
-        bool alreadyAtThisNode = targetedNode == target;
+        bool isAlreadyAtThisNode = targetedNode == target;
         bool canResistLure = (int)audioLureResistance.Value >= UnityEngine.Random.Range(0, 100); // 0 to 99
 
-        if (!canResistLure || alreadyAtThisNode)
+        if (!canResistLure || isAlreadyAtThisNode)
         {
             SetTarget(targetedNode);
+            HandleAggrivation(true);
 
             audioLureResistance.Value += Mathf.Lerp(0f, 80f, currentDifficulty.Value / 20f);
         }
@@ -349,8 +350,13 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
         if (makeNoise && PlayerRoleManager.Instance.IsLocalPlayerAlive() && animatronicModel.gameObject.activeSelf)
         {
-            animatronicModel.GetComponent<AudioSource>().Play();
-            animatronicModel.GetComponent<AudioSource>().pitch = footStepPitch;
+            AudioSource audioSource = animatronicModel.GetComponent<AudioSource>();
+
+            string randomWalkClipName = "walk" + UnityEngine.Random.Range(0, 5).ToString();
+
+            audioSource.clip = GameAudioManager.Instance.GetAudioClip(randomWalkClipName);
+            audioSource.pitch = footStepPitch;
+            audioSource.Play();
         }
     }
 

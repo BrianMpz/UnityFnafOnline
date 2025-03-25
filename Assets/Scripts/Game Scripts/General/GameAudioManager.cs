@@ -30,6 +30,16 @@ public class GameAudioManager : Singleton<GameAudioManager>
         }
     }
 
+    public AudioClip GetAudioClip(string name)
+    {
+        if (!sfxSoundDict.TryGetValue(name, out Sound sound))
+        {
+            return null;
+        }
+
+        return sound.audioClip;
+    }
+
     public void PlayMusic(string name, float volume = 1f)
     {
         if (!musicSoundDict.TryGetValue(name, out Sound sound))

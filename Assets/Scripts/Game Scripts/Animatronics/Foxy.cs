@@ -419,7 +419,7 @@ public class Foxy : Animatronic
         if (!playerNode.playerBehaviour.IsOwner)
         {
             foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", 0.7f);
-            yield return new WaitForSeconds(0.4f);
+            yield return new WaitForSeconds(0.3f);
             foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isCurrentlyAggrivated.Value ? "foxy taunt" : "fire in the hole", 0.3f);
 
             float elapsedTime = 0;

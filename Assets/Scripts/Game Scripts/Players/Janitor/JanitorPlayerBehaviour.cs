@@ -11,7 +11,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     [SerializeField] private JanitorCameraController janitorCameraController;
     public Animator mask;
     public NetworkVariable<float> oxygenLevels = new(writePerm: NetworkVariableWritePermission.Owner);
-    public NetworkVariable<float> animatronicRecognitionPossibility = new(writePerm: NetworkVariableWritePermission.Owner);
+    public NetworkVariable<float> animatronicRecognitionPossibility = new(writePerm: NetworkVariableWritePermission.Server);
     public NetworkVariable<bool> isMaskDown = new(writePerm: NetworkVariableWritePermission.Owner);
     public bool isWearingMask;
     public bool isMonitorUp;
@@ -202,7 +202,6 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
             if (isMaskDown.Value)
             {
-                yield return null;
                 continue;
             }
 

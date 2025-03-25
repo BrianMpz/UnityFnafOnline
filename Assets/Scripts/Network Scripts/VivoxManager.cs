@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Design;
@@ -10,6 +11,7 @@ using UnityEngine;
 
 public class VivoxManager : Singleton<VivoxManager>
 {
+    private bool isSwitchingChannels;
     public Action<string> ChannelJoined;
     public Action<string> ChannelLeft;
 
@@ -20,11 +22,14 @@ public class VivoxManager : Singleton<VivoxManager>
     public string currentChannelName;
 
     private AudioHighPassFilter audioLowPassFilter;
+    private AudioReverbFilter audioReverbFilter;
 
 
     private void Awake()
     {
         audioLowPassFilter = GetComponent<AudioHighPassFilter>();
+        audioReverbFilter = GetComponent<AudioReverbFilter>();
+
         if (MultiplayerManager.isPlayingOnline) DontDestroyOnLoad(gameObject); else Destroy(gameObject);
     }
 
@@ -47,7 +52,7 @@ public class VivoxManager : Singleton<VivoxManager>
         LoginOptions loginOptions = new() { DisplayName = MultiplayerManager.Instance.playerName, EnableTTS = true };
         await VivoxService.Instance.LoginAsync(loginOptions);
 
-        privateChatName = "PrivateChat_" + UnityEngine.Random.Range(100000000, 1000000000).ToString();
+        privateChatName = "PrivateChat_" + Guid.NewGuid().ToString("N")[..8];
 
         currentChannelName = privateChatName;
         await VivoxService.Instance.JoinGroupChannelAsync(privateChatName, ChatCapability.TextAndAudio);
@@ -72,18 +77,14 @@ public class VivoxManager : Singleton<VivoxManager>
     }
 
     // Switch chat based on game state
-    public void SwitchToLobbyChat() => SetActiveAudioChannel(lobbyChatName);
-    public void SwitchToGameChat() => SetActiveAudioChannel(gameChatName);
-    public void SwitchToPrivateChat() => SetActiveAudioChannel(privateChatName);
+    public void SwitchToLobbyChat() => StartCoroutine(SwitchChannels(lobbyChatName));
+    public void SwitchToGameChat() => StartCoroutine(SwitchChannels(gameChatName));
+    public void SwitchToPrivateChat() => StartCoroutine(SwitchChannels(privateChatName));
 
-    private async Task LeaveCurrentChannel(string channelName)
+    private IEnumerator SwitchChannels(string channelName)
     {
-        bool notInThisChannel = !VivoxService.Instance.ActiveChannels.Keys.ToList().Contains(channelName);
-        if (notInThisChannel) return;
-
-        await VivoxService.Instance.LeaveChannelAsync(channelName);
-
-        Debug.Log($"left {channelName}");
+        if (isSwitchingChannels) yield return new WaitUntil(() => { return !isSwitchingChannels; });
+        SetActiveAudioChannel(channelName);
     }
 
     private async void SetActiveAudioChannel(string channelName)
@@ -91,21 +92,40 @@ public class VivoxManager : Singleton<VivoxManager>
         if (VivoxService.Instance == null) return;
         if (currentChannelName == channelName) return;
 
-        await LeaveCurrentChannel(currentChannelName);
+        isSwitchingChannels = true;
 
         if (!VivoxService.Instance.IsLoggedIn) await LogInAsync();
+
+        await LeaveCurrentChannel(currentChannelName);
 
         if (GetChannel(channelName) == null) await VivoxService.Instance.JoinGroupChannelAsync(channelName, ChatCapability.AudioOnly);
 
         currentChannelName = channelName;
 
-        VivoxService.Instance.DisableAcousticEchoCancellation();
-
-        VivoxService.Instance.UnmuteOutputDevice();
+        isSwitchingChannels = false;
 
         Debug.Log($"joined {channelName}");
+    }
 
-        audioLowPassFilter.enabled = channelName == gameChatName;
+    private async Task LeaveCurrentChannel(string channelName)
+    {
+        if (!VivoxService.Instance.ActiveChannels.TryGetValue(channelName, out _)) return; // we are not in any channels
+
+        await VivoxService.Instance.LeaveChannelAsync(channelName);
+
+        Debug.Log($"left {channelName}");
+    }
+
+    private string lastCheckedChannel;
+    void Update()
+    {
+        if (VivoxService.Instance == null) return;
+        if (currentChannelName == lastCheckedChannel) return; // Prevent unnecessary updates
+
+        lastCheckedChannel = currentChannelName;
+
+        audioLowPassFilter.enabled = currentChannelName == gameChatName;
+        audioReverbFilter.enabled = currentChannelName == lobbyChatName && GameManager.Instance?.isPlaying == true;
     }
 
     public bool IsInChannel(string channel)
@@ -119,8 +139,7 @@ public class VivoxManager : Singleton<VivoxManager>
         {
             if (channel.Key == desiredChannel) return channel.Value.ToList();
         }
-
-        return default;
+        return null;
     }
 
     public void ToggleMute()

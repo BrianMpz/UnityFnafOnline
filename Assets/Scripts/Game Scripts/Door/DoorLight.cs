@@ -14,12 +14,17 @@ public class DoorLight : NetworkBehaviour
 
     public void ToggleLights()
     {
-        if (isFlashingLight.Value) return;
+        if (isFlashingLight.Value)
+        {
+            return;
+        }
+
         if (door.isLocked || doorLightButton.isBroken)
         {
             GameAudioManager.Instance.PlaySfxOneShot("button error");
             return;
         }
+
         StartCoroutine(HandleLightsVisual());
     }
 

@@ -91,9 +91,9 @@ public class PlayerCommunicationSystem : NetworkBehaviour
 
     private void UpdateCommunicatingPlayers()
     {
-        if (VivoxManager.Instance.GetChannel(VivoxManager.Instance.gameChatName) == null) return;
-
         List<VivoxParticipant> currentChannel = VivoxManager.Instance.GetChannel(VivoxManager.Instance.gameChatName);
+
+        if (currentChannel == null) return;
 
         communicatingPlayerList.ForEach(player => player.Hide());
 
@@ -243,6 +243,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     {
         if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
         if (SpectatorUI.Instance.isSpectating) return;
+        if (isConnectedToCall) return;
 
         StartCoroutine(PlayCallAudio());
     }

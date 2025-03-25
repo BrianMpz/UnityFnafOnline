@@ -1125,6 +1125,7 @@ GameObject:
   - component: {fileID: 906050014}
   - component: {fileID: 906050013}
   - component: {fileID: 906050015}
+  - component: {fileID: 906050016}
   m_Layer: 0
   m_Name: Vivox Manager
   m_TagString: Untagged
@@ -1285,6 +1286,29 @@ AudioHighPassFilter:
   m_Enabled: 1
   m_CutoffFrequency: 523
   m_HighpassResonanceQ: 1
+--- !u!164 &906050016
+AudioReverbFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906050009}
+  m_Enabled: 1
+  m_DryLevel: 0
+  m_Room: -1000
+  m_RoomHF: 0
+  m_DecayTime: 1.65
+  m_DecayHFRatio: 1.5
+  m_ReflectionsLevel: -1363
+  m_ReverbLevel: -1153
+  m_ReverbDelay: 0.012
+  m_Diffusion: 100
+  m_Density: 100
+  m_HFReference: 5000
+  m_RoomLF: 0
+  m_LFReference: 250
+  m_ReflectionsDelay: 0
+  m_ReverbPreset: 21
 --- !u!1 &915603933
 GameObject:
   m_ObjectHideFlags: 0

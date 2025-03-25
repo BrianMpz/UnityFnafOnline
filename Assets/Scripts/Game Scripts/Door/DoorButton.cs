@@ -9,6 +9,7 @@ public class DoorButton : NetworkBehaviour
 
     private void OnMouseDown()
     {
+        if (door.playerBehaviour.playerComputer.isMonitorUp.Value) return;
         if (IsOwner) door.ToggleDoor();
     }
 

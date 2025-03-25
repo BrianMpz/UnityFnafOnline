@@ -60,6 +60,9 @@ public class SpectatorUI : Singleton<SpectatorUI>
 
     void Update()
     {
+        float timeLeft = Mathf.Max(359.9f - GameManager.Instance.currentGameTime.Value, 0);
+        timeLeftText.text = $"{timeLeft:F1}";
+
         if (!isSpectatingAPlayer) return;
         if (!isSpectating) return;
 
@@ -67,12 +70,10 @@ public class SpectatorUI : Singleton<SpectatorUI>
         if (playerBehaviour == default) return;
 
         if (!PlayerRoleManager.Instance.IsPlayerDead(playerBehaviour))
-            currentPlayerPowerText.text = $"Player Power: {playerBehaviour.currentPower.Value:F1}%";
+            currentPlayerPowerText.text = $"Player Power: {Mathf.Max(playerBehaviour.currentPower.Value, 0):F1}%";
         else
             currentPlayerPowerText.text = "";
 
-        float timeLeft = Mathf.Max(359.9f - GameManager.Instance.currentGameTime.Value, 0);
-        timeLeftText.text = $"{timeLeft:F1}";
     }
 
     private void UpdateGameTimeText(int previousHour, int currentHour)
@@ -96,9 +97,9 @@ public class SpectatorUI : Singleton<SpectatorUI>
 
     private void UpdateCommunicatingPlayers()
     {
-        if (VivoxManager.Instance.GetChannel(VivoxManager.Instance.lobbyChatName) == null) return;
-
         List<VivoxParticipant> currentChannel = VivoxManager.Instance.GetChannel(VivoxManager.Instance.lobbyChatName);
+
+        if (currentChannel == null) return;
 
         spectatingPlayerList.ForEach(spectatingPlayer => spectatingPlayer.Hide());
 
