@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class GFJumpscareImage : MonoBehaviour
+public class GFJumpscareImage : Singleton<GFJumpscareImage>
 {
     [SerializeField] private Canvas canvas;
 
@@ -23,20 +23,12 @@ public class GFJumpscareImage : MonoBehaviour
         Hide();
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            StartCoroutine(PlayJumpscare());
-        }
-    }
-
-    private void Hide()
+    public void Hide()
     {
         canvas.enabled = false;
     }
 
-    private void Show()
+    public void Show()
     {
         canvas.enabled = true;
     }

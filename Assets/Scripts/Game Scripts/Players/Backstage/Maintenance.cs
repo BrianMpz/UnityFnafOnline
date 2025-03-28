@@ -91,7 +91,7 @@ public class Maintenance : NetworkSingleton<Maintenance>
         isRebooting = false;
 
         EnableButtons();
-        SetAllSystemsState(State.OFFLINE);
+        CancelRebootingStates();
 
         GameAudioManager.Instance.PlaySfxOneShot("failed sfx");
     }
@@ -185,11 +185,21 @@ public class Maintenance : NetworkSingleton<Maintenance>
         }
     }
 
+    [ServerRpc(RequireOwnership = false)] public void SetAllSystemsStateServerRpc(State newState) { SetAllSystemsStateClientRpc(newState, MultiplayerManager.NewClientRpcSendParams(OwnerClientId)); }
+    [ClientRpc] private void SetAllSystemsStateClientRpc(State newState, ClientRpcParams clientRpcParams) => SetAllSystemsState(newState);
+
     private void SetAllSystemsState(State newState)
     {
         SetSystemState(SystemType.Cameras, newState);
         SetSystemState(SystemType.Comms, newState);
         SetSystemState(SystemType.PowerGenerator, newState);
+    }
+
+    private void CancelRebootingStates()
+    {
+        if (communicationsState.Value == State.REBOOTING) SetSystemState(SystemType.Comms, State.OFFLINE);
+        if (camerasState.Value == State.REBOOTING) SetSystemState(SystemType.Cameras, State.OFFLINE);
+        if (powerGeneratorState.Value == State.REBOOTING) SetSystemState(SystemType.PowerGenerator, State.OFFLINE);
     }
 
     private State GetSystemState(SystemType systemType)

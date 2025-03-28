@@ -345,6 +345,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
     {
         foreach (PlayerData playerData in playerDataList)
         {
+            if (playerData.role == PlayerRoles.None) continue;
             SetPlayerRole(playerData.clientId, GetRandomUnusedPlayerRole());
         }
     }

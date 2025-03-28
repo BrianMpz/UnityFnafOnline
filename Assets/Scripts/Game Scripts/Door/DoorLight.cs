@@ -90,7 +90,7 @@ public class DoorLight : NetworkBehaviour
 
     private IEnumerator WaitToDisableHasSeenDanger()
     {
-        yield return new WaitUntil(() => { return !door.linkedNode.isOccupied.Value; });
+        yield return new WaitUntil(() => !door.linkedNode.isOccupied.Value);
         hasSeenDanger = false;
     }
 

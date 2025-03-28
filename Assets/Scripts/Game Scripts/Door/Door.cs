@@ -14,6 +14,7 @@ public class Door : NetworkBehaviour
     private float doorToggleCooldownTime = 0.2f;
     public bool isLocked;
     public Node linkedNode;
+    public Node doorwayNode; // null if the player doesnt have a doorway
 
     private void Awake()
     {
@@ -68,18 +69,18 @@ public class Door : NetworkBehaviour
         ToggleDoor(!isDoorClosed.Value);
     }
 
-    private void ToggleDoor(bool close, bool playAudio = true)
+    private void ToggleDoor(bool isClosingDoor, bool playAudio = true)
     {
         if (!IsOwner) return;
 
         if (playAudio) GameAudioManager.Instance.PlaySfxOneShot("door toggle");
 
-        isDoorClosed.Value = close;
+        isDoorClosed.Value = isClosingDoor;
         timeSinceLastDoorToggle = 0f;
 
-        TriggerDoorAnimation(close);
+        TriggerDoorAnimation(isClosingDoor);
 
-        if (close)
+        if (isClosingDoor)
         {
             doorButton.TurnOn();
         }
@@ -89,21 +90,24 @@ public class Door : NetworkBehaviour
         }
     }
 
-    public void TriggerDoorAnimation(bool close)
+    public void TriggerDoorAnimation(bool isClosingDoor)
     {
-        animator.SetBool("Closed", close);
-        TriggerDoorAnimationServerRpc(close);
+        bool isAnimatronicInDoorway = isClosingDoor && doorwayNode != null && doorwayNode.isOccupied.Value;
+        if (isAnimatronicInDoorway) return;
+
+        animator.SetBool("Closed", isClosingDoor);
+        TriggerDoorAnimationServerRpc(isClosingDoor);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void TriggerDoorAnimationServerRpc(bool close, ServerRpcParams serverRpcParams = default)
-        => TriggerDoorAnimationClientRpc(close, serverRpcParams.Receive.SenderClientId);
+    private void TriggerDoorAnimationServerRpc(bool isClosingDoor, ServerRpcParams serverRpcParams = default)
+        => TriggerDoorAnimationClientRpc(isClosingDoor, serverRpcParams.Receive.SenderClientId);
 
     [ClientRpc]
-    private void TriggerDoorAnimationClientRpc(bool close, ulong ignoreId)
+    private void TriggerDoorAnimationClientRpc(bool isClosingDoor, ulong ignoreId)
     {
         if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
-        animator.SetBool("Closed", close);
+        animator.SetBool("Closed", isClosingDoor);
     }
 
     public void Lock()

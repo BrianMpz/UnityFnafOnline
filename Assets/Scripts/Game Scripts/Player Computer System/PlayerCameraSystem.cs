@@ -41,6 +41,8 @@ public class PlayerCameraSystem : NetworkBehaviour
         if (!GameManager.Instance.isPlaying || !IsOwner) return;
 
         CheckIsWatchingFoxy();
+        cameraOutputScreen.enabled = PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(playerComputer.playerBehaviour.playerRole);
+        cameraStatic.enabled = PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(playerComputer.playerBehaviour.playerRole);
     }
 
     public void Enable()

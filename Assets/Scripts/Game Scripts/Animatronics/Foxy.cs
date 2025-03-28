@@ -81,11 +81,7 @@ public class Foxy : Animatronic
 
     private IEnumerator TargetPoweredDownPlayer(PlayerRoles playerRole)
     {
-        yield return new WaitUntil(() =>
-            {
-                return isWaitingOnClient == false;
-            }
-        );
+        yield return new WaitUntil(() => !isWaitingOnClient);
 
         if (gameplayLoop != null) StopCoroutine(gameplayLoop);
 

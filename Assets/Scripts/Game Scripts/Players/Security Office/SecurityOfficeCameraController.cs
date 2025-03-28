@@ -21,8 +21,8 @@ public class SecurityOfficeCameraController : CameraController
         Vector3 currentRotation = playerView.eulerAngles;
 
         // Smoothly interpolate towards the target rotation
-        currentRotation.y = Mathf.LerpAngle(currentRotation.y, targetRotationY, Time.deltaTime * 7f);
-        currentRotation.x = Mathf.LerpAngle(currentRotation.x, targetRotationX, Time.deltaTime * 7f);
+        currentRotation.y = Mathf.LerpAngle(currentRotation.y, targetRotationY, Time.deltaTime * 5f);
+        currentRotation.x = Mathf.LerpAngle(currentRotation.x, targetRotationX, Time.deltaTime * 5f);
 
         // Apply the new rotation to the camera
         playerView.eulerAngles = currentRotation;

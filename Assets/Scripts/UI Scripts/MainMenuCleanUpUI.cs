@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MainMenuCleanUpUI : MonoBehaviour
 {
-    private async void Start()
+    private async void Awake()
     {
         if (NetworkManager.Singleton != null) Destroy(NetworkManager.Singleton.gameObject);
 

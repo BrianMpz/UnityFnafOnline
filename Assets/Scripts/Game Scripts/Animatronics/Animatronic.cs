@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Unity.Netcode;
-using System.IO.Pipes;
 
 public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS runs on server
 {
@@ -26,10 +25,10 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     public List<NodeData> nodeDatas;
 
     [Header("Miscellaneous")]
-    [SerializeField] private protected Transform animatronicModel; // position on map
-    private protected RectTransform MapTransform { get => GetComponent<RectTransform>(); }
+    [SerializeField] private protected Transform animatronicModel;
     [SerializeField] private float footStepPitch;
     [SerializeField] private protected string deathScream;
+    private protected RectTransform MapTransform { get => GetComponent<RectTransform>(); }
     private protected bool isWaitingOnClient;
     private protected Coroutine gameplayLoop;
     private Coroutine lerpingToPosition;
@@ -53,23 +52,23 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
                 break;
             case GameNight.Two:
                 currentDifficulty.Value = 3f;
-                currentMovementWaitTime.Value = 8f;
+                currentMovementWaitTime.Value = 9f;
                 break;
             case GameNight.Three:
                 currentDifficulty.Value = 5f;
-                currentMovementWaitTime.Value = 6f;
+                currentMovementWaitTime.Value = 8f;
                 break;
             case GameNight.Four:
                 currentDifficulty.Value = 7f;
-                currentMovementWaitTime.Value = 5f;
+                currentMovementWaitTime.Value = 7f;
                 break;
             case GameNight.Five:
                 currentDifficulty.Value = 9f;
-                currentMovementWaitTime.Value = 4f;
+                currentMovementWaitTime.Value = 6f;
                 break;
             case GameNight.Six:
                 currentDifficulty.Value = 16f;
-                currentMovementWaitTime.Value = 4f;
+                currentMovementWaitTime.Value = 5f;
                 break;
             case GameNight.Seven:
                 currentDifficulty.Value = 20f;
@@ -141,7 +140,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         }
     }
 
-    private protected void HandleAggrivation(bool shouldBeAggrivated, float aggrivatedDifficultyAdditionAmount = 20, float aggrivatedWaitTimeCoefficient = 1.5f)
+    private protected void HandleAggrivation(bool shouldBeAggrivated, float aggrivatedDifficultyAdditionAmount = 20, float aggrivatedWaitTimeCoefficient = 1.2f)
     {
         if (isCurrentlyAggrivated.Value)
         {
@@ -249,7 +248,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         int indexOfTargetNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
         int indexOfCurrentNode = AnimatronicManager.Instance.Nodes.IndexOf(currentNode);
 
-        if (playerNode.playerBehaviour.animatronicsCanStandInDoorway)
+        if (playerNode.playerBehaviour.canAnimatronicsStandInDoorway)
         {
             Node doorwayNode = playerNode.playerBehaviour.GetDoorwayNode(currentNode);
             AdvanceInPath(doorwayNode, true);
@@ -259,10 +258,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         isWaitingOnClient = true;
 
         float clientWaitingTimeout = Time.time + 60f;
-        yield return new WaitUntil(() =>
-        {
-            return isWaitingOnClient == false || Time.time > clientWaitingTimeout || !playerNode.playerBehaviour.isPlayerAlive.Value;
-        });
+        yield return new WaitUntil(() => isWaitingOnClient == false || Time.time > clientWaitingTimeout || !playerNode.playerBehaviour.isPlayerAlive.Value);
 
         // the gameplay loop coroutine continues...
     }
@@ -393,14 +389,15 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
         while (elapsedTime < movementTime)
         {
+            yield return null;
+            elapsedTime += Time.deltaTime;
+
             MapTransform.anchoredPosition = Vector2.Lerp(MapTransform.anchoredPosition, nodeToSet.MapTransform.anchoredPosition, Time.deltaTime * lerpSpeed);
 
+            if (animatronicModel == null) continue; // some animatronics may not have a physical model
             animatronicModel.position = Vector3.Lerp(animatronicModel.position, nodeToSet.physicalTransform.position, Time.deltaTime * lerpSpeed);
             float newAnimatronicModelYRotation = Mathf.LerpAngle(animatronicModel.eulerAngles.y, nodeToSet.physicalTransform.eulerAngles.y, Time.deltaTime * lerpSpeed);
             animatronicModel.rotation = Quaternion.Euler(0, newAnimatronicModelYRotation, 0);
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
         }
     }
 
@@ -409,6 +406,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         MapTransform.anchoredPosition = nodeToSet.MapTransform.anchoredPosition;
         MapTransform.rotation = nodeToSet.MapTransform.rotation;
 
+        if (animatronicModel == null) return; // some animatronics may not have a physical model
         animatronicModel.SetPositionAndRotation(nodeToSet.physicalTransform.position, nodeToSet.physicalTransform.rotation);
     }
 

@@ -7,12 +7,14 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     [Header("Specialised Variables")]
     public Door leftDoor;
     public Door rightDoor;
+    public KeypadSystem keypadSystem;
     [SerializeField] private Light RoomLight;
     [SerializeField] private Light flashLight;
     [SerializeField] private Node LeftDoorBlindSpotNode;
     [SerializeField] private Node RightDoorBlindSpotNode;
     [SerializeField] private Node LeftDoorwayNode;
     [SerializeField] private Node RightDoorwayNode;
+    private bool isGettingJumpscared;
 
     private protected override void UpdateCameraView()
     {
@@ -70,12 +72,13 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
         base.Update();
 
         RoomLight.enabled = isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.SecurityOffice);
-        flashLight.enabled = !isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.SecurityOffice);
+        flashLight.enabled = !isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.SecurityOffice) || isGettingJumpscared;
     }
 
     private protected override IEnumerator PlayDeathAnimation(string deathScream)
     {
         if (!isPlayerAlive.Value) yield break;
+        isGettingJumpscared = true;
 
         flashLight.enabled = true;
 
@@ -91,6 +94,7 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
             elapsedTime += Time.deltaTime;
         }
         GameAudioManager.Instance.StopSfx(audioSource);
+        isGettingJumpscared = false;
     }
 
     [ClientRpc]
@@ -155,5 +159,20 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
         if (currentNode == leftDoor.linkedNode || currentNode == rightDoor.linkedNode) return true;
 
         return false;
+    }
+
+    public override bool CanGoldenFreddySpawnIn()
+    {
+        return playerComputer.isMonitorUp.Value;
+    }
+
+    public override bool HasSpottedGoldenFreddy()
+    {
+        return !playerComputer.isMonitorUp.Value;
+    }
+
+    public override bool HasLookedAwayFromGoldenFreddy()
+    {
+        return playerComputer.isMonitorUp.Value;
     }
 }

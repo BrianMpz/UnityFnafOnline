@@ -187,4 +187,19 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
 
         return false;
     }
+
+    public override bool CanGoldenFreddySpawnIn()
+    {
+        return backstageCameraController.CurrentView != backstageCameraController.DoorView;
+    }
+
+    public override bool HasSpottedGoldenFreddy()
+    {
+        return backstageCameraController.CurrentView == backstageCameraController.DoorView;
+    }
+
+    public override bool HasLookedAwayFromGoldenFreddy()
+    {
+        return backstageCameraController.CurrentView != backstageCameraController.DoorView;
+    }
 }

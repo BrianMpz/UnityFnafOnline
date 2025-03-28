@@ -131,6 +131,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         ChangeOwnership(securityOfficeBehaviour.playerComputer.playerManual.GetComponent<NetworkObject>(), clientId);
 
         ChangeOwnership(securityOfficeBehaviour.cameraController.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(securityOfficeBehaviour.keypadSystem.GetComponent<NetworkObject>(), clientId);
     }
 
     private void SetPartsAndServiceOwnerships(ulong clientId)

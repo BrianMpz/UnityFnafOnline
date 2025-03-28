@@ -8,12 +8,20 @@ public class GameAudioManager : Singleton<GameAudioManager>
     public float gameVolume = 1;
     [SerializeField] private Sound[] musicSounds, sfxSounds;
     [SerializeField] private AudioSource musicSource, sfxOneShotSource;
-    private List<AudioSource> interruptedAudioSources = new List<AudioSource>();
+    private List<AudioSource> interruptableAudioSources = new();
 
     private Dictionary<string, Sound> musicSoundDict;
     private Dictionary<string, Sound> sfxSoundDict;
 
-    private void Awake()
+    private protected override void OnEnable()
+    {
+        SoundArrayToDict();
+
+        if (Instance != null && Instance != this) Destroy(Instance.gameObject);
+        base.OnEnable();
+    }
+
+    private void SoundArrayToDict()
     {
         musicSoundDict = new Dictionary<string, Sound>(musicSounds.Length);
         foreach (var sound in musicSounds)
@@ -34,14 +42,19 @@ public class GameAudioManager : Singleton<GameAudioManager>
     {
         if (!sfxSoundDict.TryGetValue(name, out Sound sound))
         {
-            return null;
+            if (!musicSoundDict.TryGetValue(name, out Sound music))
+            {
+                return null;
+            }
+            else return music.audioClip;
         }
-
-        return sound.audioClip;
+        else return sound.audioClip;
     }
 
-    public void PlayMusic(string name, float volume = 1f)
+    public void PlayMusic(string name, float volume = 1f, bool loop = true) // only one music clip can play at a time
     {
+        StopMusic();
+
         if (!musicSoundDict.TryGetValue(name, out Sound sound))
         {
             Debug.LogError($"Music sound '{name}' does not exist!");
@@ -50,7 +63,15 @@ public class GameAudioManager : Singleton<GameAudioManager>
 
         musicSource.clip = sound.audioClip;
         musicSource.volume = volume * gameVolume;
+        musicSource.loop = loop;
         musicSource.Play();
+    }
+
+    public AudioSource GetCurrentMusic() => musicSource;
+
+    public void StopMusic()
+    {
+        if (musicSource.isPlaying) musicSource.Stop();
     }
 
     public void PlaySfxOneShot(string name, float volume = 1f)
@@ -79,7 +100,7 @@ public class GameAudioManager : Singleton<GameAudioManager>
         newSource.loop = loop;
         newSource.Play();
 
-        interruptedAudioSources.Add(newSource);
+        interruptableAudioSources.Add(newSource);
 
         // Automatically remove non-looping sources after the clip finishes playing.
         if (!loop)
@@ -99,19 +120,24 @@ public class GameAudioManager : Singleton<GameAudioManager>
     public void StopSfx(AudioSource audioSource)
     {
         if (audioSource == null) return;
-        if (!interruptedAudioSources.Contains(audioSource)) return;
+        if (!interruptableAudioSources.Contains(audioSource)) return;
 
-        interruptedAudioSources.Remove(audioSource);
+        interruptableAudioSources.Remove(audioSource);
         Destroy(audioSource);
     }
 
     public void StopAllSfx()
     {
         // Iterate backwards to safely remove items.
-        for (int i = interruptedAudioSources.Count - 1; i >= 0; i--)
+        for (int i = interruptableAudioSources.Count - 1; i >= 0; i--)
         {
-            StopSfx(interruptedAudioSources[i]);
+            StopSfx(interruptableAudioSources[i]);
         }
+    }
+
+    public void PlayButtonSelect() // called in unity events
+    {
+        PlaySfxOneShot("select 1");
     }
 }
 

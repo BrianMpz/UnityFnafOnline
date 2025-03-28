@@ -10,6 +10,7 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     public Door door;
     [SerializeField] private Light RoomLight;
     [SerializeField] private Light flashLight;
+    private bool isGettingJumpscared;
 
     [ClientRpc]
     public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, ClientRpcParams _)
@@ -56,12 +57,13 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
         base.Update();
 
         RoomLight.enabled = isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.PartsAndService);
-        flashLight.enabled = !isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.PartsAndService);
+        flashLight.enabled = !isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.PartsAndService) || isGettingJumpscared;
     }
 
     private protected override IEnumerator PlayDeathAnimation(string deathScream)
     {
         if (!isPlayerAlive.Value) yield break;
+        isGettingJumpscared = true;
 
         flashLight.enabled = true;
 
@@ -77,6 +79,7 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
             elapsedTime += Time.deltaTime;
         }
         GameAudioManager.Instance.StopSfx(audioSource);
+        isGettingJumpscared = false;
     }
 
     public override IEnumerator WaitUntilKillConditionsAreMet(Node currentNode)
@@ -114,5 +117,20 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
         if (currentNode == door.linkedNode) return true;
 
         return false;
+    }
+
+    public override bool CanGoldenFreddySpawnIn()
+    {
+        return partsAndServiceCameraController.CurrentView == partsAndServiceCameraController.DoorView;
+    }
+
+    public override bool HasSpottedGoldenFreddy()
+    {
+        return partsAndServiceCameraController.CurrentView == partsAndServiceCameraController.GeneratorView;
+    }
+
+    public override bool HasLookedAwayFromGoldenFreddy()
+    {
+        return partsAndServiceCameraController.CurrentView != partsAndServiceCameraController.GeneratorView;
     }
 }

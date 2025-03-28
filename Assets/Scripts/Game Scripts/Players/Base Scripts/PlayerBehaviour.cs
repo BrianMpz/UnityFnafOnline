@@ -9,43 +9,66 @@ using UnityEngine;
 /// </summary>
 public abstract class PlayerBehaviour : NetworkBehaviour
 {
-    [Header("Constant Attributes")]
-    // constant attributes
+    /* ───────────────────────────────── CONSTANT ATTRIBUTES ───────────────────────────────── */
+
+    [Header("Player Role & Core Components")]
     public PlayerRoles playerRole;
     public PlayerComputer playerComputer;
     public CameraController cameraController;
+
+    [Header("Cameras & Models")]
     public Camera playerCamera;
     public Camera spectatorCamera;
+    public GameObject goldenFreddyModel;
     [SerializeField] private protected GameObject playerModel;
+
+    [Header("Gameplay Settings")]
     [SerializeField] private protected float timeToWaitBeforeKill;
-    public bool animatronicsCanStandInDoorway;
+    public bool canAnimatronicsStandInDoorway;
 
+    /* ───────────────────────────────── DYNAMIC ATTRIBUTES ───────────────────────────────── */
 
-    [Header("Dynamic Attributes")]
-    // dynamic attributes
+    [Header("Power Management")]
     public NetworkVariable<float> currentPower = new(writePerm: NetworkVariableWritePermission.Server);
     public NetworkVariable<float> currentPowerUsage = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> isPlayerAlive = new(writePerm: NetworkVariableWritePermission.Owner);
+    public NetworkVariable<bool> isDyingToGoldenFreddy = new(writePerm: NetworkVariableWritePermission.Owner);
     [SerializeField] private protected NetworkVariable<bool> isPlayerPoweredOn = new(writePerm: NetworkVariableWritePermission.Owner);
 
-    // subscribable events
+    /* ───────────────────────────────── PLAYER EVENTS ───────────────────────────────── */
+
+    // Power & Lifecycle Events
     public Action OnPowerDown;
     public event Action OnPowerOn;
     public event Action OnInitialise;
     public event Action OnDisable;
+
+    // Death & Jumpscare Events
     public event Action OnPlayerDeath;
     public event Action OnPlayerJumpscare;
 
-    // abstract classes
+    /* ───────────────────────────────── ABSTRACT METHODS ───────────────────────────────── */
+
+    // Camera Handling
     private protected abstract void UpdateCameraView();
+
+    // Player Death Mechanics
     private protected abstract IEnumerator PlayDeathAnimation(string deathScream);
     public abstract IEnumerator WaitUntilKillConditionsAreMet(Node currentNode);
+
+    // Vulnerability Checks
     public abstract bool IsPlayerVulnerable(Node currentNode);
     public abstract bool IsAnimatronicCloseToAttack(Node currentNode);
+
+    // Golden Freddy Interaction
+    public abstract bool CanGoldenFreddySpawnIn();
+    public abstract bool HasSpottedGoldenFreddy();
+    public abstract bool HasLookedAwayFromGoldenFreddy();
 
     void Start()
     {
         spectatorCamera.enabled = false; // make sure its only enabled when spectating this player
+        DespawnGoldenFreddy();
 
         if (!IsServer) return;
         currentPower.Value = 100f;
@@ -55,8 +78,8 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        isPlayerAlive.Value = true;
         OnInitialise?.Invoke();
+        isPlayerAlive.Value = true;
 
         PowerOn();
 
@@ -162,6 +185,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
         if (MultiplayerManager.isPlayingOnline) VivoxManager.Instance.SwitchToLobbyChat();
 
         yield return MiscellaneousGameUI.Instance.gfJumpscareImage.PlayJumpscare();
+        isDyingToGoldenFreddy.Value = true;
     }
 
     [ClientRpc]
@@ -214,13 +238,29 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
     public virtual Node GetDoorwayNode(Node AttackingNode)
     {
-        // if this base method is called then animatronicsCanStandInDoorway is set to true without setting a doorway node
-        throw new Exception("animatronicsCanStandInDoorway is set to true without setting a doorway node!");
+        // if this base method is called then canAnimatronicsStandInDoorway is set to true without setting a doorway node
+        throw new Exception("canAnimatronicsStandInDoorway is set to true without setting a doorway node!");
     }
-
 
     private protected virtual void UpdatePowerUsage()
     {
         if (!isPlayerAlive.Value) currentPowerUsage.Value = 1;
     }
+
+    public void SpawnGoldenFreddy()
+    {
+        if (goldenFreddyModel != null)
+        {
+            goldenFreddyModel.SetActive(true);
+        }
+    }
+
+    public void DespawnGoldenFreddy()
+    {
+        if (goldenFreddyModel != null)
+        {
+            goldenFreddyModel.SetActive(false);
+        }
+    }
+
 }

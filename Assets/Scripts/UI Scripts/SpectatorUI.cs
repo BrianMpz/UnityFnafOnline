@@ -60,20 +60,37 @@ public class SpectatorUI : Singleton<SpectatorUI>
 
     void Update()
     {
-        float timeLeft = Mathf.Max(359.9f - GameManager.Instance.currentGameTime.Value, 0);
-        timeLeftText.text = $"{timeLeft:F1}";
+        UpdateTimeLeft();
 
         if (!isSpectatingAPlayer) return;
         if (!isSpectating) return;
 
-        PlayerBehaviour playerBehaviour = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerList[currentPlayerSpectatingIndex]);
-        if (playerBehaviour == default) return;
+        PlayerBehaviour currentPlayer = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerList[currentPlayerSpectatingIndex]);
+        if (currentPlayer == default) return;
 
-        if (!PlayerRoleManager.Instance.IsPlayerDead(playerBehaviour))
-            currentPlayerPowerText.text = $"Player Power: {Mathf.Max(playerBehaviour.currentPower.Value, 0):F1}%";
+        UpdatePlayerPower(currentPlayer);
+        HandleGoldenFreddyVisibility(currentPlayer);
+    }
+
+    private void HandleGoldenFreddyVisibility(PlayerBehaviour currentPlayer)
+    {
+        if (currentPlayer.isDyingToGoldenFreddy.Value && !currentPlayer.isPlayerAlive.Value) GFJumpscareImage.Instance.Show(); else GFJumpscareImage.Instance.Hide();
+    }
+
+    private void UpdateTimeLeft()
+    {
+        float timeLeft = Mathf.Max(359.9f - GameManager.Instance.currentGameTime.Value, 0);
+        timeLeftText.text = $"{timeLeft:F1}";
+    }
+
+    private bool UpdatePlayerPower(PlayerBehaviour currentPlayer)
+    {
+
+        if (!PlayerRoleManager.Instance.IsPlayerDead(currentPlayer))
+            currentPlayerPowerText.text = $"Player Power: {Mathf.Max(currentPlayer.currentPower.Value, 0):F1}%";
         else
             currentPlayerPowerText.text = "";
-
+        return true;
     }
 
     private void UpdateGameTimeText(int previousHour, int currentHour)
@@ -150,32 +167,32 @@ public class SpectatorUI : Singleton<SpectatorUI>
     {
         if (!isSpectating) return;
 
-        PlayerBehaviour playerBehaviour = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole);
+        PlayerBehaviour currentPlayer = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole);
 
-        playerBehaviour.spectatorCamera.enabled = true;
+        currentPlayer.spectatorCamera.enabled = true;
 
-        if (playerBehaviour.playerComputer.isMonitorUp.Value)
+        if (currentPlayer.playerComputer.isMonitorUp.Value)
         {
-            CameraName currentCameraName = playerBehaviour.playerComputer.playerCameraSystem.currentCameraName.Value;
+            CameraName currentCameraName = currentPlayer.playerComputer.playerCameraSystem.currentCameraName.Value;
             CameraData cameraData = GlobalCameraSystem.Instance.GetCameraDataFromCameraName(currentCameraName);
             GlobalCameraSystem.Instance.EnableCameraComponent(cameraData);
         }
 
-        playerBehaviour.isPlayerAlive.OnValueChanged += CheckPlayerAliveStatus;
+        currentPlayer.isPlayerAlive.OnValueChanged += CheckPlayerAliveStatus;
     }
 
     private void StopSpectating(int index)
     {
         if (!isSpectating) return;
 
-        PlayerBehaviour playerBehaviour = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerList[index]);
-        if (playerBehaviour == default) return;
+        PlayerBehaviour currentPlayer = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerList[index]);
+        if (currentPlayer == default) return;
 
-        playerBehaviour.spectatorCamera.enabled = false;
+        currentPlayer.spectatorCamera.enabled = false;
 
         GlobalCameraSystem.Instance.DisableAllCameraComponents();
 
-        playerBehaviour.isPlayerAlive.OnValueChanged -= CheckPlayerAliveStatus;
+        currentPlayer.isPlayerAlive.OnValueChanged -= CheckPlayerAliveStatus;
     }
 
     private void CheckPlayerAliveStatus(bool _, bool _1)

@@ -76,6 +76,7 @@ public class GameManager : NetworkSingleton<GameManager>
 
         isPlaying = true;
         OnGameStarted?.Invoke();
+        GameAudioManager.Instance.StopMusic();
 
         if (!IsServer) yield break;
 
@@ -121,7 +122,7 @@ public class GameManager : NetworkSingleton<GameManager>
         isPlaying = false;
 
         GameAudioManager.Instance.StopAllSfx();
-        GameAudioManager.Instance.PlaySfxOneShot("game win");
+        GameAudioManager.Instance.PlaySfxInterruptable("game win");
 
         yield return new WaitForSeconds(7);
 

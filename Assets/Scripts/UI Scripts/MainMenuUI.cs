@@ -32,6 +32,8 @@ public class MainMenuUI : MonoBehaviour
         quitButton.onClick.AddListener(Application.Quit);
 
         playerNameInputField.onValueChanged.AddListener(s => { TruncateUsername(s); });
+
+        GameAudioManager.Instance.PlayMusic("watch your 6");
     }
 
     private void PlayOffline()

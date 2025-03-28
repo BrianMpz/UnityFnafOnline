@@ -13,11 +13,11 @@ public class PlayerComputer : NetworkBehaviour
     public PlayerMotionDetectionSystem playerMotionDetectionSystem;
     public PlayerAudioLureSystem playerAudioLureSystem;
 
-    [SerializeField] private Canvas selectorCanvas;
     public NetworkVariable<ComputerScreen> currentComputerScreen = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> isMonitorUp = new(writePerm: NetworkVariableWritePermission.Owner);
     [SerializeField] private Animator animator;
-    [SerializeField] private bool isMonitorAlwaysUp;
+    [SerializeField] private Canvas selectorCanvas;
+    public bool isMonitorAlwaysUp;
 
     public Action<bool> OnMonitorFlipFinished;
     public Action<ComputerScreen> OnComputerScreenChanged;

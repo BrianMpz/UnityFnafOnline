@@ -57,7 +57,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     {
         currentPowerUsage.Value = 0;
 
-        if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value += 3;
+        if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value += 1;
         if (playerComputer.playerMotionDetectionSystem.IsTracking) currentPowerUsage.Value += 2;
 
         if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 1;
@@ -234,5 +234,20 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         if (currentNode == insideNode) return true;
 
         return false;
+    }
+
+    public override bool CanGoldenFreddySpawnIn()
+    {
+        throw new Exception("Golden Freddy cant be active while the Janitor is alive!");
+    }
+
+    public override bool HasSpottedGoldenFreddy()
+    {
+        throw new Exception("Golden Freddy cant be active while the Janitor is alive!");
+    }
+
+    public override bool HasLookedAwayFromGoldenFreddy()
+    {
+        throw new Exception("Golden Freddy cant be active while the Janitor is alive!");
     }
 }

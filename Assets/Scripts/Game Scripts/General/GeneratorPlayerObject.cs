@@ -7,8 +7,9 @@ using UnityEngine.EventSystems;
 public class GeneratorPlayerObject : MonoBehaviour
 {
     public PlayerRoles playerRole;
-    [SerializeField] private TMP_Text power;
     public EventTrigger chargeButton;
+    [SerializeField] private TMP_Text power;
+    private AudioSource chargingSound;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -40,11 +41,13 @@ public class GeneratorPlayerObject : MonoBehaviour
         {
             power.color = Color.green;
             chargeButton.GetComponentInChildren<TMP_Text>().text = "Charging...";
+            chargingSound = GameAudioManager.Instance.PlaySfxInterruptable("charging");
         }
         else
         {
             power.color = Color.white;
             chargeButton.GetComponentInChildren<TMP_Text>().text = "Charge";
+            GameAudioManager.Instance.StopSfx(chargingSound);
         }
     }
 
