@@ -882,6 +882,8 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 3f1aa24cbfc945e4ab8480ea40f4c4e6, type: 3}
   - name: select 1
     audioClip: {fileID: 8300000, guid: 099ad3cf26d660b45843f8209042b04f, type: 3}
+  - name: keypad alarm
+    audioClip: {fileID: 8300000, guid: e0c959056d0a6ac4b81e7adba92bfd00, type: 3}
   musicSource: {fileID: 1074375430}
   sfxOneShotSource: {fileID: 325984021}
 --- !u!4 &419760764

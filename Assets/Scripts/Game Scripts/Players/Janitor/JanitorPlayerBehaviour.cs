@@ -89,7 +89,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     {
         base.Update();
 
-        RoomLight.enabled = PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.Janitor);
+        RoomLight.enabled = PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.Janitor);
 
         if (!IsOwner) return;
         if (!isPlayerAlive.Value) return;

@@ -10,15 +10,17 @@ public class KeypadSystem : NetworkBehaviour
     [SerializeField] private string requriedCombination;
     [SerializeField] private string currentCombination;
     [SerializeField] private NetworkVariable<float> currentDifficulty = new(writePerm: NetworkVariableWritePermission.Owner);
-    [SerializeField] private NetworkVariable<float> currentMovementWaitTime = new(writePerm: NetworkVariableWritePermission.Owner);
+    [SerializeField] private AudioSource alarm;
+    [SerializeField] private Light alarmLight;
 
     private void Start()
     {
         GameManager.Instance.OnGameStarted += () => { StartCoroutine(GameplayLoop()); };
         DebugCanvasUI.Instance.OnBuff += () =>
         {
-            currentDifficulty.Value += 2f;
+            if (IsOwner) currentDifficulty.Value += 2f;
         };
+        alarmLight.enabled = false;
     }
 
     public void OnButtonPress(string number)
@@ -29,7 +31,7 @@ public class KeypadSystem : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner || !GameManager.Instance.isPlaying) return;
+        if (!PlayerRoleManager.Instance.IsControllingPlayer(PlayerRoles.SecurityOffice) || !GameManager.Instance.isPlaying) return;
 
         for (int i = 0; i <= 9; i++)
         {
@@ -70,46 +72,85 @@ public class KeypadSystem : NetworkBehaviour
 
         while (GameManager.Instance.isPlaying)
         {
-            yield return new WaitForSeconds(UnityEngine.Random.Range(5, 60));
-            if (UnityEngine.Random.Range(1, 20) <= currentDifficulty.Value && PlayerRoleManager.Instance.securityOfficeBehaviour.isPlayerAlive.Value)
+            yield return new WaitForSeconds(10 + Mathf.Lerp(30f, 10f, currentDifficulty.Value / 20f));
+            if (UnityEngine.Random.Range(1, 20) > currentDifficulty.Value || !PlayerRoleManager.Instance.securityOfficeBehaviour.isPlayerAlive.Value || !GameManager.Instance.isPlaying) continue;
+
+            yield return PlayCallAudio();
+
+            currentCombination = "";
+            requriedCombination = "";
+
+            for (int i = 0; i < 5; i++)
             {
-                yield return PlayCallAudio();
+                string newRequiredNumber = UnityEngine.Random.Range(1, 10).ToString();
+                requriedCombination += newRequiredNumber;
 
-                currentCombination = "";
-                requriedCombination = "";
+                AudioSource number = GameAudioManager.Instance.PlaySfxInterruptable($"number 0{newRequiredNumber}");
+                number.pitch = 0.9f;
+                yield return new WaitForSeconds(Mathf.Lerp(2, 1, currentDifficulty.Value / 20f));
+            }
+            yield return new WaitForSeconds(1);
 
-                for (int i = 0; i < 5; i++)
-                {
-                    string newRequiredNumber = UnityEngine.Random.Range(1, 10).ToString();
-                    requriedCombination += newRequiredNumber;
-
-                    GameAudioManager.Instance.PlaySfxOneShot($"number 0{newRequiredNumber}");
-                    yield return new WaitForSeconds(Mathf.Lerp(2, 1, currentDifficulty.Value / 20));
-                }
-                yield return new WaitForSeconds(1);
-
-                if (currentCombination == requriedCombination)
-                {
-                    Debug.Log("success");
-                }
-                else
-                {
-                    GameAudioManager.Instance.PlaySfxOneShot("failed sfx");
-
-                    int randInt = UnityEngine.Random.Range(1, 2 + 1);
-
-                    switch (randInt)
-                    {
-                        case 1:
-                            DebugCanvasUI.Instance.OnBuff?.Invoke();
-                            break;
-                        case 2:
-                            PlayerRoleManager.Instance.backstageBehaviour.maintenance.SetAllSystemsStateServerRpc(State.OFFLINE);
-                            break;
-                    }
-                }
+            if (currentCombination == requriedCombination)
+            {
+                GameAudioManager.Instance.PlaySfxOneShot("select 1");
+            }
+            else
+            {
+                if (PlayerRoleManager.Instance.securityOfficeBehaviour.isPlayerAlive.Value && GameManager.Instance.isPlaying) AlertAllAnimatronicsServerRpc();
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void AlertAllAnimatronicsServerRpc()
+    {
+        PlayerNode playerNode = AnimatronicManager.Instance.GetPlayerNodeFromPlayerRole(PlayerRoles.SecurityOffice);
+        AnimatronicManager.Instance.AttentionDivert?.Invoke(playerNode);
+        AlertAllAnimatronicsClientRpc();
+        DebugCanvasUI.Instance.OnBuff?.Invoke();
+    }
+
+    [ClientRpc]
+    private void AlertAllAnimatronicsClientRpc()
+    {
+        StartCoroutine(AlarmLightEffect());
+    }
+
+    private IEnumerator AlarmLightEffect()
+    {
+        float duration = 9f;
+        float fadeOutDuration = 2f; // Duration for light to fade out
+        float elapsedTime = 0f;
+
+        alarm.Play();
+        yield return new WaitForSeconds(0.3f);
+        alarmLight.enabled = true;
+
+        // Main flashing effect
+        while (elapsedTime < duration)
+        {
+            float intensity = Mathf.Lerp(5f, 10f, Mathf.PingPong(Time.time * 2f, 1f));
+            alarmLight.intensity = intensity;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Smooth fade out of the light after the alarm stops
+        float startIntensity = alarmLight.intensity;
+        elapsedTime = 0f;
+        alarm.Stop();
+
+        while (elapsedTime < fadeOutDuration)
+        {
+            alarmLight.intensity = Mathf.Lerp(startIntensity, 0f, elapsedTime / fadeOutDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        alarmLight.intensity = 0f;
+        alarmLight.enabled = false; // Ensure the light is completely off
     }
 
     private IEnumerator PlayCallAudio()

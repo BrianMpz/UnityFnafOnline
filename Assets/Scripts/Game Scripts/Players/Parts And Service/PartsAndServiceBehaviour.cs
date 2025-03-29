@@ -56,8 +56,8 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     {
         base.Update();
 
-        RoomLight.enabled = isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.PartsAndService);
-        flashLight.enabled = !isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.PartsAndService) || isGettingJumpscared;
+        RoomLight.enabled = isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.PartsAndService);
+        flashLight.enabled = !isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.PartsAndService) || isGettingJumpscared;
     }
 
     private protected override IEnumerator PlayDeathAnimation(string deathScream)
@@ -121,7 +121,7 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
 
     public override bool CanGoldenFreddySpawnIn()
     {
-        return partsAndServiceCameraController.CurrentView == partsAndServiceCameraController.DoorView;
+        return partsAndServiceCameraController.CurrentView != partsAndServiceCameraController.GeneratorView;
     }
 
     public override bool HasSpottedGoldenFreddy()

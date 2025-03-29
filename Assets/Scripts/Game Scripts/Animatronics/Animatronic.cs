@@ -41,6 +41,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
         GameManager.Instance.OnPlayerPowerDown += GameManager_OnPlayerPowerDown;
         AnimatronicManager.Instance.OnAudioLure += AudioLure_AttractAnimatronic;
+        AnimatronicManager.Instance.AttentionDivert += OnAttentionDivert;
 
         SetNode(startNode, false, false);
 
@@ -138,6 +139,11 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
             TargetRandomPlayer();
         }
+    }
+
+    public void OnAttentionDivert(Node targetedNode)
+    {
+        SetTarget(targetedNode);
     }
 
     private protected void HandleAggrivation(bool shouldBeAggrivated, float aggrivatedDifficultyAdditionAmount = 20, float aggrivatedWaitTimeCoefficient = 1.2f)

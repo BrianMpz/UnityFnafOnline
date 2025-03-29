@@ -69,7 +69,7 @@ public class JanitorUI : PlayerUI
     {
         base.Update();
 
-        oxygenBlackout.enabled = PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.Janitor);
+        oxygenBlackout.enabled = PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.Janitor);
         oxygenBlackout.color = new(0, 0, 0, 1f - (janitorPlayerBehaviour.oxygenLevels.Value / 100f));
     }
 }

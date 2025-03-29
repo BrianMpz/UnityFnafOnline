@@ -56,7 +56,10 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
         // Set up button actions.
         roomCodeCopyButton.onClick.AddListener(() => GUIUtility.systemCopyBuffer = MultiplayerManager.Instance.joinCode);
         leaveButton.onClick.AddListener(MultiplayerManager.Instance.LeaveGame);
-        shuffleRolesButton.onClick.AddListener(MultiplayerManager.Instance.ShufflePlayerRoles);
+
+        if (!IsServer) return;
+
+        shuffleRolesButton.onClick.AddListener(() => { MultiplayerManager.Instance.ShufflePlayerRoles(true); });
         startButton.onClick.AddListener(() =>
         {
             MultiplayerManager.Instance.DisallowNobodyHavingARole();

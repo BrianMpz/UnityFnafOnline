@@ -15,6 +15,8 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
     {
         get => GetComponentsInChildren<PlayerNode>().ToList();
     }
+    public Action<Node> AttentionDivert;
+
     public event Action<Node> OnAudioLure;
 
     private void Start()

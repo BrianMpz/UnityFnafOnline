@@ -301,7 +301,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
     private bool IsRoleAvailable(PlayerRoles role)
     {
-        if (role == PlayerRoles.None) return true;
+        if (role == PlayerRoles.None) return true; // any amount of people can spectate
 
         foreach (PlayerData playerData in playerDataList)
         {
@@ -338,14 +338,14 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
             if (playerData.role != PlayerRoles.None) return; // at least one person has a role
         }
 
-        ShufflePlayerRoles();
+        ShufflePlayerRoles(false);
     }
 
-    public void ShufflePlayerRoles() // gives each player a random role
+    public void ShufflePlayerRoles(bool shouldIgnoreSpectators = true) // gives each player a random role
     {
         foreach (PlayerData playerData in playerDataList)
         {
-            if (playerData.role == PlayerRoles.None) continue;
+            if (playerData.role == PlayerRoles.None && shouldIgnoreSpectators) continue;
             SetPlayerRole(playerData.clientId, GetRandomUnusedPlayerRole());
         }
     }

@@ -68,13 +68,13 @@ public class SpectatorUI : Singleton<SpectatorUI>
         PlayerBehaviour currentPlayer = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerList[currentPlayerSpectatingIndex]);
         if (currentPlayer == default) return;
 
-        UpdatePlayerPower(currentPlayer);
         HandleGoldenFreddyVisibility(currentPlayer);
+        UpdatePlayerPower(currentPlayer);
     }
 
     private void HandleGoldenFreddyVisibility(PlayerBehaviour currentPlayer)
     {
-        if (currentPlayer.isDyingToGoldenFreddy.Value && !currentPlayer.isPlayerAlive.Value) GFJumpscareImage.Instance.Show(); else GFJumpscareImage.Instance.Hide();
+        if (currentPlayer.isDyingToGoldenFreddy.Value && currentPlayer.isPlayerAlive.Value) GFJumpscareImage.Instance.Show(); else GFJumpscareImage.Instance.Hide();
     }
 
     private void UpdateTimeLeft()
@@ -184,6 +184,8 @@ public class SpectatorUI : Singleton<SpectatorUI>
     private void StopSpectating(int index)
     {
         if (!isSpectating) return;
+
+        GFJumpscareImage.Instance.Hide();
 
         PlayerBehaviour currentPlayer = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerList[index]);
         if (currentPlayer == default) return;

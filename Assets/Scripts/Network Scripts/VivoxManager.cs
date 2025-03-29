@@ -116,13 +116,9 @@ public class VivoxManager : Singleton<VivoxManager>
         Debug.Log($"left {channelName}");
     }
 
-    private string lastCheckedChannel;
     void Update()
     {
         if (VivoxService.Instance == null) return;
-        if (currentChannelName == lastCheckedChannel) return; // Prevent unnecessary updates
-
-        lastCheckedChannel = currentChannelName;
 
         audioLowPassFilter.enabled = currentChannelName == gameChatName;
         audioReverbFilter.enabled = currentChannelName == lobbyChatName && GameManager.Instance?.isPlaying == true;

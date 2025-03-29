@@ -76,11 +76,16 @@ public class GameManager : NetworkSingleton<GameManager>
 
         isPlaying = true;
         OnGameStarted?.Invoke();
-        GameAudioManager.Instance.StopMusic();
+        StartGameMusic();
 
         if (!IsServer) yield break;
 
         gameTimeCoroutine ??= StartCoroutine(StartGameTime());
+    }
+
+    private static void StartGameMusic()
+    {
+        GameAudioManager.Instance.StopMusic();
     }
 
     private IEnumerator StartGameTime()
@@ -174,6 +179,8 @@ public class GameManager : NetworkSingleton<GameManager>
     [ClientRpc]
     private void RelayDeathClientRpc(FixedString64Bytes killer, ulong SenderClientId)
     {
+        isPlaying = false;
+
         if (SenderClientId == NetworkManager.Singleton.LocalClientId) return;
 
         PlayerData playerData = MultiplayerManager.Instance.GetPlayerDataFromClientId(SenderClientId);

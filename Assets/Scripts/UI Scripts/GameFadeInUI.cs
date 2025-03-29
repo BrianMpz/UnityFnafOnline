@@ -13,7 +13,7 @@ public class GameFadeInUI : MonoBehaviour
         Hide();
     }
 
-    public void FadeOut(float fadeOutTime = 5)
+    public void FadeOut(float fadeOutTime = 6)
     {
         StopAllCoroutines();
         StartCoroutine(FadeOutCoroutine(fadeOutTime));
@@ -25,7 +25,6 @@ public class GameFadeInUI : MonoBehaviour
         blackScreen.color = new Color(0, 0, 0, 1);
         float elapsedTime = 0;
 
-        yield return new WaitForSeconds(1f);
         while (elapsedTime < fadeOutTime)
         {
             blackScreen.color = new Color(0, 0, 0, 1 - (elapsedTime / fadeOutTime));

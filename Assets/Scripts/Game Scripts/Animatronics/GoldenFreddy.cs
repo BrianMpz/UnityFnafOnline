@@ -16,31 +16,31 @@ public class GoldenFreddy : Animatronic
         {
             case GameNight.One:
                 currentDifficulty.Value = 1;
-                currentMovementWaitTime.Value = 4;
+                currentMovementWaitTime.Value = 60f;
                 break;
             case GameNight.Two:
                 currentDifficulty.Value = 2;
-                currentMovementWaitTime.Value = 4f;
+                currentMovementWaitTime.Value = 50f;
                 break;
             case GameNight.Three:
                 currentDifficulty.Value = 4;
-                currentMovementWaitTime.Value = 4f;
+                currentMovementWaitTime.Value = 40f;
                 break;
             case GameNight.Four:
                 currentDifficulty.Value = 7;
-                currentMovementWaitTime.Value = 4f;
+                currentMovementWaitTime.Value = 30f;
                 break;
             case GameNight.Five:
                 currentDifficulty.Value = 11;
-                currentMovementWaitTime.Value = 4f;
+                currentMovementWaitTime.Value = 20f;
                 break;
             case GameNight.Six:
                 currentDifficulty.Value = 16;
-                currentMovementWaitTime.Value = 4f;
+                currentMovementWaitTime.Value = 10f;
                 break;
             case GameNight.Seven:
                 currentDifficulty.Value = 20;
-                currentMovementWaitTime.Value = 4f;
+                currentMovementWaitTime.Value = 10f;
                 break;
         }
 
@@ -58,7 +58,9 @@ public class GoldenFreddy : Animatronic
     {
         while (GameManager.Instance.isPlaying)
         {
-            //if (UnityEngine.Random.Range(1, 20 + 1) > currentDifficulty.Value) continue;
+            yield return new WaitForSeconds(waitTimeToStartMoving);
+            if (UnityEngine.Random.Range(1, 20 + 1) > currentDifficulty.Value) continue;
+
             TargetRandomPlayer();
             PlayerBehaviour targetPlayer = target.GetComponent<PlayerNode>().playerBehaviour;
             transform.position = target.GetComponent<PlayerNode>().transform.position;
@@ -73,14 +75,14 @@ public class GoldenFreddy : Animatronic
             yield return new WaitUntil(() => targetPlayer.HasSpottedGoldenFreddy() || !targetPlayer.isPlayerAlive.Value);
 
             // Start the kill countdown
-            float killTimer = 1f;
+            float killTimer = Mathf.Lerp(2f, 1f, currentDifficulty.Value / 20);
             while (killTimer > 0f)
             {
                 if (targetPlayer.HasLookedAwayFromGoldenFreddy() || !targetPlayer.isPlayerAlive.Value) // Stop if player looks away
                 {
                     yield return new WaitForSeconds(0.2f);
                     DespawnGoldenFreddyClientRpc(targetPlayer.playerRole);
-                    yield break;
+                    goto ContinueOuterLoop; // Jump to the start of the outer loop
                 }
 
                 killTimer -= Time.deltaTime;
@@ -88,6 +90,8 @@ public class GoldenFreddy : Animatronic
             }
 
             targetPlayer.DieClientRpc("Golden Freddy", default, MultiplayerManager.NewClientRpcSendParams(targetPlayer.OwnerClientId));
+
+        ContinueOuterLoop:; // Label for the outer loop to continue
         }
     }
 
@@ -96,6 +100,8 @@ public class GoldenFreddy : Animatronic
     {
         PlayerBehaviour targetPlayer = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole);
         targetPlayer.SpawnGoldenFreddy();
+
+        if (GameManager.Instance.IsSpectating && PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.SecurityOffice)) MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(0.5f);
     }
 
     [ClientRpc]
@@ -103,5 +109,7 @@ public class GoldenFreddy : Animatronic
     {
         PlayerBehaviour targetPlayer = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole);
         targetPlayer.DespawnGoldenFreddy();
+
+        if (GameManager.Instance.IsSpectating && PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.SecurityOffice)) MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(0.5f);
     }
 }

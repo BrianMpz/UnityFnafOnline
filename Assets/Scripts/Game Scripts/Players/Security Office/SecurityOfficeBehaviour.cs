@@ -71,8 +71,8 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     {
         base.Update();
 
-        RoomLight.enabled = isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.SecurityOffice);
-        flashLight.enabled = !isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingThisPlayer(PlayerRoles.SecurityOffice) || isGettingJumpscared;
+        RoomLight.enabled = isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.SecurityOffice);
+        flashLight.enabled = !isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.SecurityOffice) || isGettingJumpscared;
     }
 
     private protected override IEnumerator PlayDeathAnimation(string deathScream)

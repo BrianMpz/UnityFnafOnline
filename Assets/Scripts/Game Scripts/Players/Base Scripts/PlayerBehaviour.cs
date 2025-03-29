@@ -184,8 +184,8 @@ public abstract class PlayerBehaviour : NetworkBehaviour
         if (!isPlayerAlive.Value) yield break;
         if (MultiplayerManager.isPlayingOnline) VivoxManager.Instance.SwitchToLobbyChat();
 
-        yield return MiscellaneousGameUI.Instance.gfJumpscareImage.PlayJumpscare();
         isDyingToGoldenFreddy.Value = true;
+        yield return GFJumpscareImage.Instance.PlayJumpscare();
     }
 
     [ClientRpc]
