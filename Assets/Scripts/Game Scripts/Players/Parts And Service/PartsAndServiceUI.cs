@@ -35,13 +35,13 @@ public class PartsAndServiceUI : PlayerUI
         playerBehaviour.OnPowerOn += EnableFlip;
         playerBehaviour.OnPowerDown += DisableFlip;
 
-        DoorToLaptopTrigger();
+        playerBehaviour.OnInitialise += DoorToLaptopTrigger;
         EnableFlip();
     }
 
     private void EnableFlip()
     {
-        if (cameraController.CurrentView == cameraController.LaptopView)
+        if (cameraController.currentView.Value == PartsAndServiceCameraController_View.LaptopView)
         {
             monitorFlip.enabled = true;
             monitorToggle.enabled = false;
@@ -128,7 +128,7 @@ public class PartsAndServiceUI : PlayerUI
         monitorFlip.GetComponent<Image>().enabled = false;
         monitorToggle.GetComponent<Image>().enabled = false;
 
-        cameraController.SetCameraView(cameraController.DoorView);
+        cameraController.SetCameraView(PartsAndServiceCameraController_View.DoorView);
 
         laptopToDoorTrigger.GetComponent<Image>().enabled = false;
         doorToLaptopTrigger.GetComponent<Image>().enabled = true;
@@ -142,7 +142,7 @@ public class PartsAndServiceUI : PlayerUI
         monitorFlip.GetComponent<Image>().enabled = false;
         monitorToggle.GetComponent<Image>().enabled = false;
 
-        cameraController.SetCameraView(cameraController.GeneratorView);
+        cameraController.SetCameraView(PartsAndServiceCameraController_View.GeneratorView);
 
         laptopToDoorTrigger.GetComponent<Image>().enabled = false;
         doorToLaptopTrigger.GetComponent<Image>().enabled = false;
@@ -158,7 +158,7 @@ public class PartsAndServiceUI : PlayerUI
 
         EnableFlip();
 
-        cameraController.SetCameraView(cameraController.LaptopView);
+        cameraController.SetCameraView(PartsAndServiceCameraController_View.LaptopView);
 
         laptopToDoorTrigger.GetComponent<Image>().enabled = true;
         doorToLaptopTrigger.GetComponent<Image>().enabled = false;
@@ -174,7 +174,7 @@ public class PartsAndServiceUI : PlayerUI
 
         EnableFlip();
 
-        cameraController.SetCameraView(cameraController.LaptopView);
+        cameraController.SetCameraView(PartsAndServiceCameraController_View.LaptopView);
 
         laptopToDoorTrigger.GetComponent<Image>().enabled = true;
         doorToLaptopTrigger.GetComponent<Image>().enabled = false;

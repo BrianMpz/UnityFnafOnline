@@ -121,7 +121,7 @@ public class VivoxManager : Singleton<VivoxManager>
         if (VivoxService.Instance == null) return;
 
         audioLowPassFilter.enabled = currentChannelName == gameChatName;
-        audioReverbFilter.enabled = currentChannelName == lobbyChatName && GameManager.Instance?.isPlaying == true;
+        audioReverbFilter.enabled = currentChannelName == lobbyChatName && GameManager.Instance != null && GameManager.Instance.isPlaying;
     }
 
     public bool IsInChannel(string channel)

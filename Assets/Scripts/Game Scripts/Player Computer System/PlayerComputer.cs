@@ -6,27 +6,44 @@ using UnityEngine.UI;
 
 public class PlayerComputer : NetworkBehaviour
 {
+    /* ───────────────────────────────── COMPONENTS ───────────────────────────────── */
+
     public PlayerBehaviour playerBehaviour;
+
+    [Header("Computer Systems")]
     public PlayerCameraSystem playerCameraSystem;
     public PlayerCommunicationSystem playerCommunicationSystem;
-    public PlayerManual playerManual;
     public PlayerMotionDetectionSystem playerMotionDetectionSystem;
     public PlayerAudioLureSystem playerAudioLureSystem;
+    public PlayerGameSystem playerGameSystem;
+    public PlayerManual playerManual;
+
+    [Header("UI & Animation")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private Canvas selectorCanvas;
+    [SerializeField] private Canvas defaultCanvas;
+
+    /* ───────────────────────────────── NETWORK VARIABLES ───────────────────────────────── */
 
     public NetworkVariable<ComputerScreen> currentComputerScreen = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> isMonitorUp = new(writePerm: NetworkVariableWritePermission.Owner);
-    [SerializeField] private Animator animator;
-    [SerializeField] private Canvas selectorCanvas;
+
+    /* ───────────────────────────────── STATE VARIABLES ───────────────────────────────── */
+
     public bool isMonitorAlwaysUp;
+    public bool isLocked;
+    private bool isWaitingForAnimationToFinish;
+
+    /* ───────────────────────────────── EVENTS ───────────────────────────────── */
 
     public Action<bool> OnMonitorFlipFinished;
     public Action<ComputerScreen> OnComputerScreenChanged;
 
-    public bool isLocked;
-    private bool isWaitingForAnimationToFinish;
-
     private void Start()
     {
+        selectorCanvas.enabled = false;
+        defaultCanvas.enabled = false;
+
         playerBehaviour.OnInitialise += Initialise;
         playerBehaviour.OnPowerOn += PlayerBehaviour_OnPowerOn;
         playerBehaviour.OnPowerDown += PlayerBehaviour_OnPowerDown;
@@ -36,13 +53,15 @@ public class PlayerComputer : NetworkBehaviour
     public void Initialise()
     {
         selectorCanvas.worldCamera = playerBehaviour.playerCamera;
-
         selectorCanvas.enabled = false;
+        defaultCanvas.enabled = false;
+
         playerCameraSystem.Initialise(playerBehaviour.playerCamera);
         playerCommunicationSystem.Initialise(playerBehaviour.playerCamera);
-        playerManual.Initialise(playerBehaviour.playerCamera);
         playerMotionDetectionSystem.Initialise(playerBehaviour.playerCamera);
         playerAudioLureSystem.Initialise(playerBehaviour.playerCamera);
+        playerGameSystem.Initialise(playerBehaviour.playerCamera);
+        playerManual.Initialise(playerBehaviour.playerCamera);
 
         currentComputerScreen.Value = ComputerScreen.Manual;
     }
@@ -161,6 +180,8 @@ public class PlayerComputer : NetworkBehaviour
         currentComputerScreen.Value = computerScreen;
 
         selectorCanvas.enabled = true;
+        defaultCanvas.enabled = true;
+
         switch (currentComputerScreen.Value)
         {
             case ComputerScreen.Cameras:
@@ -174,6 +195,9 @@ public class PlayerComputer : NetworkBehaviour
                 break;
             case ComputerScreen.AudioLure:
                 playerAudioLureSystem.Enable();
+                break;
+            case ComputerScreen.Games:
+                playerGameSystem.Enable();
                 break;
             case ComputerScreen.Manual:
                 playerManual.Enable();
@@ -189,8 +213,11 @@ public class PlayerComputer : NetworkBehaviour
         playerCommunicationSystem.Disable();
         playerMotionDetectionSystem.Disable();
         playerAudioLureSystem.Disable();
+        playerGameSystem.Disable();
         playerManual.Disable();
+
         selectorCanvas.enabled = false;
+        defaultCanvas.enabled = false;
     }
 }
 
@@ -198,7 +225,8 @@ public enum ComputerScreen
 {
     Cameras,
     Comms,
-    Manual,
     MotionDetection,
     AudioLure,
+    Games,
+    Manual,
 }

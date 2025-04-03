@@ -67,7 +67,7 @@ public class GoldenFreddy : Animatronic
 
             // Wait until the player is NOT in a position to see Golden Freddy spawn
             yield return new WaitUntil(() => targetPlayer.CanGoldenFreddySpawnIn() || !targetPlayer.isPlayerAlive.Value);
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.1f);
 
             SpawnGoldenFreddyClientRpc(targetPlayer.playerRole);
 
@@ -80,7 +80,7 @@ public class GoldenFreddy : Animatronic
             {
                 if (targetPlayer.HasLookedAwayFromGoldenFreddy() || !targetPlayer.isPlayerAlive.Value) // Stop if player looks away
                 {
-                    yield return new WaitForSeconds(0.2f);
+                    yield return new WaitForSeconds(0.1f);
                     DespawnGoldenFreddyClientRpc(targetPlayer.playerRole);
                     goto ContinueOuterLoop; // Jump to the start of the outer loop
                 }
@@ -101,7 +101,7 @@ public class GoldenFreddy : Animatronic
         PlayerBehaviour targetPlayer = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole);
         targetPlayer.SpawnGoldenFreddy();
 
-        if (GameManager.Instance.IsSpectating && PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.SecurityOffice)) MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(0.5f);
+        if (GameManager.Instance.IsSpectating && PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.SecurityOffice)) MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(0.5f, false);
     }
 
     [ClientRpc]
@@ -110,6 +110,6 @@ public class GoldenFreddy : Animatronic
         PlayerBehaviour targetPlayer = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole);
         targetPlayer.DespawnGoldenFreddy();
 
-        if (GameManager.Instance.IsSpectating && PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.SecurityOffice)) MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(0.5f);
+        if (GameManager.Instance.IsSpectating && PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.SecurityOffice)) MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(0.5f, false);
     }
 }

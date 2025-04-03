@@ -33,8 +33,8 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
 
         while (freddles != null && isPlayerAlive.Value)
         {
-            Transform currentView = backstageCameraController.CurrentView;
-            Transform shockView = backstageCameraController.ShockView;
+            BackstageCameraController_View currentView = backstageCameraController.currentView.Value;
+            BackstageCameraController_View shockView = BackstageCameraController_View.ShockView;
 
             if (currentView != shockView)
             {
@@ -177,6 +177,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     private void ZapServerRpc(int zapAttempts)
     {
         if (!isPlayerPoweredOn.Value) return;
+
         currentPower.Value -= zapAttempts * zapAttempts / 2;
         zap.GetZapped();
     }
@@ -190,16 +191,26 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
 
     public override bool CanGoldenFreddySpawnIn()
     {
-        return backstageCameraController.CurrentView != backstageCameraController.DoorView;
+        return backstageCameraController.currentView.Value != BackstageCameraController_View.DoorView;
     }
 
     public override bool HasSpottedGoldenFreddy()
     {
-        return backstageCameraController.CurrentView == backstageCameraController.DoorView;
+        return backstageCameraController.currentView.Value == BackstageCameraController_View.DoorView;
     }
 
     public override bool HasLookedAwayFromGoldenFreddy()
     {
-        return backstageCameraController.CurrentView != backstageCameraController.DoorView;
+        return backstageCameraController.currentView.Value != BackstageCameraController_View.DoorView;
+    }
+
+    public override bool HasBlockedFoxy()
+    {
+        return door.isDoorClosed.Value;
+    }
+
+    public override IEnumerator IsFoxyReadyToAttack(Node hallwayNode, float definitiveAttackTime)
+    {
+        yield return new WaitUntil(() => !hallwayNode.isOccupied.Value && (Time.time > definitiveAttackTime || GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(hallwayNode)));
     }
 }

@@ -175,4 +175,14 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     {
         return playerComputer.isMonitorUp.Value;
     }
+
+    public override bool HasBlockedFoxy()
+    {
+        return leftDoor.isDoorClosed.Value;
+    }
+
+    public override IEnumerator IsFoxyReadyToAttack(Node hallwayNode, float definitiveAttackTime)
+    {
+        yield return new WaitUntil(() => !hallwayNode.isOccupied.Value && (Time.time > definitiveAttackTime || GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(hallwayNode)));
+    }
 }

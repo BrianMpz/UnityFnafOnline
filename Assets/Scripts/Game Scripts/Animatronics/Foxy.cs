@@ -15,12 +15,14 @@ public class Foxy : Animatronic
     private AudioSource foxyTauntAudio;
     private AudioSource thunkAudio;
 
-    [SerializeField] private Node securityOfficeHallwayNode;
-    [SerializeField] private Node partsAndServiceHallwayNode;
-    [SerializeField] private Node backstageHallwayNode;
     [SerializeField] private FoxyWarningSign foxyWarningSign;
     [SerializeField] private Animation foxyAnimation;
     public event Action<PlayerRoles, float> OnFoxyPowerDrain;
+
+    [SerializeField] private Node securityOfficeHallwayNode;
+    [SerializeField] private Node janitorHallwayNode;
+    [SerializeField] private Node partsAndServiceHallwayNode;
+    [SerializeField] private Node backstageHallwayNode;
 
     public override void Initialise()
     {
@@ -215,71 +217,27 @@ public class Foxy : Animatronic
     {
         float definitiveAttackTime = Time.time + UnityEngine.Random.Range(10, 30);
         int indexOfPlayerNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
+        PlayerBehaviour targetPlayerBehaviour = playerNode.playerBehaviour;
+        Node targetPlayerHallwayNode = GetHallwayNodeFromPlayerRole(targetPlayerBehaviour.playerRole);
 
-        switch (playerNode.playerBehaviour.playerRole)
-        {
-            case PlayerRoles.SecurityOffice:
-
-                yield return new WaitUntil(() =>
-                {
-                    return !securityOfficeHallwayNode.isOccupied.Value &&
-                    (
-                        Time.time > definitiveAttackTime ||
-                        GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(securityOfficeHallwayNode)
-                    );
-                });
-
-                SetNode(securityOfficeHallwayNode);
-                break;
-            case PlayerRoles.Janitor:
-
-                yield return new WaitUntil(() =>
-                {
-                    return !securityOfficeHallwayNode.isOccupied.Value &&
-                    (
-                        Time.time > definitiveAttackTime ||
-                        GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(securityOfficeHallwayNode)
-                    );
-                });
-
-                SetNode(securityOfficeHallwayNode);
-                break;
-            case PlayerRoles.PartsAndService:
-
-                yield return new WaitUntil(() =>
-                {
-                    return !partsAndServiceHallwayNode.isOccupied.Value &&
-                    (
-                        Time.time > definitiveAttackTime ||
-                        GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(partsAndServiceHallwayNode) ||
-                        PlayerRoleManager.Instance.partsAndServiceBehaviour.door.doorLight.isFlashingLight.Value
-                    );
-                });
-
-                SetNode(partsAndServiceHallwayNode);
-                break;
-            case PlayerRoles.Backstage:
-
-                yield return new WaitUntil(() =>
-                {
-                    return !backstageHallwayNode.isOccupied.Value &&
-                    (
-                        Time.time > definitiveAttackTime ||
-                        GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(backstageHallwayNode) ||
-                        PlayerRoleManager.Instance.backstageBehaviour.door.doorLight.isFlashingLight.Value
-                    );
-                });
-
-                SetNode(backstageHallwayNode);
-                break;
-        }
+        yield return targetPlayerBehaviour.IsFoxyReadyToAttack(targetPlayerHallwayNode, definitiveAttackTime);
+        SetNode(targetPlayerHallwayNode);
 
         InitiateAttackClientRpc(indexOfPlayerNode);
-
-        if (gameplayLoop != null) StopCoroutine(gameplayLoop);
-
         isWaitingOnClient = true;
+        if (gameplayLoop != null) StopCoroutine(gameplayLoop);
+    }
 
+    private Node GetHallwayNodeFromPlayerRole(PlayerRoles playerRole)
+    {
+        return playerRole switch
+        {
+            PlayerRoles.SecurityOffice => securityOfficeHallwayNode,
+            PlayerRoles.Janitor => janitorHallwayNode,// same as security office
+            PlayerRoles.PartsAndService => partsAndServiceHallwayNode,
+            PlayerRoles.Backstage => backstageHallwayNode,
+            _ => null,
+        };
     }
 
     [ClientRpc]
@@ -298,82 +256,30 @@ public class Foxy : Animatronic
     private IEnumerator CheckPlayerCondition(PlayerNode playerNode)
     {
         int indexOfPlayerNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
-        PlayerBehaviour pb = playerNode.playerBehaviour;
+        PlayerBehaviour targetPlayerBehaviour = playerNode.playerBehaviour;
 
         yield return new WaitForSeconds(1.7f);
 
-        switch (pb.playerRole) // expand for more roles
+        if (targetPlayerBehaviour.HasBlockedFoxy())
         {
-            case PlayerRoles.SecurityOffice:
-                SecurityOfficeBehaviour securityOfficeBehaviour = PlayerRoleManager.Instance.securityOfficeBehaviour;
-
-                if (securityOfficeBehaviour.leftDoor.isDoorClosed.Value)
-                {
-                    Blocked(indexOfPlayerNode, pb);
-                }
-                else if (pb.isPlayerAlive.Value)
-                {
-                    KillPlayerServerRpc(indexOfPlayerNode);
-                }
-                else
-                {
-                    ResetFoxyServerRpc();
-                }
-                break;
-            case PlayerRoles.Janitor:
-                JanitorPlayerBehaviour janitorPlayerBehaviour = PlayerRoleManager.Instance.janitorBehaviour;
-                if (janitorPlayerBehaviour.isMaskDown.Value)
-                {
-                    Blocked(indexOfPlayerNode, pb, false);
-                }
-                else if (pb.isPlayerAlive.Value)
-                {
-                    KillPlayerServerRpc(indexOfPlayerNode);
-                }
-                else
-                {
-                    ResetFoxyServerRpc();
-                }
-                break;
-            case PlayerRoles.PartsAndService:
-                PartsAndServiceBehaviour partsAndServiceBehaviour = PlayerRoleManager.Instance.partsAndServiceBehaviour;
-
-                if (partsAndServiceBehaviour.door.isDoorClosed.Value)
-                {
-                    Blocked(indexOfPlayerNode, pb);
-                }
-                else if (pb.isPlayerAlive.Value)
-                {
-                    KillPlayerServerRpc(indexOfPlayerNode);
-                }
-                else
-                {
-                    ResetFoxyServerRpc();
-                }
-                break;
-            case PlayerRoles.Backstage:
-                BackstagePlayerBehaviour backstagePlayerBehaviour = PlayerRoleManager.Instance.backstageBehaviour;
-
-                if (backstagePlayerBehaviour.door.isDoorClosed.Value)
-                {
-                    Blocked(indexOfPlayerNode, pb);
-                }
-                else if (pb.isPlayerAlive.Value)
-                {
-                    KillPlayerServerRpc(indexOfPlayerNode);
-                }
-                else
-                {
-                    ResetFoxyServerRpc();
-                }
-                break;
+            Blocked(indexOfPlayerNode, targetPlayerBehaviour);
+        }
+        else if (targetPlayerBehaviour.isPlayerAlive.Value)
+        {
+            KillPlayerServerRpc(indexOfPlayerNode);
+        }
+        else
+        {
+            ResetFoxyServerRpc();
         }
     }
 
-    private void Blocked(int indexOfPlayerNode, PlayerBehaviour pb, bool playBlockAudio = true)
+    private void Blocked(int indexOfPlayerNode, PlayerBehaviour targetPlayerBehaviour)
     {
-        PlayThunkAudio(pb);
-        OnFoxyPowerDrain.Invoke(pb.playerRole, CalculatePowerDrain());
+        bool playBlockAudio = targetPlayerBehaviour.playerRole != PlayerRoles.Janitor;
+
+        PlayThunkAudio(targetPlayerBehaviour);
+        OnFoxyPowerDrain.Invoke(targetPlayerBehaviour.playerRole, CalculatePowerDrain());
         ResetFoxyServerRpc(playBlockAudio, indexOfPlayerNode: indexOfPlayerNode);
     }
 

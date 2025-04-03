@@ -771,6 +771,8 @@ MonoBehaviour:
   musicSounds:
   - name: watch your 6
     audioClip: {fileID: 8300000, guid: 8c61260a8a0170d4ba59bd98994312fe, type: 3}
+  - name: last breath
+    audioClip: {fileID: 8300000, guid: 69fb83b10a34fdf41bc55f56a90fcfed, type: 3}
   sfxSounds:
   - name: window scare
     audioClip: {fileID: 8300000, guid: 525e0222d9aea9345bf1e22783a6b700, type: 3}

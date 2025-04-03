@@ -1,19 +1,36 @@
+using Unity.Netcode;
 using UnityEngine;
 
 public class PartsAndServiceCameraController : CameraController
 {
     [SerializeField] private PartsAndServiceBehaviour partsAndServiceBehaviour;
-    public Transform CurrentView { get; private set; }
-    public Transform DoorView;
-    public Transform LaptopView;
-    public Transform GeneratorView;
-    public Transform DeathView;
+    public NetworkVariable<PartsAndServiceCameraController_View> currentView = new(writePerm: NetworkVariableWritePermission.Owner);
+    private Transform CurrentView;
+    [SerializeField] private Transform DoorView;
+    [SerializeField] private Transform LaptopView;
+    [SerializeField] private Transform GeneratorView;
+    [SerializeField] private Transform DeathView;
     [SerializeField] private float cameraLerpSpeed;
 
-    public void SetCameraView(Transform view)
+    public void SetCameraView(PartsAndServiceCameraController_View view)
     {
         partsAndServiceBehaviour.door.doorLight.DisableLights();
-        CurrentView = view;
+
+        currentView.Value = view;
+
+        Transform viewTransform = GetViewFromEnum(view);
+        CurrentView = viewTransform;
+    }
+
+    private Transform GetViewFromEnum(PartsAndServiceCameraController_View view)
+    {
+        return view switch
+        {
+            PartsAndServiceCameraController_View.DoorView => DoorView,
+            PartsAndServiceCameraController_View.LaptopView => LaptopView,
+            PartsAndServiceCameraController_View.GeneratorView => GeneratorView,
+            _ => null,
+        };
     }
 
     public override void SetCameraView()
@@ -51,4 +68,11 @@ public class PartsAndServiceCameraController : CameraController
         CurrentView = LaptopView;
         cam.fieldOfView = 60;
     }
+}
+
+public enum PartsAndServiceCameraController_View
+{
+    DoorView,
+    LaptopView,
+    GeneratorView,
 }

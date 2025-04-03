@@ -13,16 +13,19 @@ public class GameFadeInUI : MonoBehaviour
         Hide();
     }
 
-    public void FadeOut(float fadeOutTime = 6)
+    public void FadeOut(float fadeOutTime = 8, bool oneSecondBlackout = true)
     {
         StopAllCoroutines();
-        StartCoroutine(FadeOutCoroutine(fadeOutTime));
+        StartCoroutine(FadeOutCoroutine(fadeOutTime, oneSecondBlackout));
     }
 
-    public IEnumerator FadeOutCoroutine(float fadeOutTime)
+    public IEnumerator FadeOutCoroutine(float fadeOutTime, bool oneSecondBlackout)
     {
         Show();
         blackScreen.color = new Color(0, 0, 0, 1);
+
+        if (oneSecondBlackout) yield return new WaitForSeconds(1.5f);
+
         float elapsedTime = 0;
 
         while (elapsedTime < fadeOutTime)

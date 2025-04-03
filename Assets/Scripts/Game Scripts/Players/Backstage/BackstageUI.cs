@@ -18,24 +18,24 @@ public class BackstageUI : PlayerUI
 
     private void TurnRight()
     {
-        Transform viewToSet = null;
+        BackstageCameraController_View viewToSet = default;
 
-        if (cameraController.CurrentView == cameraController.MonitorView) viewToSet = cameraController.MaintenanceView;
-        else if (cameraController.CurrentView == cameraController.MaintenanceView) viewToSet = cameraController.ShockView;
-        else if (cameraController.CurrentView == cameraController.ShockView) viewToSet = cameraController.DoorView;
-        else if (cameraController.CurrentView == cameraController.DoorView) viewToSet = cameraController.MonitorView;
+        if (cameraController.currentView.Value == BackstageCameraController_View.MonitorView) viewToSet = BackstageCameraController_View.MaintenanceView;
+        else if (cameraController.currentView.Value == BackstageCameraController_View.MaintenanceView) viewToSet = BackstageCameraController_View.ShockView;
+        else if (cameraController.currentView.Value == BackstageCameraController_View.ShockView) viewToSet = BackstageCameraController_View.DoorView;
+        else if (cameraController.currentView.Value == BackstageCameraController_View.DoorView) viewToSet = BackstageCameraController_View.MonitorView;
 
         cameraController.SetCameraView(viewToSet);
     }
 
     private void TurnLeft()
     {
-        Transform viewToSet = null;
+        BackstageCameraController_View viewToSet = default;
 
-        if (cameraController.CurrentView == cameraController.MonitorView) viewToSet = cameraController.DoorView;
-        else if (cameraController.CurrentView == cameraController.MaintenanceView) viewToSet = cameraController.MonitorView;
-        else if (cameraController.CurrentView == cameraController.ShockView) viewToSet = cameraController.MaintenanceView;
-        else if (cameraController.CurrentView == cameraController.DoorView) viewToSet = cameraController.ShockView;
+        if (cameraController.currentView.Value == BackstageCameraController_View.MonitorView) viewToSet = BackstageCameraController_View.DoorView;
+        else if (cameraController.currentView.Value == BackstageCameraController_View.MaintenanceView) viewToSet = BackstageCameraController_View.MonitorView;
+        else if (cameraController.currentView.Value == BackstageCameraController_View.ShockView) viewToSet = BackstageCameraController_View.MaintenanceView;
+        else if (cameraController.currentView.Value == BackstageCameraController_View.DoorView) viewToSet = BackstageCameraController_View.ShockView;
 
         cameraController.SetCameraView(viewToSet);
     }

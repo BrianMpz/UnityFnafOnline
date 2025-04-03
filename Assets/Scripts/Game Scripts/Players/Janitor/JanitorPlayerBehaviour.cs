@@ -250,4 +250,14 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     {
         throw new Exception("Golden Freddy cant be active while the Janitor is alive!");
     }
+
+    public override bool HasBlockedFoxy()
+    {
+        return isMaskDown.Value;
+    }
+
+    public override IEnumerator IsFoxyReadyToAttack(Node hallwayNode, float definitiveAttackTime)
+    {
+        yield return new WaitUntil(() => !hallwayNode.isOccupied.Value && (Time.time > definitiveAttackTime || GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(hallwayNode)));
+    }
 }

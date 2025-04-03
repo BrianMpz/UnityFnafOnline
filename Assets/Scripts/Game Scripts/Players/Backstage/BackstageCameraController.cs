@@ -1,25 +1,42 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
 public class BackstageCameraController : CameraController
 {
     [SerializeField] private BackstagePlayerBehaviour backstagePlayerBehaviour;
-    public Transform CurrentView { get; private set; }
-    public Transform MonitorView;
-    public Transform DoorView;
-    public Transform MaintenanceView;
-    public Transform ShockView;
-    public Transform DeathView;
+    public NetworkVariable<BackstageCameraController_View> currentView = new(writePerm: NetworkVariableWritePermission.Owner);
+    private Transform CurrentView;
+    [SerializeField] private Transform MonitorView;
+    [SerializeField] private Transform DoorView;
+    [SerializeField] private Transform MaintenanceView;
+    [SerializeField] private Transform ShockView;
+    [SerializeField] private Transform DeathView;
     [SerializeField] private float cameraLerpSpeed;
     public Action ViewChanged;
 
-    public void SetCameraView(Transform view)
+    public void SetCameraView(BackstageCameraController_View view)
     {
         backstagePlayerBehaviour.door.doorLight.DisableLights();
-        CurrentView = view;
-        backstagePlayerBehaviour.zap.CheckIsBeingWatchedServerRpc(view == ShockView);
+        currentView.Value = view;
+
+        Transform viewTransform = GetViewFromEnum(view);
+        CurrentView = viewTransform;
 
         ViewChanged?.Invoke();
+        backstagePlayerBehaviour.zap.CheckIsBeingWatchedServerRpc(view == BackstageCameraController_View.ShockView);
+    }
+
+    private Transform GetViewFromEnum(BackstageCameraController_View view)
+    {
+        return view switch
+        {
+            BackstageCameraController_View.MonitorView => MonitorView,
+            BackstageCameraController_View.ShockView => ShockView,
+            BackstageCameraController_View.MaintenanceView => MaintenanceView,
+            BackstageCameraController_View.DoorView => DoorView,
+            _ => null,
+        };
     }
 
     public override void SetCameraView()
@@ -57,5 +74,12 @@ public class BackstageCameraController : CameraController
         CurrentView = MonitorView;
         cam.fieldOfView = 60;
     }
+}
 
+public enum BackstageCameraController_View
+{
+    MonitorView,
+    ShockView,
+    MaintenanceView,
+    DoorView,
 }

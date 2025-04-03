@@ -233,27 +233,23 @@ public class Maintenance : NetworkSingleton<Maintenance>
     {
         while (GameManager.Instance.isPlaying)
         {
-            // Wait a random interval between 30 and 60 seconds before checking again.
             yield return new WaitForSeconds(Mathf.Lerp(120f, 30f, currentDifficulty / 20));
 
             if (communicationsState.Value == State.ONLINE && Random.value < 0.1f)
             {
                 SetSystemState(SystemType.Comms, State.OFFLINE);
-                //Debug.Log("[Maintenance] Communications disabled randomly.");
                 StartCoroutine(AutoRestoreAfterDelay(SystemType.Comms, 60f));
             }
 
             if (camerasState.Value == State.ONLINE && Random.value < 0.7f)
             {
                 SetSystemState(SystemType.Cameras, State.OFFLINE);
-                //Debug.Log("[Maintenance] Cameras disabled randomly.");
                 StartCoroutine(AutoRestoreAfterDelay(SystemType.Cameras, 60f));
             }
 
             if (powerGeneratorState.Value == State.ONLINE && Random.value < 0.2f)
             {
                 SetSystemState(SystemType.PowerGenerator, State.OFFLINE);
-                //Debug.Log("[Maintenance] Power Generator disabled randomly.");
                 StartCoroutine(AutoRestoreAfterDelay(SystemType.PowerGenerator, 60f));
             }
         }

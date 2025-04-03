@@ -121,16 +121,26 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
 
     public override bool CanGoldenFreddySpawnIn()
     {
-        return partsAndServiceCameraController.CurrentView != partsAndServiceCameraController.GeneratorView;
+        return partsAndServiceCameraController.currentView.Value != PartsAndServiceCameraController_View.GeneratorView;
     }
 
     public override bool HasSpottedGoldenFreddy()
     {
-        return partsAndServiceCameraController.CurrentView == partsAndServiceCameraController.GeneratorView;
+        return partsAndServiceCameraController.currentView.Value == PartsAndServiceCameraController_View.GeneratorView;
     }
 
     public override bool HasLookedAwayFromGoldenFreddy()
     {
-        return partsAndServiceCameraController.CurrentView != partsAndServiceCameraController.GeneratorView;
+        return partsAndServiceCameraController.currentView.Value != PartsAndServiceCameraController_View.GeneratorView;
+    }
+
+    public override bool HasBlockedFoxy()
+    {
+        return door.isDoorClosed.Value;
+    }
+
+    public override IEnumerator IsFoxyReadyToAttack(Node hallwayNode, float definitiveAttackTime)
+    {
+        yield return new WaitUntil(() => !hallwayNode.isOccupied.Value && (Time.time > definitiveAttackTime || GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(hallwayNode) || door.doorLight.isFlashingLight.Value));
     }
 }

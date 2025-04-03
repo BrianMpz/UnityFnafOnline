@@ -47,7 +47,6 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
         SetJoinCodeText();
 
         // Initialize lobby UI.
-        startButton.gameObject.SetActive(true);
         aboutToStartGame = false;
         currentLobbyState = LobbyState.WaitingToStart;
         gameStartingTextString.OnValueChanged += UpdateCountDownTextValue;
@@ -78,7 +77,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
     private void HandleLobbyMusic()
     {
         GameAudioManager.Instance.StopAllSfx();
-        if (!GameAudioManager.Instance.GetCurrentMusic().isPlaying) GameAudioManager.Instance.PlayMusic("watch your 6");
+        if (!GameAudioManager.Instance.GetMusic().isPlaying) GameAudioManager.Instance.PlayMusic("watch your 6", 0.5f);
     }
 
     private void SetGameCode(bool online)
@@ -150,7 +149,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
         startButton.gameObject.SetActive(false);
 
         FadeInClientRpc();
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2f);
 
         MultiplayerManager.Instance.ResetPlayersLoadedIntoGameSceneDictionary();
         Loader.LoadNetworkScene(Loader.Scene.Game);
@@ -164,7 +163,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
 
     private IEnumerator FadeIn()
     {
-        float duration = 0.9f; // Duration of the fade-in effect
+        float duration = 1.5f; // Duration of the fade-in effect
         float elapsedTime = 0f;
 
         Color color = fadeOutImage.color;
@@ -175,6 +174,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
         {
             elapsedTime += Time.deltaTime;
             color.a = Mathf.Lerp(0, 1, elapsedTime / duration); // Gradually increase alpha
+            GameAudioManager.Instance.GetMusic().volume = Mathf.Lerp(1, 0.1f, elapsedTime / duration);
             fadeOutImage.color = color;
             yield return null; // Wait for the next frame
         }

@@ -33,7 +33,7 @@ public class MainMenuUI : MonoBehaviour
 
         playerNameInputField.onValueChanged.AddListener(s => { TruncateUsername(s); });
 
-        GameAudioManager.Instance.PlayMusic("watch your 6");
+        GameAudioManager.Instance.PlayMusic("watch your 6", 0.5f);
     }
 
     private void PlayOffline()

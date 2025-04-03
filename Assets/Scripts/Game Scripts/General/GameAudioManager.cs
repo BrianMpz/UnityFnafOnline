@@ -51,23 +51,24 @@ public class GameAudioManager : Singleton<GameAudioManager>
         else return sound.audioClip;
     }
 
-    public void PlayMusic(string name, float volume = 1f, bool loop = true) // only one music clip can play at a time
+    public AudioSource PlayMusic(string name, float volume = 1f, bool loop = true) // only one music clip can play at a time
     {
         StopMusic();
 
         if (!musicSoundDict.TryGetValue(name, out Sound sound))
         {
             Debug.LogError($"Music sound '{name}' does not exist!");
-            return;
+            return null;
         }
 
         musicSource.clip = sound.audioClip;
         musicSource.volume = volume * gameVolume;
         musicSource.loop = loop;
         musicSource.Play();
+        return musicSource;
     }
 
-    public AudioSource GetCurrentMusic() => musicSource;
+    public AudioSource GetMusic() => musicSource;
 
     public void StopMusic()
     {

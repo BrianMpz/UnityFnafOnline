@@ -59,6 +59,8 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     // Vulnerability Checks
     public abstract bool IsPlayerVulnerable(Node currentNode);
     public abstract bool IsAnimatronicCloseToAttack(Node currentNode);
+    public abstract IEnumerator IsFoxyReadyToAttack(Node hallwayNode, float definitiveAttackTime);
+    public abstract bool HasBlockedFoxy();
 
     // Golden Freddy Interaction
     public abstract bool CanGoldenFreddySpawnIn();
@@ -102,7 +104,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
     public virtual void Update()
     {
-        playerModel.SetActive(PlayerRoleManager.Instance.IsSpectatingPlayer(playerRole));
+        if (playerModel != null) playerModel.SetActive(PlayerRoleManager.Instance.IsSpectatingPlayer(playerRole));
 
         HandlePlayerUpdate();
     }
@@ -192,6 +194,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public void DieClientRpc(FixedString64Bytes killer, FixedString64Bytes deathScream, ClientRpcParams _) => StartCoroutine(Die(killer, deathScream));
     public IEnumerator Die(FixedString64Bytes killer, FixedString64Bytes deathScream = default)
     {
+        if (!isPlayerAlive.Value) yield break;
         string killerName = killer.ToString();
 
         OnPlayerJumpscare?.Invoke();

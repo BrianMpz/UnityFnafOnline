@@ -1,7 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
-public abstract class CameraController : MonoBehaviour
+public abstract class CameraController : NetworkBehaviour
 {
     [SerializeField] private protected PlayerBehaviour playerBehaviour;
     [SerializeField] private protected AudioListener audioListener;

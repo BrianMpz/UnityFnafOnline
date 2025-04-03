@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -83,8 +84,25 @@ public class GameManager : NetworkSingleton<GameManager>
         gameTimeCoroutine ??= StartCoroutine(StartGameTime());
     }
 
-    private static void StartGameMusic()
+    private async void StartGameMusic()
     {
+        // Stop any currently playing music
+        GameAudioManager.Instance.StopMusic();
+
+        // Play new music
+        AudioSource lastBreath = GameAudioManager.Instance.PlayMusic("last breath");
+
+        float duration = 9f;
+        float elapsedTime = 0f;
+
+        // Fade out loop
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            lastBreath.volume = Mathf.Lerp(0.5f, 0f, elapsedTime / duration);
+            await Task.Yield(); // Smooth async updates
+        }
+
         GameAudioManager.Instance.StopMusic();
     }
 
