@@ -135,11 +135,6 @@ public class GameAudioManager : Singleton<GameAudioManager>
             StopSfx(interruptableAudioSources[i]);
         }
     }
-
-    public void PlayButtonSelect() // called in unity events
-    {
-        PlaySfxOneShot("select 1");
-    }
 }
 
 [Serializable]

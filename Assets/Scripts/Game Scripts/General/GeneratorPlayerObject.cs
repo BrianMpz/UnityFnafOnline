@@ -3,12 +3,14 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class GeneratorPlayerObject : MonoBehaviour
 {
-    public PlayerRoles playerRole;
+    [SerializeField] private PlayerRoles playerRole;
+    [SerializeField] private TMP_Text powerText;
+    [SerializeField] private Image powerBar;
     public EventTrigger chargeButton;
-    [SerializeField] private TMP_Text power;
     private AudioSource chargingSound;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -19,6 +21,7 @@ public class GeneratorPlayerObject : MonoBehaviour
         chargeButton.GetComponentInChildren<TMP_Text>().text = "Charge";
 
         PowerGenerator.Instance.GetIsCharging(playerRole).OnValueChanged += OnChargeChanged;
+        PowerGenerator.Instance.isChargingSomeone.OnValueChanged += OnIsChargingChanged;
 
         DisableIfRoleIsNotPlaying();
 
@@ -35,20 +38,30 @@ public class GeneratorPlayerObject : MonoBehaviour
         }
     }
 
-    private void OnChargeChanged(bool previousValue, bool newValue)
+    private void OnChargeChanged(bool _, bool isBeingCharged) // called on all players
     {
-        if (newValue == true)
+        if (isBeingCharged == true)
         {
-            power.color = Color.green;
+            powerText.color = Color.green;
             chargeButton.GetComponentInChildren<TMP_Text>().text = "Charging...";
             if (PlayerRoleManager.Instance.IsControllingPlayer(PlayerRoles.PartsAndService)) chargingSound = GameAudioManager.Instance.PlaySfxInterruptable("charging");
         }
         else
         {
-            power.color = Color.white;
+            powerText.color = Color.white;
             chargeButton.GetComponentInChildren<TMP_Text>().text = "Charge";
             GameAudioManager.Instance.StopSfx(chargingSound);
+
+            if (PowerGenerator.Instance.isChargingSomeone.Value && playerRole == PlayerRoles.PartsAndService) powerText.color = Color.red;
         }
+    }
+
+    private void OnIsChargingChanged(bool _, bool isChargingSomeone)
+    {
+        if (playerRole != PlayerRoles.PartsAndService) return;
+        bool isChargingSomeoneElse = isChargingSomeone && !PowerGenerator.Instance.GetIsCharging(playerRole).Value;
+
+        if (isChargingSomeoneElse) powerText.color = Color.red;
     }
 
     private void ChargePlayer()
@@ -64,7 +77,7 @@ public class GeneratorPlayerObject : MonoBehaviour
 
     public void StopChargingPlayer()
     {
-        PowerGenerator.Instance.StopChargingPlayers(playerRole);
+        PowerGenerator.Instance.StopChargingPlayers();
     }
 
     public void AddListener(EventTrigger eventTrigger, EventTriggerType triggerType, UnityEngine.Events.UnityAction callback)
@@ -79,8 +92,11 @@ public class GeneratorPlayerObject : MonoBehaviour
         float powerValue = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole).currentPower.Value;
         powerValue = Mathf.Max(powerValue, 0);
 
-        string powerText = powerValue.ToString("F1"); // Rounds to 1 decimal place
-        power.text = powerText + "%";
+        powerBar.fillAmount = powerValue / 100f;
+        powerBar.color = Color.Lerp(Color.red, Color.green, powerBar.fillAmount);
+
+        string powerString = powerValue.ToString("F1"); // Rounds to 1 decimal place
+        powerText.text = powerString + "%";
     }
 
 }

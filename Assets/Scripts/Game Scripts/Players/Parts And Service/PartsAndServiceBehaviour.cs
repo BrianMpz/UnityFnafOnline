@@ -29,14 +29,18 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     {
         currentPowerUsage.Value = 0;
 
-        if (door.isDoorClosed.Value) currentPowerUsage.Value += 4;
+        if (door.isDoorClosed.Value) currentPowerUsage.Value += 5;
         if (door.doorLight.isFlashingLight.Value) currentPowerUsage.Value++;
 
         if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value++;
 
         if (Maintenance.Instance.powerGeneratorState.Value == State.ONLINE) currentPowerUsage.Value += 1f;
 
-        if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 4;
+        if (PowerGenerator.Instance.isChargingSomeone.Value)
+        {
+            if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 5; // if charging yourself charge as normal
+            else currentPowerUsage.Value += 5; // drain power if charging someone else
+        }
 
         base.UpdatePowerUsage();
     }

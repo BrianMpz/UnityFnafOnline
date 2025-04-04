@@ -11,6 +11,7 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
     public PartsAndServiceBehaviour partsAndServiceBehaviour;
     public PartsAndServiceUI partsAndServiceUI;
 
+    public NetworkVariable<bool> isChargingSomeone = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> SecurityOffice_Charging = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> PartsAndService_Charging = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> Backstage_Charging = new(writePerm: NetworkVariableWritePermission.Owner);
@@ -71,6 +72,8 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
     {
         if (!IsOwner) return;
 
+        isChargingSomeone.Value = true;
+
         switch (playerRole)
         {
             case PlayerRoles.SecurityOffice:
@@ -88,9 +91,11 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
         }
     }
 
-    public void StopChargingPlayers(PlayerRoles playerRole)
+    public void StopChargingPlayers()
     {
         if (!IsOwner) return;
+
+        isChargingSomeone.Value = false;
 
         SecurityOffice_Charging.Value = false;
         PartsAndService_Charging.Value = false;

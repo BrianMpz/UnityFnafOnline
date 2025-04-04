@@ -20,6 +20,7 @@ public class MainMenuUI : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 120;
         string playerName = PlayerPrefs.GetString(MultiplayerManager.PlayerprefsPlayerNameLocation, "");
         if (playerName != "") playerNameInputField.text = playerName;
 

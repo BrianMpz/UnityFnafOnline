@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GoldenFreddy : Animatronic
 {
@@ -58,10 +59,13 @@ public class GoldenFreddy : Animatronic
     {
         while (GameManager.Instance.isPlaying)
         {
+            GetComponent<Image>().enabled = false;
             yield return new WaitForSeconds(waitTimeToStartMoving);
             if (UnityEngine.Random.Range(1, 20 + 1) > currentDifficulty.Value) continue;
 
             TargetRandomPlayer();
+            if (target == null) goto ContinueOuterLoop; // Jump to the start of the outer loop
+            GetComponent<Image>().enabled = true;
             PlayerBehaviour targetPlayer = target.GetComponent<PlayerNode>().playerBehaviour;
             transform.position = target.GetComponent<PlayerNode>().transform.position;
 
@@ -75,7 +79,7 @@ public class GoldenFreddy : Animatronic
             yield return new WaitUntil(() => targetPlayer.HasSpottedGoldenFreddy() || !targetPlayer.isPlayerAlive.Value);
 
             // Start the kill countdown
-            float killTimer = Mathf.Lerp(2f, 1f, currentDifficulty.Value / 20);
+            float killTimer = Mathf.Lerp(1.5f, 0.7f, currentDifficulty.Value / 20);
             while (killTimer > 0f)
             {
                 if (targetPlayer.HasLookedAwayFromGoldenFreddy() || !targetPlayer.isPlayerAlive.Value) // Stop if player looks away
@@ -101,7 +105,7 @@ public class GoldenFreddy : Animatronic
         PlayerBehaviour targetPlayer = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole);
         targetPlayer.SpawnGoldenFreddy();
 
-        if (GameManager.Instance.IsSpectating && PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.SecurityOffice)) MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(0.5f, false);
+        if (GameManager.Instance.IsSpectating && PlayerRoleManager.Instance.IsSpectatingPlayer(playerRole)) MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(0.5f, false);
     }
 
     [ClientRpc]
@@ -110,6 +114,6 @@ public class GoldenFreddy : Animatronic
         PlayerBehaviour targetPlayer = PlayerRoleManager.Instance.GetPlayerBehaviourFromRole(playerRole);
         targetPlayer.DespawnGoldenFreddy();
 
-        if (GameManager.Instance.IsSpectating && PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.SecurityOffice)) MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(0.5f, false);
+        if (GameManager.Instance.IsSpectating && PlayerRoleManager.Instance.IsSpectatingPlayer(playerRole)) MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(0.5f, false);
     }
 }

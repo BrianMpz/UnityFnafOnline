@@ -25,10 +25,10 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     {
         currentPowerUsage.Value = 1;
 
-        if (leftDoor.isDoorClosed.Value) currentPowerUsage.Value += 2;
+        if (leftDoor.isDoorClosed.Value) currentPowerUsage.Value += 1.5f;
         if (leftDoor.doorLight.isFlashingLight.Value) currentPowerUsage.Value++;
 
-        if (rightDoor.isDoorClosed.Value) currentPowerUsage.Value++;
+        if (rightDoor.isDoorClosed.Value) currentPowerUsage.Value += 1.5f;
         if (rightDoor.doorLight.isFlashingLight.Value) currentPowerUsage.Value++;
 
         if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value++;

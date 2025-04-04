@@ -102,23 +102,20 @@ public abstract class PlayerBehaviour : NetworkBehaviour
         OnDisable?.Invoke();
     }
 
-    public virtual void Update()
-    {
-        if (playerModel != null) playerModel.SetActive(PlayerRoleManager.Instance.IsSpectatingPlayer(playerRole));
-
-        HandlePlayerUpdate();
-    }
+    public virtual void Update() => HandlePlayerUpdate();
 
     private void HandlePlayerUpdate()
     {
+        if (playerModel != null) playerModel.SetActive(PlayerRoleManager.Instance.IsSpectatingPlayer(playerRole));
         if (IsServer) DrainPower();
-
-        if (!isPlayerAlive.Value) return;
 
         if (!IsOwner) return;
 
-        UpdateCameraView();
         UpdatePowerUsage();
+
+        if (!isPlayerAlive.Value) return;
+
+        UpdateCameraView();
     }
 
     public virtual void PowerOn()
@@ -247,7 +244,11 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
     private protected virtual void UpdatePowerUsage()
     {
-        if (!isPlayerAlive.Value) currentPowerUsage.Value = 1;
+        if (!isPlayerAlive.Value) // drain power as normal so that generator thinks they're alive
+        {
+            if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 4;
+            else currentPowerUsage.Value = 1;
+        }
     }
 
     public void SpawnGoldenFreddy()

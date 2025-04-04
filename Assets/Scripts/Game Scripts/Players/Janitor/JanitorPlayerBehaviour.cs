@@ -60,7 +60,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value += 1;
         if (playerComputer.playerMotionDetectionSystem.IsTracking) currentPowerUsage.Value += 2;
 
-        if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 1;
+        if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 5;
 
         base.UpdatePowerUsage();
     }

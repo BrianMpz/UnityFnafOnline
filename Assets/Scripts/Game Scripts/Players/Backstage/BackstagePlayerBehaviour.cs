@@ -87,7 +87,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
 
         if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value += 1f;
 
-        if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 4;
+        if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 5;
 
         base.UpdatePowerUsage();
     }

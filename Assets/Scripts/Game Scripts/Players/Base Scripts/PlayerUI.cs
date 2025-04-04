@@ -52,9 +52,9 @@ public class PlayerUI : MonoBehaviour
         usageText.text = $"Usage:{(int)playerBehaviour.currentPowerUsage.Value} Units";
 
         if (PowerGenerator.Instance.GetIsCharging(playerBehaviour.playerRole).Value)
-            powerText.color = Color.green;
+            usageText.color = Color.green;
         else
-            powerText.color = Color.white;
+            usageText.color = Color.white;
     }
 
     private void SetNightText()
