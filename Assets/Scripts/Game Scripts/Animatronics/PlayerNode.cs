@@ -16,7 +16,7 @@ public class PlayerNode : Node
         if (playerBehaviour != null) playerBehaviour.isPlayerAlive.OnValueChanged += IsAliveChanged;
     }
 
-    private void IsAliveChanged(bool previousValue, bool newValue)
+    private void IsAliveChanged(bool _, bool newValue)
     {
         GetComponent<Image>().color = newValue ? Color.green : Color.red;
     }

@@ -11,6 +11,7 @@ using UnityEngine;
 
 public class VivoxManager : Singleton<VivoxManager>
 {
+    [SerializeField] private bool voiceChat;
     private bool isSwitchingChannels;
     public Action<string> ChannelJoined;
     public Action<string> ChannelLeft;
@@ -45,6 +46,8 @@ public class VivoxManager : Singleton<VivoxManager>
 
     public async Task LogInAsync()
     {
+        if (!voiceChat) return;
+
         await VivoxService.Instance.InitializeAsync();
         VivoxService.Instance.ChannelJoined += OnChannelJoined;
         VivoxService.Instance.ChannelLeft += OnChannelLeft;
@@ -60,6 +63,8 @@ public class VivoxManager : Singleton<VivoxManager>
 
     public async Task LogOutAsync()
     {
+        if (!voiceChat) return;
+
         if (VivoxService.Instance == null) return;
 
         if (VivoxService.Instance.IsLoggedIn)
@@ -72,8 +77,6 @@ public class VivoxManager : Singleton<VivoxManager>
     {
         lobbyChatName = roomCode + "_LobbyChat";
         gameChatName = roomCode + "_GameChat";
-
-        //gamechatAudioTap.ChannelName = gameChatName;
     }
 
     // Switch chat based on game state
@@ -89,6 +92,8 @@ public class VivoxManager : Singleton<VivoxManager>
 
     private async void SetActiveAudioChannel(string channelName)
     {
+        if (!voiceChat) return;
+
         if (VivoxService.Instance == null) return;
         if (currentChannelName == channelName) return;
 
@@ -109,6 +114,8 @@ public class VivoxManager : Singleton<VivoxManager>
 
     private async Task LeaveCurrentChannel(string channelName)
     {
+        if (!voiceChat) return;
+
         if (!VivoxService.Instance.ActiveChannels.TryGetValue(channelName, out _)) return; // we are not in any channels
 
         await VivoxService.Instance.LeaveChannelAsync(channelName);

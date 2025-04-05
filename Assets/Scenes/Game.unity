@@ -47270,7 +47270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 0
-  debug: 1
+  debug: 0
   debugCanvas: {fileID: 1457430792}
   leaveButton: {fileID: 1133198295}
 --- !u!1001 &1813874931

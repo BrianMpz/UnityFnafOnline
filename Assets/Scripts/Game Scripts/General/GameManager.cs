@@ -197,8 +197,6 @@ public class GameManager : NetworkSingleton<GameManager>
     [ClientRpc]
     private void RelayDeathClientRpc(FixedString64Bytes killer, ulong SenderClientId)
     {
-        isPlaying = false;
-
         if (SenderClientId == NetworkManager.Singleton.LocalClientId) return;
 
         PlayerData playerData = MultiplayerManager.Instance.GetPlayerDataFromClientId(SenderClientId);

@@ -32,7 +32,7 @@ public class PowerGenerator : NetworkSingleton<PowerGenerator>
         GeneratorDownText.enabled = false;
     }
 
-    private void PowerGeneratorStateChanged(State previousValue, State newValue)
+    private void PowerGeneratorStateChanged(State _, State newValue)
     {
         GeneratorDownText.enabled = newValue != State.ONLINE;
 

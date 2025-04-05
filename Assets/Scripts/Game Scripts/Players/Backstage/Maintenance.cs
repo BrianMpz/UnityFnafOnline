@@ -96,17 +96,17 @@ public class Maintenance : NetworkSingleton<Maintenance>
         GameAudioManager.Instance.PlaySfxOneShot("failed sfx");
     }
 
-    private void CommunicationsStateChanged(State previousValue, State newValue)
+    private void CommunicationsStateChanged(State _, State newValue)
     {
         UpdateStatus(newValue, communicationStatus);
     }
 
-    private void CamerasStateChanged(State previousValue, State newValue)
+    private void CamerasStateChanged(State _, State newValue)
     {
         UpdateStatus(newValue, cameraStatus);
     }
 
-    private void PowerGeneratorStateChanged(State previousValue, State newValue)
+    private void PowerGeneratorStateChanged(State _, State newValue)
     {
         UpdateStatus(newValue, powerGeneratorStatus);
     }

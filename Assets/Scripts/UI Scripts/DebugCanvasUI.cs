@@ -29,7 +29,7 @@ public class DebugCanvasUI : Singleton<DebugCanvasUI>
 
     private void Update()
     {
-        if (!debug || !GameManager.Instance.isPlaying || !GameManager.Instance.IsOwner) return;
+        // if (!debug || !GameManager.Instance.isPlaying || !GameManager.Instance.IsOwner) return;
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha9) && PlayerRoleManager.Instance.IsLocalPlayerAlive())
         {

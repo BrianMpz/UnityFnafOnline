@@ -151,8 +151,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
     protected float CalculatePowerDrain()
     {
-        // this coefficient is arbitruary
-        float fixedDrainCoefficient = 100f / 900f;
+        float fixedDrainCoefficient = 100f / 800f; // 800s to fully drain power on 1 usage
         return Time.deltaTime * fixedDrainCoefficient;
     }
 
