@@ -42,6 +42,8 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
             else currentPowerUsage.Value += 5; // drain power if charging someone else
         }
 
+        if (ultraPowerDrain.Value) currentPowerUsage.Value += 10;
+
         base.UpdatePowerUsage();
     }
 

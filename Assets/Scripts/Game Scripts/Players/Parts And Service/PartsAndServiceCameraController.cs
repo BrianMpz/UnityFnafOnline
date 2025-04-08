@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PartsAndServiceCameraController : CameraController
 {
@@ -14,6 +15,8 @@ public class PartsAndServiceCameraController : CameraController
 
     public void SetCameraView(PartsAndServiceCameraController_View view)
     {
+        EventSystem.current.SetSelectedGameObject(null);
+
         partsAndServiceBehaviour.door.doorLight.DisableLights();
 
         currentView.Value = view;

@@ -11,8 +11,8 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     [Header("Dynamic Values")]
     [SerializeField] private protected NetworkVariable<bool> isCurrentlyAggrivated;
     [SerializeField] private protected NetworkVariable<float> currentMovementWaitTime;
-    [SerializeField] private protected NetworkVariable<float> audioLureResistance;
     public NetworkVariable<float> currentDifficulty;
+    [SerializeField] private protected NetworkVariable<float> audioLureResistance;
     [SerializeField] private protected Node target;
 
     [Header("Starting Values")]
@@ -39,7 +39,6 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
         GameManager.Instance.currentHour.OnValueChanged += (currentValue, newValue) => { IncreaseAnimatronicDifficulty(); };
         DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
-        GameManager.Instance.OnPlayerPowerDown += GameManager_OnPlayerPowerDown;
         AnimatronicManager.Instance.OnAudioLure += AudioLure_AttractAnimatronic;
         AnimatronicManager.Instance.AttentionDivert += OnAttentionDivert;
 
@@ -100,25 +99,6 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     private protected void IncreaseAnimatronicDifficulty()
     {
         currentDifficulty.Value += hourlyDifficultyIncrementAmount;
-    }
-
-    private void GameManager_OnPlayerPowerDown(PlayerRoles playerRole)
-    {
-        PlayerNode playerToExclude = AnimatronicManager.Instance.PlayerNodes.FirstOrDefault(x =>
-            x.playerBehaviour != null && x.playerBehaviour.playerRole == playerRole);
-
-        if (playerToExclude != target || isWaitingOnClient) return;
-
-        // Get a new target (excluding the current player)
-        var alivePlayers = AnimatronicManager.Instance.PlayerNodes
-            .Where(x => x.playerBehaviour != null && x.playerBehaviour.isPlayerAlive.Value && x.playerBehaviour.playerRole != playerToExclude.playerBehaviour.playerRole)
-            .ToList();
-
-        if (alivePlayers.Count > 0)
-        {
-            PlayerNode randomPlayerWithPower = alivePlayers[UnityEngine.Random.Range(0, alivePlayers.Count)];
-            SetTarget(randomPlayerWithPower);
-        }
     }
 
     public void AudioLure_AttractAnimatronic(Node targetedNode)

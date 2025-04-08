@@ -87,10 +87,9 @@ public class Foxy : Animatronic
 
         if (gameplayLoop != null) StopCoroutine(gameplayLoop);
 
-        PlayerNode playerNode = AnimatronicManager.Instance.PlayerNodes.FirstOrDefault(x =>
-            x.playerBehaviour != null && x.playerBehaviour.playerRole == playerRole && x.playerBehaviour.isPlayerAlive.Value);
+        PlayerNode playerNode = AnimatronicManager.Instance.GetPlayerNodeFromPlayerRole(playerRole);
 
-        gameplayLoop = StartCoroutine(GameplayLoop(true));
+        gameplayLoop = StartCoroutine(GameplayLoop(true, playerNode));
     }
 
     // Called when players change their view on Foxy in the cameras
@@ -141,7 +140,7 @@ public class Foxy : Animatronic
     }
 
     // The main loop where Foxy's movements and attacks are handled
-    private IEnumerator GameplayLoop(bool shouldBeAggrivated)
+    private IEnumerator GameplayLoop(bool shouldBeAggrivated, PlayerNode specificTarget = null)
     {
         HandleAggrivation(shouldBeAggrivated || GlobalCameraSystem.Instance.timeSinceLastFoxyCheck > 30);
 
@@ -149,9 +148,16 @@ public class Foxy : Animatronic
 
         currentAttackAttempt.Value++;
 
-        TargetRandomPlayer();
+        if (specificTarget != null)
+        {
+            target = specificTarget;
+        }
+        else
+        {
+            TargetRandomPlayer();
 
-        if (target == null) yield break; // everyone is dead
+            if (target == null) yield break; // everyone is dead
+        }
 
         PlayerNode playerNode = target.GetComponent<PlayerNode>();
 
@@ -166,6 +172,8 @@ public class Foxy : Animatronic
                 if (!isLocked)
                 {
                     yield return MovementOpportunity(playerNode);
+
+                    if (isWaitingOnClient) yield break;
                 }
                 else
                 {
@@ -215,7 +223,9 @@ public class Foxy : Animatronic
 
     private IEnumerator WaitToAttack(PlayerNode playerNode) // expand for more roles
     {
-        float definitiveAttackTime = Time.time + UnityEngine.Random.Range(10, 30);
+        float definitiveAttackTime = Time.time + 5;
+        if (!isCurrentlyAggrivated.Value) definitiveAttackTime += UnityEngine.Random.Range(0, 30);
+
         int indexOfPlayerNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
         PlayerBehaviour targetPlayerBehaviour = playerNode.playerBehaviour;
         Node targetPlayerHallwayNode = GetHallwayNodeFromPlayerRole(targetPlayerBehaviour.playerRole);
@@ -225,7 +235,6 @@ public class Foxy : Animatronic
 
         InitiateAttackClientRpc(indexOfPlayerNode);
         isWaitingOnClient = true;
-        if (gameplayLoop != null) StopCoroutine(gameplayLoop);
     }
 
     private Node GetHallwayNodeFromPlayerRole(PlayerRoles playerRole)

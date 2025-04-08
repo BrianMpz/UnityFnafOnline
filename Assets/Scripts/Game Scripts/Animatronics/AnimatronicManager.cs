@@ -147,13 +147,9 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
         return Nodes.FirstOrDefault(node => node.nodeName == nodeName);
     }
 
-    public void PlayAudioLure(NodeName nodeName, AudioClip audioClip)
+    public void PlayAudioLure(NodeName nodeName)
     {
         Node node = GetNodeFromName(nodeName);
-        AudioSource audioSource = node.physicalTransform.GetComponent<AudioSource>();
-
-        audioSource.clip = audioClip;
-        audioSource.Play();
 
         OnAudioLure?.Invoke(node);
     }

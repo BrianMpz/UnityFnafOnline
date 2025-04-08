@@ -13,45 +13,57 @@ public class PlayerCommunicationSystem : NetworkBehaviour
 {
     [SerializeField] private PlayerComputer playerComputer;
     [SerializeField] private Canvas joinCommsCanvas;
-    [SerializeField] private Button joinCommsButton;
-
     [SerializeField] private Canvas commsCanvas;
+    [SerializeField] private Canvas spectatorCanvas;
+    [SerializeField] private Button joinCommsButton;
     [SerializeField] private Button callAllPlayersButton;
     [SerializeField] private Button leaveCommsButton;
     [SerializeField] private TMP_Text CommsDownText;
 
-    [SerializeField] private Canvas spectatorCanvas;
-
     [SerializeField] private List<CommunicatingPlayer> communicatingPlayerList;
+    [SerializeField] private Image callImage;
     private AudioSource callAudio;
-    [SerializeField] private GameObject callImage;
     public bool isConnectedToCall;
 
     private void Start()
     {
         if (MultiplayerManager.isPlayingOnline)
         {
-            playerComputer.playerBehaviour.OnPowerDown += () => { OnCallLeave(false); };
-            leaveCommsButton.onClick.AddListener(() => { OnCallLeave(false); });
+            playerComputer.playerBehaviour.OnPowerDown += () => OnCallLeave(false);
+            callAllPlayersButton.onClick.AddListener(() => StartCoroutine(CallAllPlayers()));
+            leaveCommsButton.onClick.AddListener(() => OnCallLeave(false));
             joinCommsButton.onClick.AddListener(OnJoiningCall);
-            callAllPlayersButton.onClick.AddListener(() => { StartCoroutine(CallAllPlayers()); });
 
             communicatingPlayerList.ForEach(player => player.Hide());
-            StartCoroutine(PerpetuallyUpdateCommunicatingPlayers());
-            VivoxService.Instance.ParticipantAddedToChannel += OnParticipantJoined;
-        }
-        callImage.SetActive(false);
 
-        Maintenance.Instance.communicationsState.OnValueChanged += CommunicationStateChanged;
+            VivoxService.Instance.ParticipantAddedToChannel += OnParticipantJoined;
+            Maintenance.Instance.communicationsState.OnValueChanged += CommunicationStateChanged;
+
+            StartCoroutine(PerpetuallyUpdateCommunicatingPlayers());
+        }
+
+        callImage.color = new(1, 1, 1, 0);
         CommsDownText.enabled = false;
     }
 
-    private void CommunicationStateChanged(State previousValue, State newValue)
+    private void CommunicationStateChanged(State _, State newMaintenanceState)
     {
-        if (newValue == State.ONLINE) return;
-        if (!isConnectedToCall) return;
+        if (isConnectedToCall && newMaintenanceState != State.ONLINE) StartCoroutine(RandomlyDisconnect());
+    }
 
-        OnCallLeave(true);
+    private IEnumerator RandomlyDisconnect()
+    {
+        while (Maintenance.Instance.communicationsState.Value != State.ONLINE)
+        {
+            yield return new WaitForSeconds(1f);
+
+            // 10% chance per second to drop call
+            if (UnityEngine.Random.Range(0, 10) == 0)
+            {
+                OnCallLeave(true);
+                yield break;
+            }
+        }
     }
 
     public void Initialise(Camera playerCamera)
@@ -250,12 +262,12 @@ public class PlayerCommunicationSystem : NetworkBehaviour
 
     private IEnumerator PlayCallAudio()
     {
-        callImage.SetActive(true);
+        callImage.color = new(1, 1, 1, 1);
         callAudio = GameAudioManager.Instance.PlaySfxInterruptable("calling");
 
         yield return new WaitForSeconds(2.4f);
 
         GameAudioManager.Instance.StopSfx(callAudio);
-        callImage.SetActive(false);
+        callImage.color = new(1, 1, 1, 0);
     }
 }

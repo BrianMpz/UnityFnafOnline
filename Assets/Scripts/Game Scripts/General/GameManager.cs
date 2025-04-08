@@ -99,7 +99,7 @@ public class GameManager : NetworkSingleton<GameManager>
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
-            lastBreath.volume = Mathf.Lerp(0.5f, 0f, elapsedTime / duration);
+            lastBreath.volume = Mathf.Lerp(1f, 0f, elapsedTime / duration);
             await Task.Yield(); // Smooth async updates
         }
 
@@ -219,6 +219,7 @@ public class GameManager : NetworkSingleton<GameManager>
     private void RelayGameOverClientRpc()
     {
         OnGameOver?.Invoke();
+        isPlaying = false;
         if (MultiplayerManager.isPlayingOnline) VivoxManager.Instance.SwitchToLobbyChat();
     }
 

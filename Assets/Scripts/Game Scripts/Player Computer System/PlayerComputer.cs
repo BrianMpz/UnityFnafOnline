@@ -41,7 +41,7 @@ public class PlayerComputer : NetworkBehaviour
 
     private void Start()
     {
-        selectorCanvas.enabled = false;
+        selectorCanvas.enabled = true;
         defaultCanvas.enabled = false;
 
         playerBehaviour.OnInitialise += Initialise;

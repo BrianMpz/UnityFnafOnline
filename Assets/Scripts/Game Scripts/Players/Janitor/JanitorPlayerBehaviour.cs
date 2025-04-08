@@ -14,7 +14,6 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     public NetworkVariable<float> animatronicRecognitionPossibility = new(writePerm: NetworkVariableWritePermission.Server);
     public NetworkVariable<bool> isMaskDown = new(writePerm: NetworkVariableWritePermission.Owner);
     public bool isWearingMask;
-    public bool isMonitorUp;
     public bool canToggle;
     [SerializeField] private float triggerCooldownTime = 0.3f;
     [SerializeField] private float timeSinceLastTrigger;
@@ -62,6 +61,8 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
         if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 5;
 
+        if (ultraPowerDrain.Value) currentPowerUsage.Value += 49;
+
         base.UpdatePowerUsage();
     }
 
@@ -77,6 +78,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
         OnPowerDown?.Invoke();
         isPlayerPoweredOn.Value = false;
+        GameManager.Instance.OnPlayerPowerDownServerRpc(playerRole);
     }
 
     public override void PowerOn()
@@ -104,7 +106,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         }
         else
         {
-            oxygenLevels.Value += 0.5f * Time.deltaTime;
+            oxygenLevels.Value += 0.1f * Time.deltaTime;
         }
 
         oxygenLevels.Value = Mathf.Max(oxygenLevels.Value, 0f);
@@ -119,11 +121,10 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
     public void MaskTrigger()
     {
-        if (timeSinceLastTrigger < triggerCooldownTime || !canToggle || isMonitorUp) return;
+        if (timeSinceLastTrigger < triggerCooldownTime || !canToggle || playerComputer.isMonitorUp.Value) return;
 
         isWearingMask = !isWearingMask;
         isMaskDown.Value = isWearingMask;
-        isMonitorUp = false;
         canToggle = false;
 
         timeSinceLastTrigger = 0f;
@@ -159,7 +160,12 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     {
         if (timeSinceLastTrigger < triggerCooldownTime || !canToggle || isWearingMask) return;
 
-        isMonitorUp = !isMonitorUp;
+        if (playerComputer.isLocked)
+        {
+            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            return;
+        }
+
         isWearingMask = false;
         isMaskDown.Value = isWearingMask;
         canToggle = false;
@@ -259,5 +265,10 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     public override IEnumerator IsFoxyReadyToAttack(Node hallwayNode, float definitiveAttackTime)
     {
         yield return new WaitUntil(() => !hallwayNode.isOccupied.Value && (Time.time > definitiveAttackTime || GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(hallwayNode)));
+    }
+
+    public override void GetGameCollectable()
+    {
+        oxygenLevels.Value += 5;
     }
 }

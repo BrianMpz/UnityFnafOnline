@@ -2,16 +2,21 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Audio;
+using UnityEngine.EventSystems;
 
 public class GameAudioManager : Singleton<GameAudioManager>
 {
-    public float gameVolume = 1;
     [SerializeField] private Sound[] musicSounds, sfxSounds;
     [SerializeField] private AudioSource musicSource, sfxOneShotSource;
     private List<AudioSource> interruptableAudioSources = new();
 
     private Dictionary<string, Sound> musicSoundDict;
     private Dictionary<string, Sound> sfxSoundDict;
+
+    [SerializeField] private AudioMixerGroup MusicAudioGroup;
+    [SerializeField] private AudioMixerGroup SFXAudioGroup;
+    [SerializeField] private AudioMixerGroup VoiceChatAudioGroup;
 
     private protected override void OnEnable()
     {
@@ -61,10 +66,12 @@ public class GameAudioManager : Singleton<GameAudioManager>
             return null;
         }
 
+        musicSource.outputAudioMixerGroup = MusicAudioGroup;
         musicSource.clip = sound.audioClip;
-        musicSource.volume = volume * gameVolume;
+        musicSource.volume = volume;
         musicSource.loop = loop;
         musicSource.Play();
+
         return musicSource;
     }
 
@@ -82,7 +89,8 @@ public class GameAudioManager : Singleton<GameAudioManager>
             Debug.LogError($"SFX sound '{name}' does not exist!");
             return;
         }
-        sfxOneShotSource.PlayOneShot(sound.audioClip, volume * gameVolume);
+        sfxOneShotSource.outputAudioMixerGroup = SFXAudioGroup;
+        sfxOneShotSource.PlayOneShot(sound.audioClip, volume);
     }
 
     public AudioSource PlaySfxInterruptable(string name, float volume = 1f, bool loop = false)
@@ -93,11 +101,12 @@ public class GameAudioManager : Singleton<GameAudioManager>
             return null;
         }
 
-        // Create a new AudioSource component (consider object pooling for a more scalable solution)
         AudioSource newSource = gameObject.AddComponent<AudioSource>();
+
+        newSource.outputAudioMixerGroup = SFXAudioGroup;
         newSource.clip = sound.audioClip;
         newSource.playOnAwake = false;
-        newSource.volume = volume * gameVolume;
+        newSource.volume = volume;
         newSource.loop = loop;
         newSource.Play();
 
@@ -134,6 +143,19 @@ public class GameAudioManager : Singleton<GameAudioManager>
         {
             StopSfx(interruptableAudioSources[i]);
         }
+    }
+
+    public void TestVolume()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        if (!sfxSoundDict.TryGetValue("hi", out Sound sound))
+        {
+            Debug.LogError($"SFX sound '{name}' does not exist!");
+            return;
+        }
+
+        sfxOneShotSource.outputAudioMixerGroup = VoiceChatAudioGroup;
+        sfxOneShotSource.PlayOneShot(sound.audioClip);
     }
 }
 

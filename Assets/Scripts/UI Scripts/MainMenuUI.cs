@@ -20,7 +20,6 @@ public class MainMenuUI : MonoBehaviour
 
     private void Start()
     {
-        Application.targetFrameRate = 120;
         string playerName = PlayerPrefs.GetString(MultiplayerManager.PlayerprefsPlayerNameLocation, "");
         if (playerName != "") playerNameInputField.text = playerName;
 
@@ -28,13 +27,13 @@ public class MainMenuUI : MonoBehaviour
 
         playButton.onClick.AddListener(PlayOnline);
         playOfflineButton.onClick.AddListener(PlayOffline);
-        settingsButton.onClick.AddListener(NotImplementedInBuildUI.Instance.Show);
+        settingsButton.onClick.AddListener(SettingsUI.Instance.Show);
 
         quitButton.onClick.AddListener(Application.Quit);
 
         playerNameInputField.onValueChanged.AddListener(s => { TruncateUsername(s); });
 
-        GameAudioManager.Instance.PlayMusic("watch your 6", 0.5f);
+        GameAudioManager.Instance.PlayMusic("watch your 6");
     }
 
     private void PlayOffline()

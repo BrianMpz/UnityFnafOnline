@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using System.Collections;
+using System.IO;
 
 public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles most of netcode 
 {
@@ -34,6 +35,32 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         {
             CreateOfflineRoom();
         }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            GameAudioManager.Instance.PlaySfxOneShot("select 1");
+            TakeScreenshot();
+        }
+    }
+
+    void TakeScreenshot()
+    {
+        string folderName = "Screenshots";
+        string directory = Path.Combine(Application.persistentDataPath, folderName);
+
+        if (!Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        string filename = $"screenshot_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.png";
+        string path = Path.Combine(directory, filename);
+
+        ScreenCapture.CaptureScreenshot(path, 1);
+        Debug.Log($"Screenshot saved to: {path}");
     }
 
     private void InitialisePlayerList()

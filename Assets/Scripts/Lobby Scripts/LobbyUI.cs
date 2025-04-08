@@ -18,7 +18,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
 
     public LobbyState currentLobbyState;
     [SerializeField] private Button startButton;
-    [SerializeField] private Button leaveButton;
+    [SerializeField] private Button settingsButton;
     [SerializeField] private Button shuffleRolesButton;
     [SerializeField] private TMP_Text roomCodeText;
     [SerializeField] private TMP_Text gameStartingText;
@@ -54,7 +54,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
 
         // Set up button actions.
         roomCodeCopyButton.onClick.AddListener(() => GUIUtility.systemCopyBuffer = MultiplayerManager.Instance.joinCode);
-        leaveButton.onClick.AddListener(MultiplayerManager.Instance.LeaveGame);
+        settingsButton.onClick.AddListener(SettingsUI.Instance.Show);
 
         if (!IsServer) return;
 
@@ -77,7 +77,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
     private void HandleLobbyMusic()
     {
         GameAudioManager.Instance.StopAllSfx();
-        if (!GameAudioManager.Instance.GetMusic().isPlaying) GameAudioManager.Instance.PlayMusic("watch your 6", 0.5f);
+        if (!GameAudioManager.Instance.GetMusic().isPlaying) GameAudioManager.Instance.PlayMusic("watch your 6");
     }
 
     private void SetGameCode(bool online)
@@ -174,7 +174,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
         {
             elapsedTime += Time.deltaTime;
             color.a = Mathf.Lerp(0, 1, elapsedTime / duration); // Gradually increase alpha
-            GameAudioManager.Instance.GetMusic().volume = Mathf.Lerp(1, 0.1f, elapsedTime / duration);
+            GameAudioManager.Instance.GetMusic().volume = Mathf.Lerp(0.5f, 0.1f, elapsedTime / duration);
             fadeOutImage.color = color;
             yield return null; // Wait for the next frame
         }

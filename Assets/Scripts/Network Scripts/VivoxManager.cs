@@ -22,15 +22,9 @@ public class VivoxManager : Singleton<VivoxManager>
 
     public string currentChannelName;
 
-    private AudioHighPassFilter audioLowPassFilter;
-    private AudioReverbFilter audioReverbFilter;
-
 
     private void Awake()
     {
-        audioLowPassFilter = GetComponent<AudioHighPassFilter>();
-        audioReverbFilter = GetComponent<AudioReverbFilter>();
-
         if (MultiplayerManager.isPlayingOnline) DontDestroyOnLoad(gameObject); else Destroy(gameObject);
     }
 
@@ -126,9 +120,6 @@ public class VivoxManager : Singleton<VivoxManager>
     void Update()
     {
         if (VivoxService.Instance == null) return;
-
-        audioLowPassFilter.enabled = currentChannelName == gameChatName;
-        audioReverbFilter.enabled = currentChannelName == lobbyChatName && GameManager.Instance != null && GameManager.Instance.isPlaying;
     }
 
     public bool IsInChannel(string channel)

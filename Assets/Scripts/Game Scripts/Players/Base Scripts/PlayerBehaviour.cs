@@ -31,6 +31,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     [Header("Power Management")]
     public NetworkVariable<float> currentPower = new(writePerm: NetworkVariableWritePermission.Server);
     public NetworkVariable<float> currentPowerUsage = new(writePerm: NetworkVariableWritePermission.Owner);
+    public NetworkVariable<bool> ultraPowerDrain = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> isPlayerAlive = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> isDyingToGoldenFreddy = new(writePerm: NetworkVariableWritePermission.Owner);
     [SerializeField] private protected NetworkVariable<bool> isPlayerPoweredOn = new(writePerm: NetworkVariableWritePermission.Owner);
@@ -66,6 +67,9 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     public abstract bool CanGoldenFreddySpawnIn();
     public abstract bool HasSpottedGoldenFreddy();
     public abstract bool HasLookedAwayFromGoldenFreddy();
+
+    // Game System
+    public virtual void GetGameCollectable() { }
 
     void Start()
     {

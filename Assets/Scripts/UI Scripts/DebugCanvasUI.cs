@@ -7,12 +7,10 @@ public class DebugCanvasUI : Singleton<DebugCanvasUI>
 {
     public bool debug;
     public Canvas debugCanvas;
-    [SerializeField] private Button leaveButton;
     public Action OnBuff;
 
     private void Awake()
     {
-        leaveButton.onClick.AddListener(MultiplayerManager.Instance.LeaveGame);
         Hide();
     }
 
@@ -29,7 +27,7 @@ public class DebugCanvasUI : Singleton<DebugCanvasUI>
 
     private void Update()
     {
-        // if (!debug || !GameManager.Instance.isPlaying || !GameManager.Instance.IsOwner) return;
+        if (!debug || !GameManager.Instance.isPlaying || !GameManager.Instance.IsOwner) return;
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha9) && PlayerRoleManager.Instance.IsLocalPlayerAlive())
         {

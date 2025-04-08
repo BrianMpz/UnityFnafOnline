@@ -53,6 +53,8 @@ public class PlayerUI : MonoBehaviour
 
         if (PowerGenerator.Instance.GetIsCharging(playerBehaviour.playerRole).Value)
             usageText.color = Color.green;
+        else if (playerBehaviour.ultraPowerDrain.Value)
+            usageText.color = Color.red;
         else
             usageText.color = Color.white;
     }

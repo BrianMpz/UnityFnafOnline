@@ -335,7 +335,7 @@ AnimationClip:
   m_HasGenericRootTransform: 1
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0.016666668
+  - time: 0.033333335
     functionName: OnComputerFlipAnimationFinished
     data: 
     objectReferenceParameter: {fileID: 0}

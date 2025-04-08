@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class PlayerMotionDetectionSystem : NetworkBehaviour
 {
     [SerializeField] private TrackerNode[] trackerNodes;
+    [SerializeField] private TrackerButton[] trackerButtons;
     [SerializeField] private Canvas canvas;
     [HideInInspector] public TrackerButton currentTrackerButton;
     public event Action<TrackerButton> OnTrackerUpdate;
@@ -23,6 +24,17 @@ public class PlayerMotionDetectionSystem : NetworkBehaviour
 
     public void SetTracker(TrackerButton trackerButton)
     {
+        SetTrackerServerRpc(trackerButton == null ? -1 : trackerButtons.ToList().IndexOf(trackerButton));
+    }
+
+    [ServerRpc(RequireOwnership = true)]
+    private void SetTrackerServerRpc(int indexOfButton)
+    => SetTrackerClientRpc(indexOfButton);
+
+    [ClientRpc]
+    private void SetTrackerClientRpc(int indexOfButton)
+    {
+        TrackerButton trackerButton = indexOfButton == -1 ? null : trackerButtons[indexOfButton];
         currentTrackerButton = trackerButton;
         OnTrackerUpdate?.Invoke(currentTrackerButton);
     }

@@ -49,6 +49,8 @@ public class SecurityOfficeUI : PlayerUI
 
     private void MonitorFlip()
     {
+        EventSystem.current.SetSelectedGameObject(null);
+
         if (playerBehaviour.playerComputer.isLocked)
         {
             GameAudioManager.Instance.PlaySfxOneShot("button error");

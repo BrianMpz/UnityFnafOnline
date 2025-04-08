@@ -184,6 +184,7 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         ChangeOwnership(janitorBehaviour.playerComputer.playerCommunicationSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(janitorBehaviour.playerComputer.playerMotionDetectionSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(janitorBehaviour.playerComputer.playerAudioLureSystem.GetComponent<NetworkObject>(), clientId);
+        ChangeOwnership(janitorBehaviour.playerComputer.playerGameSystem.GetComponent<NetworkObject>(), clientId);
         ChangeOwnership(janitorBehaviour.playerComputer.playerManual.GetComponent<NetworkObject>(), clientId);
 
         ChangeOwnership(janitorBehaviour.cameraController.GetComponent<NetworkObject>(), clientId);

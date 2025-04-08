@@ -62,6 +62,8 @@ public class GeneratorPlayerObject : MonoBehaviour
         bool isChargingSomeoneElse = isChargingSomeone && !PowerGenerator.Instance.GetIsCharging(playerRole).Value;
 
         if (isChargingSomeoneElse) powerText.color = Color.red;
+        else if (isChargingSomeone) powerText.color = Color.green;
+        else powerText.color = Color.white;
     }
 
     private void ChargePlayer()

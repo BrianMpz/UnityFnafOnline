@@ -28,7 +28,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     {
         AudioSource freddles = GameAudioManager.Instance.PlaySfxInterruptable("freddles", volume: 0f, loop: true);
 
-        float volumeIncreasePerSecond = 0.025f; // Increase by 2.5% per second
+        float volumeIncreasePerSecond = 0.015f; // Increase by 1.5% per second
         float currentVolume = 0f;
 
         while (freddles != null && isPlayerAlive.Value)
@@ -88,6 +88,8 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
         if (playerComputer.isMonitorUp.Value) currentPowerUsage.Value += 1f;
 
         if (PowerGenerator.Instance.GetIsCharging(playerRole).Value) currentPowerUsage.Value -= 5;
+
+        if (ultraPowerDrain.Value) currentPowerUsage.Value += 10;
 
         base.UpdatePowerUsage();
     }

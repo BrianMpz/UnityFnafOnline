@@ -1,6 +1,7 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BackstageCameraController : CameraController
 {
@@ -17,6 +18,8 @@ public class BackstageCameraController : CameraController
 
     public void SetCameraView(BackstageCameraController_View view)
     {
+        EventSystem.current.SetSelectedGameObject(null);
+
         backstagePlayerBehaviour.door.doorLight.DisableLights();
         currentView.Value = view;
 

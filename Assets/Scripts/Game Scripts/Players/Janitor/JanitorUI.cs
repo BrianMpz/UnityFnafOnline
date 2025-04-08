@@ -41,7 +41,9 @@ public class JanitorUI : PlayerUI
 
     private void UpdateTriggerState()
     {
-        bool isMonitorUp = janitorPlayerBehaviour.isMonitorUp;
+        EventSystem.current.SetSelectedGameObject(null);
+
+        bool isMonitorUp = janitorPlayerBehaviour.playerComputer.isMonitorUp.Value;
         bool canToggle = janitorPlayerBehaviour.canToggle;
         bool isWearingMask = janitorPlayerBehaviour.isWearingMask;
 
@@ -60,7 +62,7 @@ public class JanitorUI : PlayerUI
         float oxygenLevels = janitorPlayerBehaviour.oxygenLevels.Value;
 
         if (oxygenLevels <= 99.9f) oxygenText.text = $"Oxygen:{janitorPlayerBehaviour.oxygenLevels.Value:F1}%";
-        else oxygenText.text = $"Oxygen:100%+{(int)(oxygenLevels - 100)}%";
+        else oxygenText.text = $"Oxygen:100% +{(int)(oxygenLevels - 100)}%";
 
         powerText.text = $"Battery:{Mathf.Round(playerBehaviour.currentPower.Value)}%";
     }
