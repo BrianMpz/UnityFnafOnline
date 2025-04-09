@@ -82,7 +82,7 @@ public class GameAudioManager : Singleton<GameAudioManager>
         if (musicSource.isPlaying) musicSource.Stop();
     }
 
-    public void PlaySfxOneShot(string name, float volume = 1f)
+    public void PlaySfxOneShot(string name, float volume = 1f, float pitch = 1)
     {
         if (!sfxSoundDict.TryGetValue(name, out Sound sound))
         {

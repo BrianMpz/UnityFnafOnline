@@ -119,7 +119,7 @@ public class KeypadSystem : NetworkBehaviour
 
     private IEnumerator AlarmLightEffect()
     {
-        float duration = 9f;
+        float duration = 10f;
         float fadeOutDuration = 2f; // Duration for light to fade out
         float elapsedTime = 0f;
 

@@ -126,7 +126,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         SetTarget(targetedNode);
     }
 
-    private protected void HandleAggrivation(bool shouldBeAggrivated, float aggrivatedDifficultyAdditionAmount = 20, float aggrivatedWaitTimeCoefficient = 1.2f)
+    private protected void HandleAggrivation(bool shouldBeAggrivated, float aggrivatedDifficultyAdditionAmount = 15, float aggrivatedWaitTimeCoefficient = 1.2f)
     {
         if (isCurrentlyAggrivated.Value)
         {

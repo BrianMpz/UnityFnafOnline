@@ -203,8 +203,8 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
     {
         if (networkObject.OwnerClientId != targetClientId)
         {
-            networkObject.ChangeOwnership(targetClientId);
             // we dont want to destroy with owner because we want the server to still conrtrol it
+            networkObject.ChangeOwnership(targetClientId);
             networkObject.DontDestroyWithOwner = true;
         }
     }
@@ -217,6 +217,17 @@ public class PlayerRoleManager : NetworkSingleton<PlayerRoleManager>
         if (janitorBehaviour.isPlayerAlive.Value) return false;
 
         return true;
+    }
+
+    public int CountPlayersAlive()
+    {
+        int playersAlive = 0;
+        if (securityOfficeBehaviour.isPlayerAlive.Value) playersAlive++;
+        if (partsAndServiceBehaviour.isPlayerAlive.Value) playersAlive++;
+        if (backstageBehaviour.isPlayerAlive.Value) playersAlive++;
+        if (janitorBehaviour.isPlayerAlive.Value) playersAlive++;
+
+        return playersAlive;
     }
 
     public bool IsSpectatingPlayer(PlayerRoles playerRole)

@@ -7,11 +7,12 @@ public struct PlayerData : IEquatable<PlayerData>, INetworkSerializable
     public ulong clientId;
     public PlayerRoles role;
     public FixedString128Bytes playerName;
-    public FixedString128Bytes vivoxId;
+    public FixedString128Bytes vivoxID;
+    public uint experience;
 
-    public bool Equals(PlayerData other)
+    public readonly bool Equals(PlayerData other)
     {
-        return clientId == other.clientId && role == other.role && playerName == other.playerName.ToString() && vivoxId == other.vivoxId;
+        return clientId == other.clientId && role == other.role && playerName == other.playerName && vivoxID == other.vivoxID && experience == other.experience;
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
@@ -19,6 +20,7 @@ public struct PlayerData : IEquatable<PlayerData>, INetworkSerializable
         serializer.SerializeValue(ref clientId);
         serializer.SerializeValue(ref role);
         serializer.SerializeValue(ref playerName);
-        serializer.SerializeValue(ref vivoxId);
+        serializer.SerializeValue(ref vivoxID);
+        serializer.SerializeValue(ref experience);
     }
 }

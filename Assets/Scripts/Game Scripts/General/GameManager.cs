@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class GameManager : NetworkSingleton<GameManager>
 {
+    public NetworkVariable<uint> XpGained = new(writePerm: NetworkVariableWritePermission.Server);
     public AudioListener DefaultAudioListener;
     public Camera DefaultCamera;
 
@@ -118,6 +119,7 @@ public class GameManager : NetworkSingleton<GameManager>
         {
             yield return null;
             currentGameTime.Value += Time.deltaTime;
+            CalculateXP();
 
             if (!isPlaying) yield break;
         }
@@ -125,6 +127,28 @@ public class GameManager : NetworkSingleton<GameManager>
         Debug.Log("Game has Ended!");
 
         EndGameClientRpc();
+    }
+
+    private void CalculateXP()
+    {
+        float timeSurvived = currentGameTime.Value;
+        int playersAlive = playerRoleManager.CountPlayersAlive();
+        float averageAnimatronicDifficulty = AnimatronicManager.Instance.GetAverageAnimatronicDifficulty();
+
+        XpGained.Value = CalculateXP(timeSurvived, playersAlive, averageAnimatronicDifficulty);
+    }
+
+    private uint CalculateXP(float timeSurvived, int playersAlive, float averageAnimatronicDifficulty)
+    {
+        // Normalize key values
+        float timeRatio = Mathf.Clamp01(timeSurvived / MaxGameLength); // 0 to 1
+        float playerRatio = Mathf.Max(playersAlive, 1) / 4f; // 0 to 1
+        float difficultyMultiplier = Mathf.Clamp(averageAnimatronicDifficulty, 1f, 20) / 20;
+
+        // Final XP computation
+        float xp = 100000f * timeRatio * playerRatio * difficultyMultiplier;
+
+        return (uint)Mathf.RoundToInt(xp);
     }
 
     [ServerRpc(RequireOwnership = false)] public void OnPlayerPowerDownServerRpc(PlayerRoles playerRole) => OnPlayerPowerDown?.Invoke(playerRole);

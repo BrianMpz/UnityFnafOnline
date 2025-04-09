@@ -39,6 +39,8 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
     private void Update()
     {
+        if (!!MainMenuUI.CanDebug) return;
+
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha1))
         {
             GameAudioManager.Instance.PlaySfxOneShot("select 1");
@@ -92,22 +94,26 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ClientConnectedServerRpc(FixedString128Bytes name, FixedString128Bytes vId, ServerRpcParams srp = default)
+    private void ClientConnectedServerRpc(FixedString128Bytes name, uint experience, FixedString128Bytes vivoxID, ServerRpcParams serverRpcParams = default)
     {
+        ulong SenderClientId = serverRpcParams.Receive.SenderClientId;
+
         if (isPlayingOnline)
             playerDataList.Add(new PlayerData
             {
                 playerName = name,
-                clientId = srp.Receive.SenderClientId,
-                role = srp.Receive.SenderClientId == 0 ? PlayerRoles.SecurityOffice : GetRandomUnusedPlayerRole(),
-                vivoxId = vId
+                clientId = SenderClientId,
+                role = SenderClientId == 0 ? PlayerRoles.SecurityOffice : GetRandomUnusedPlayerRole(),
+                vivoxID = vivoxID,
+                experience = experience
             });
         else
             playerDataList.Add(new PlayerData
             {
                 playerName = name,
-                clientId = srp.Receive.SenderClientId,
-                role = GetRandomUnusedPlayerRole(),
+                clientId = SenderClientId,
+                role = SenderClientId == 0 ? PlayerRoles.SecurityOffice : GetRandomUnusedPlayerRole(),
+                experience = experience
             });
     }
 
@@ -204,8 +210,10 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
     public override void OnNetworkSpawn()
     {
-        if (isPlayingOnline) ClientConnectedServerRpc(playerName, VivoxService.Instance.SignedInPlayerId);
-        else ClientConnectedServerRpc(playerName, "");
+        int experience = PlayerPrefs.GetInt("XP", 0);
+
+        if (isPlayingOnline) ClientConnectedServerRpc(playerName, (uint)experience, VivoxService.Instance.SignedInPlayerId);
+        else ClientConnectedServerRpc(playerName, (uint)experience, "");
     }
 
     public bool IsPlayerIndexConnected(int playerIndex) // lobby only
@@ -270,7 +278,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
     {
         foreach (PlayerData data in playerDataList)
         {
-            if (data.vivoxId.ToString() == id)
+            if (data.vivoxID.ToString() == id)
             {
                 return data;
             }
@@ -387,6 +395,22 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
     public void KickPlayerClientRpc(ClientRpcParams clientRpcParams)
     {
         OnKick?.Invoke();
+    }
+
+    public void SetPlayerExperience(ulong clientId, uint newValue)
+    {
+        SetPlayerExperienceServerRpc(clientId, newValue);
+        PlayerPrefs.SetInt("XP", (int)newValue);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetPlayerExperienceServerRpc(ulong clientId, uint newValue)
+    {
+        int playerDataIndex = GetPlayerDataIndexFromClientId(clientId);
+
+        PlayerData playerData = playerDataList[playerDataIndex];
+        playerData.experience = newValue;
+        playerDataList[playerDataIndex] = playerData;
     }
 
     public void ResetPlayersLoadedIntoGameSceneDictionary() // called when about to load into the game scene

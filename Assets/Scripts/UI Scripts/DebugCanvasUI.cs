@@ -5,12 +5,13 @@ using UnityEngine.UI;
 
 public class DebugCanvasUI : Singleton<DebugCanvasUI>
 {
-    public bool debug;
+    private bool debug;
     public Canvas debugCanvas;
     public Action OnBuff;
 
     private void Awake()
     {
+        debug = MainMenuUI.CanDebug;
         Hide();
     }
 
@@ -27,7 +28,7 @@ public class DebugCanvasUI : Singleton<DebugCanvasUI>
 
     private void Update()
     {
-        if (!debug || !GameManager.Instance.isPlaying || !GameManager.Instance.IsOwner) return;
+        if (!MainMenuUI.CanDebug) return;
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha9) && PlayerRoleManager.Instance.IsLocalPlayerAlive())
         {
@@ -37,7 +38,7 @@ public class DebugCanvasUI : Singleton<DebugCanvasUI>
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha8))
         {
-            GameManager.Instance.EndGameClientRpc();
+            GameManager.Instance.currentGameTime.Value = GameManager.MaxGameLength;
         }
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha7))

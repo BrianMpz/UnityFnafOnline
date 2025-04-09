@@ -6,8 +6,13 @@ using System.Collections;
 
 public class MainMenuUI : MonoBehaviour
 {
+    public static bool CanDebug;
+    [SerializeField] public bool canDebug;
     public static bool CanPlayOnline;
     [SerializeField] public bool canPlayOnline;
+    public static bool CanUseVoiceChat;
+    [SerializeField] private bool canUseVoiceChat;
+
     [SerializeField] private Button playButton;
     [SerializeField] private Button playOfflineButton;
     [SerializeField] private Button settingsButton;
@@ -24,6 +29,8 @@ public class MainMenuUI : MonoBehaviour
         if (playerName != "") playerNameInputField.text = playerName;
 
         CanPlayOnline = canPlayOnline;
+        CanDebug = canDebug;
+        CanUseVoiceChat = canUseVoiceChat;
 
         playButton.onClick.AddListener(PlayOnline);
         playOfflineButton.onClick.AddListener(PlayOffline);

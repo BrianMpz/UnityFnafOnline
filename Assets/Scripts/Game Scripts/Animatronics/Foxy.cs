@@ -7,6 +7,7 @@ using UnityEngine;
 public class Foxy : Animatronic
 {
     [SerializeField] private bool isLocked = false; // Whether Foxy is locked by camera observation
+    [SerializeField] private bool exponentialPowerDrain = true;
     [SerializeField] private NetworkVariable<float> currentAttackAttempt;
     public float foxyProgress;
     [SerializeField] private float lockCoolDownTime = 5f;  // Minimum time for lock duration
@@ -73,7 +74,8 @@ public class Foxy : Animatronic
 
     public float CalculatePowerDrain()
     {
-        return Mathf.Pow(currentAttackAttempt.Value, 2);
+        if (exponentialPowerDrain) return Mathf.Pow(currentAttackAttempt.Value, 2);
+        else return 1;
     }
 
     private void GameManager_OnPlayerPowerDown(PlayerRoles playerRole)
@@ -333,6 +335,9 @@ public class Foxy : Animatronic
             yield return new WaitForSeconds(0.3f);
             foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isCurrentlyAggrivated.Value ? "foxy taunt" : "fire in the hole", 0.3f);
 
+            foxyRunAudio.pitch = 1f + 0.01f * currentAttackAttempt.Value;
+            foxyTauntAudio.pitch = 1f + 0.01f * currentAttackAttempt.Value;
+
             float elapsedTime = 0;
 
             while (elapsedTime < audioDuration)
@@ -347,6 +352,9 @@ public class Foxy : Animatronic
             foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", 0);
             yield return new WaitForSeconds(0.3f);
             foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isCurrentlyAggrivated.Value ? "foxy taunt" : "fire in the hole", 0f);
+
+            foxyRunAudio.pitch = 1f + 0.01f * currentAttackAttempt.Value;
+            foxyTauntAudio.pitch = 1f + 0.01f * currentAttackAttempt.Value;
 
             float elapsedTime = 0;
 

@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 public class CharacterSelectPlayer : MonoBehaviour
 {
-    [Header("Images")]
+    [Header("UI Elements")]
     [SerializeField] private int playerIndex;
     [SerializeField] private Button leftOptionButton;
     [SerializeField] private Button rightOptionButton;
@@ -35,10 +35,18 @@ public class CharacterSelectPlayer : MonoBehaviour
     [SerializeField] private Sprite MutedImage;
     public VivoxParticipant Participant;
 
+    [Header("Xp System")]
+    [SerializeField] private TMP_Text currentXpLevelText;
+    [SerializeField] private TMP_Text totalXpText;
+    [SerializeField] private TMP_Text nextLevelXpText;
+    [SerializeField] private Image xpProgressBar;
+
+
     private void Start()
     {
         LobbyUI.Instance.AboutToStartGame += HideHostOnlyButtons;
         LobbyUI.Instance.CancelToStartGame += ShowHostOnlyButtons;
+        MultiplayerManager.Instance.OnPlayerDataListChanged += UpdatePlayer;
 
         leftOptionButton.onClick.AddListener(() =>
         {
@@ -60,7 +68,6 @@ public class CharacterSelectPlayer : MonoBehaviour
             ChatStateImage.enabled = false;
         }
 
-        MultiplayerManager.Instance.OnPlayerDataListChanged += MultiplayerManager_OnPLayerDataListChanged;
         UpdatePlayer();
 
         AddListener(MuteButton, EventTriggerType.PointerClick, ToggleMute);
@@ -73,12 +80,7 @@ public class CharacterSelectPlayer : MonoBehaviour
 
         PlayerData participantPlayerData = MultiplayerManager.Instance.GetPlayerDataFromVivoxId(Participant.PlayerId);
         PlayerData localPlayerData = MultiplayerManager.Instance.GetLocalPlayerData();
-        if (participantPlayerData.vivoxId == localPlayerData.vivoxId) VivoxManager.Instance.ToggleMute();
-    }
-
-    private void MultiplayerManager_OnPLayerDataListChanged()
-    {
-        UpdatePlayer();
+        if (participantPlayerData.vivoxID == localPlayerData.vivoxID) VivoxManager.Instance.ToggleMute();
     }
 
     private void UpdatePlayer()
@@ -119,9 +121,45 @@ public class CharacterSelectPlayer : MonoBehaviour
                     break;
             }
 
+            uint experience = playerData.experience;
+            uint currentLevel = XPManager.GetLevelFromXp(experience);
+
+            currentXpLevelText.text = currentLevel.ToString();
+            totalXpText.text = experience.ToString() + "XP";
+            nextLevelXpText.text = XPManager.GetTotalXpForLevel(currentLevel + 1).ToString() + "XP";
+            xpProgressBar.fillAmount = XPManager.GetLevelProgress(experience);
+
             Show();
         }
         else Hide();
+    }
+
+    private void Update()
+    {
+        if (!MainMenuUI.CanDebug) return;
+
+        if (Input.GetKey(KeyCode.C))
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                ForceSetXp(XPManager.MaxXp); // Give max XP
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                ForceSetXp(0); // Reset XP
+            }
+        }
+    }
+
+    private void ForceSetXp(uint xp)
+    {
+        PlayerData playerData = GetPlayerDataFromPlayerIndex();
+
+        // Optional: limit to host (clientId == 0) if needed
+        if (playerData.clientId != 0) return;
+
+        MultiplayerManager.Instance.SetPlayerExperience(playerData.clientId, xp);
     }
 
     private PlayerData GetPlayerDataFromPlayerIndex()
@@ -156,11 +194,11 @@ public class CharacterSelectPlayer : MonoBehaviour
                 List<VivoxParticipant> channel = VivoxManager.Instance.GetChannel(VivoxManager.Instance.lobbyChatName);
                 if (channel == null) return false;
 
-                return channel.Any(participant => participant.PlayerId == playerData.vivoxId);
+                return channel.Any(participant => participant.PlayerId == playerData.vivoxID);
             });
 
             List<VivoxParticipant> channel = VivoxManager.Instance.GetChannel(VivoxManager.Instance.lobbyChatName);
-            Participant = channel.First(participant => participant.PlayerId == playerData.vivoxId);
+            Participant = channel.First(participant => participant.PlayerId == playerData.vivoxID);
 
             Participant.ParticipantMuteStateChanged += UpdateChatStateImage;
             Participant.ParticipantSpeechDetected += UpdateChatStateImage;
@@ -200,7 +238,7 @@ public class CharacterSelectPlayer : MonoBehaviour
 
     private void OnDestroy()
     {
-        MultiplayerManager.Instance.OnPlayerDataListChanged -= MultiplayerManager_OnPLayerDataListChanged;
+        MultiplayerManager.Instance.OnPlayerDataListChanged -= UpdatePlayer;
 
         if (Participant != null)
         {

@@ -153,6 +153,15 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
 
         OnAudioLure?.Invoke(node);
     }
+
+    public float GetAverageAnimatronicDifficulty()
+    {
+        if (Animatronics == null || Animatronics.Count == 0)
+            return 1f; // Default to minimum difficulty
+
+        return Animatronics.Average(a => a.currentDifficulty.Value);
+    }
+
 }
 
 public enum NodeName
