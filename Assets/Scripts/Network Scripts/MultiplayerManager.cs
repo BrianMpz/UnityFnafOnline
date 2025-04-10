@@ -21,7 +21,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
     public event Action<bool> OnTryingToJoinGame;
     public event Action<PlayerData> Game_ClientDisconnect;
     public event Action OnPlayerDataListChanged;
-    public event Action OnKick;
+    public event Action<string> OnKick;
 
     public NetworkVariable<GameNight> gameNight = new(writePerm: NetworkVariableWritePermission.Server);
     public NetworkList<PlayerData> playerDataList = new(writePerm: NetworkVariableWritePermission.Server);
@@ -94,7 +94,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ClientConnectedServerRpc(FixedString128Bytes name, uint experience, FixedString128Bytes vivoxID, ServerRpcParams serverRpcParams = default)
+    private void ClientConnectedServerRpc(FixedString128Bytes name, uint experience, FixedString128Bytes vivoxID, FixedString128Bytes gameVersion, ServerRpcParams serverRpcParams = default)
     {
         ulong SenderClientId = serverRpcParams.Receive.SenderClientId;
 
@@ -115,6 +115,8 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
                 role = SenderClientId == 0 ? PlayerRoles.SecurityOffice : GetRandomUnusedPlayerRole(),
                 experience = experience
             });
+
+        if (Application.version != gameVersion) ClientHasTheWrongVersion(SenderClientId);
     }
 
     private void Client_JoinLobbyChannel(ulong id) // rejected from joining game
@@ -212,8 +214,8 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
     {
         int experience = PlayerPrefs.GetInt("XP", 0);
 
-        if (isPlayingOnline) ClientConnectedServerRpc(playerName, (uint)experience, VivoxService.Instance.SignedInPlayerId);
-        else ClientConnectedServerRpc(playerName, (uint)experience, "");
+        if (isPlayingOnline) ClientConnectedServerRpc(playerName, (uint)experience, VivoxService.Instance.SignedInPlayerId, Application.version);
+        else ClientConnectedServerRpc(playerName, (uint)experience, "", "");
     }
 
     public bool IsPlayerIndexConnected(int playerIndex) // lobby only
@@ -385,6 +387,17 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
         }
     }
 
+    public void ClientHasTheWrongVersion(ulong clientId)
+    {
+        KickIncompatiblePlayerClientRpc(Application.version, NewClientRpcSendParams(clientId));
+    }
+
+    [ClientRpc]
+    public void KickIncompatiblePlayerClientRpc(FixedString128Bytes hostVersion, ClientRpcParams clientRpcParams)
+    {
+        OnKick?.Invoke($"The Host is playing on version '{hostVersion}', whereas you are playing on version '{Application.version}'!");
+    }
+
     public void KickPlayer(int playerIndex)
     {
         ulong clientId = GetPlayerDataFromPlayerIndex(playerIndex).clientId;
@@ -394,19 +407,19 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
     [ClientRpc]
     public void KickPlayerClientRpc(ClientRpcParams clientRpcParams)
     {
-        OnKick?.Invoke();
+        OnKick?.Invoke("You have been Kicked from the Server!");
     }
 
-    public void SetPlayerExperience(ulong clientId, uint newValue)
+    public void SetPlayerExperience(uint newValue)
     {
-        SetPlayerExperienceServerRpc(clientId, newValue);
+        SetPlayerExperienceServerRpc(newValue);
         PlayerPrefs.SetInt("XP", (int)newValue);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void SetPlayerExperienceServerRpc(ulong clientId, uint newValue)
+    private void SetPlayerExperienceServerRpc(uint newValue, ServerRpcParams serverRpcParams = default)
     {
-        int playerDataIndex = GetPlayerDataIndexFromClientId(clientId);
+        int playerDataIndex = GetPlayerDataIndexFromClientId(serverRpcParams.Receive.SenderClientId);
 
         PlayerData playerData = playerDataList[playerDataIndex];
         playerData.experience = newValue;

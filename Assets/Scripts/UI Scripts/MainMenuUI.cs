@@ -19,6 +19,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private Button quitButton;
     [SerializeField] private TMP_InputField playerNameInputField;
     [SerializeField] private TMP_Text ClearDataText;
+    [SerializeField] private TMP_Text gameVersionText;
 
     private const float ClearDataKeyHoldLength = 2.5f;
     private Coroutine clearDataCoroutine;
@@ -27,6 +28,8 @@ public class MainMenuUI : MonoBehaviour
     {
         string playerName = PlayerPrefs.GetString(MultiplayerManager.PlayerprefsPlayerNameLocation, "");
         if (playerName != "") playerNameInputField.text = playerName;
+
+        gameVersionText.text = $"v{Application.version}";
 
         CanPlayOnline = canPlayOnline;
         CanDebug = canDebug;

@@ -67,9 +67,9 @@ public class GameDisconnectedUI : MonoBehaviour
         DestroyGame("Lost connection to Online Service!");
     }
 
-    private void MultiplayerManager_OnKick()
+    private void MultiplayerManager_OnKick(string reason)
     {
-        DestroyGame("You have been Kicked from the Server!");
+        DestroyGame(reason);
     }
 
     private async void DestroyGame(string reason)

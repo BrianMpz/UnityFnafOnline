@@ -101,11 +101,11 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
         if (isMaskDown.Value)
         {
-            oxygenLevels.Value -= 8 * Time.deltaTime;
+            oxygenLevels.Value -= 10f * Time.deltaTime;
         }
         else
         {
-            oxygenLevels.Value += 0.1f * Time.deltaTime;
+            oxygenLevels.Value += 0.5f * Time.deltaTime;
         }
 
         oxygenLevels.Value = Mathf.Max(oxygenLevels.Value, 0f);
@@ -263,6 +263,6 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
     public override void GetGameCollectable()
     {
-        oxygenLevels.Value += 5;
+        oxygenLevels.Value += 10;
     }
 }

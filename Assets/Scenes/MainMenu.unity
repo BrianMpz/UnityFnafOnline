@@ -384,8 +384,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 841.8036, y: 100}
-  m_SizeDelta: {x: 233.26, y: 24.445}
+  m_AnchoredPosition: {x: 1434.885, y: 100}
+  m_SizeDelta: {x: 402.7118, y: 24.445}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &207619439
 MonoBehaviour:
@@ -407,10 +407,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Version 0.5.5
+  m_text: x.x.x-alpha (x.x.x test build x)
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 822c228e106391b4eba8dc64655c42d4, type: 2}
-  m_sharedMaterial: {fileID: 557983847777501319, guid: 822c228e106391b4eba8dc64655c42d4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 24add64a838ebe54798dc96c8a186450, type: 2}
+  m_sharedMaterial: {fileID: 5714103806838974535, guid: 24add64a838ebe54798dc96c8a186450, type: 2}
   m_fontSharedMaterials:
   - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
@@ -445,7 +445,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 1024
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -8.92
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2422,6 +2422,7 @@ MonoBehaviour:
   quitButton: {fileID: 1985560124}
   playerNameInputField: {fileID: 4452030125284532889}
   ClearDataText: {fileID: 2005330160}
+  gameVersionText: {fileID: 207619439}
 --- !u!114 &4130612385860244006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3014,6 +3015,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1236084357481623851, guid: 76aa38d82e1b12445ae8092d77778bcd, type: 3}
       propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2936927925233923119, guid: 76aa38d82e1b12445ae8092d77778bcd, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6412849618976014186, guid: 76aa38d82e1b12445ae8092d77778bcd, type: 3}

@@ -183,6 +183,8 @@ public class PlayerComputer : NetworkBehaviour
 
     public void SetComputerScreen(ComputerScreen computerScreen)
     {
+        if (!IsOwner) return;
+
         DisableAllComputerScreens();
 
         currentComputerScreen.Value = computerScreen;

@@ -159,7 +159,7 @@ public class CharacterSelectPlayer : MonoBehaviour
         // Optional: limit to host (clientId == 0) if needed
         if (playerData.clientId != 0) return;
 
-        MultiplayerManager.Instance.SetPlayerExperience(playerData.clientId, xp);
+        MultiplayerManager.Instance.SetPlayerExperience(xp);
     }
 
     private PlayerData GetPlayerDataFromPlayerIndex()
