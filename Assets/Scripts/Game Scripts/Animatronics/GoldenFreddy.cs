@@ -71,7 +71,7 @@ public class GoldenFreddy : Animatronic
 
             // Wait until the player is NOT in a position to see Golden Freddy spawn
             yield return new WaitUntil(() => targetPlayer.CanGoldenFreddySpawnIn() || !targetPlayer.isPlayerAlive.Value);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.2f);
 
             SpawnGoldenFreddyClientRpc(targetPlayer.playerRole);
 
@@ -79,12 +79,12 @@ public class GoldenFreddy : Animatronic
             yield return new WaitUntil(() => targetPlayer.HasSpottedGoldenFreddy() || !targetPlayer.isPlayerAlive.Value);
 
             // Start the kill countdown
-            float killTimer = Mathf.Lerp(1.5f, 0.7f, currentDifficulty.Value / 20);
+            float killTimer = Mathf.Lerp(2f, 1f, currentDifficulty.Value / 20);
             while (killTimer > 0f)
             {
                 if (targetPlayer.HasLookedAwayFromGoldenFreddy() || !targetPlayer.isPlayerAlive.Value) // Stop if player looks away
                 {
-                    yield return new WaitForSeconds(0.1f);
+                    yield return new WaitForSeconds(0.2f);
                     DespawnGoldenFreddyClientRpc(targetPlayer.playerRole);
                     goto ContinueOuterLoop; // Jump to the start of the outer loop
                 }

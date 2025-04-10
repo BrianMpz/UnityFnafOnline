@@ -48,6 +48,8 @@ public class PlayerCameraSystem : NetworkBehaviour
     public void Enable()
     {
         if (!IsOwner) return;
+        if (!gameObject.activeSelf) return;
+
         cameraStatic.staticaudio = GameAudioManager.Instance.PlaySfxInterruptable("static audio", 0, true);
         cameraStatic.disturbanceAudio = GameAudioManager.Instance.PlaySfxInterruptable("camera disturbance", 1, true);
 
@@ -67,6 +69,8 @@ public class PlayerCameraSystem : NetworkBehaviour
     public void Disable()
     {
         if (!IsOwner) return;
+        if (!gameObject.activeSelf) return;
+
         GameAudioManager.Instance.StopSfx(cameraBootUpAudio);
         GameAudioManager.Instance.StopSfx(cameraStatic.staticaudio);
         GameAudioManager.Instance.StopSfx(cameraStatic.disturbanceAudio);
@@ -92,6 +96,7 @@ public class PlayerCameraSystem : NetworkBehaviour
     public void SetCamera(CameraName cameraName)
     {
         if (!IsOwner) return;
+        if (!gameObject.activeSelf) return;
 
         currentCameraName.Value = cameraName;
 

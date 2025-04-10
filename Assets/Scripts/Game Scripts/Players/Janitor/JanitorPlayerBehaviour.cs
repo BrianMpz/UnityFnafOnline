@@ -13,7 +13,6 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     public NetworkVariable<float> oxygenLevels = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<float> animatronicRecognitionPossibility = new(writePerm: NetworkVariableWritePermission.Server);
     public NetworkVariable<bool> isMaskDown = new(writePerm: NetworkVariableWritePermission.Owner);
-    public bool isWearingMask;
     public bool canToggle;
     [SerializeField] private float triggerCooldownTime = 0.3f;
     [SerializeField] private float timeSinceLastTrigger;
@@ -119,17 +118,31 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         canToggle = true;
     }
 
-    public void MaskTrigger()
+    public void MonitorTrigger()
     {
-        if (timeSinceLastTrigger < triggerCooldownTime || !canToggle || playerComputer.isMonitorUp.Value) return;
-
-        isWearingMask = !isWearingMask;
-        isMaskDown.Value = isWearingMask;
-        canToggle = false;
+        if (timeSinceLastTrigger < triggerCooldownTime || !canToggle) return;
 
         timeSinceLastTrigger = 0f;
+        canToggle = false;
 
-        if (isWearingMask)
+        if (playerComputer.isLocked)
+        {
+            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            return;
+        }
+
+        playerComputer.ToggleMonitorFlip();
+    }
+
+    public void MaskTrigger()
+    {
+        if (timeSinceLastTrigger < triggerCooldownTime || !canToggle) return;
+
+        timeSinceLastTrigger = 0f;
+        canToggle = false;
+        isMaskDown.Value = !isMaskDown.Value;
+
+        if (isMaskDown.Value)
         {
             mask.SetBool("down", true);
             TriggerMaskAnimationServerRpc(true);
@@ -154,25 +167,6 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     {
         if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
         mask.SetBool("down", b);
-    }
-
-    public void MonitorTrigger()
-    {
-        if (timeSinceLastTrigger < triggerCooldownTime || !canToggle || isWearingMask) return;
-
-        if (playerComputer.isLocked)
-        {
-            GameAudioManager.Instance.PlaySfxOneShot("button error");
-            return;
-        }
-
-        isWearingMask = false;
-        isMaskDown.Value = isWearingMask;
-        canToggle = false;
-
-        timeSinceLastTrigger = 0f;
-
-        playerComputer.ToggleMonitorFlip();
     }
 
     public override void Initialise()

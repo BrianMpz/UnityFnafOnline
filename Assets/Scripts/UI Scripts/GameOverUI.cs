@@ -58,7 +58,7 @@ public class GameOverUI : MonoBehaviour
 
         SetXpBar(oldExperience);
 
-        uint xpGain = GameManager.Instance.XpGained.Value;
+        uint xpGain = playerData.role == PlayerRoles.None ? 0 : GameManager.Instance.XpGained.Value; // dont give xp to spectators that didnt play
 
         xpGainedText.text = $"+{xpGain}XP";
         uint newExperience = (uint)Mathf.Min((long)oldExperience + xpGain, XPManager.MaxXp);

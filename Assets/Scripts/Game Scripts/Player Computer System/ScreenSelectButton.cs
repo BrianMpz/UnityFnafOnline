@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class ScreenSelectButton : MonoBehaviour
 {
-    [SerializeField] private ComputerScreen computerScreen;
+    public ComputerScreen computerScreen;
     [SerializeField] private PlayerComputer playerComputer;
     private Button Button { get => GetComponent<Button>(); }
     private Image Image { get => GetComponent<Image>(); }

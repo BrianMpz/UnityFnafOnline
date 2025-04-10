@@ -118,37 +118,59 @@ public class GameManager : NetworkSingleton<GameManager>
         while (currentGameTime.Value < gameEndTime)
         {
             yield return null;
-            currentGameTime.Value += Time.deltaTime;
+
             CalculateXP();
 
-            if (!isPlaying) yield break;
+            currentGameTime.Value += Time.deltaTime;
+
+            if (!isPlaying) yield break; // game over
         }
+
+        CalculateXP(true);
 
         Debug.Log("Game has Ended!");
 
         EndGameClientRpc();
     }
 
-    private void CalculateXP()
+    private void CalculateXP(bool log = false)
     {
         float timeSurvived = currentGameTime.Value;
         int playersAlive = playerRoleManager.CountPlayersAlive();
         float averageAnimatronicDifficulty = AnimatronicManager.Instance.GetAverageAnimatronicDifficulty();
 
-        XpGained.Value = CalculateXP(timeSurvived, playersAlive, averageAnimatronicDifficulty);
+        XpGained.Value = CalculateXP(timeSurvived, playersAlive, averageAnimatronicDifficulty, log);
     }
 
-    private uint CalculateXP(float timeSurvived, int playersAlive, float averageAnimatronicDifficulty)
+    private uint CalculateXP(float timeSurvived, float playersAlive, float averageAnimatronicDifficulty, bool log)
     {
+        float totalPlayableRoles = Enum.GetValues(typeof(PlayerRoles)).Length - 1;
+        float maxAnimatronicAI = 20f;
+        float totalNights = Enum.GetValues(typeof(GameNight)).Length;
+
         // Normalize key values
-        float timeRatio = Mathf.Clamp01(timeSurvived / MaxGameLength); // 0 to 1
-        float playerRatio = Mathf.Max(playersAlive, 1) / 4f; // 0 to 1
-        float difficultyMultiplier = Mathf.Clamp(averageAnimatronicDifficulty, 1f, 20) / 20;
+        float timeRatio = Mathf.Pow(Mathf.Min(timeSurvived, MaxGameLength) / MaxGameLength, 3f);
+        float difficultyRatio = Mathf.Pow(Mathf.Min(averageAnimatronicDifficulty, maxAnimatronicAI) / maxAnimatronicAI, 5f);
+        float nightRatio = ((float)gameNight + 1) / totalNights;
+        float survivalRate = Mathf.Max(playersAlive, 1f) / totalPlayableRoles;
+        float gameWinMultiplier = playersAlive == 0 ? 0.1f : 1f;
 
         // Final XP computation
-        float xp = 100000f * timeRatio * playerRatio * difficultyMultiplier;
+        float maxXp = 1000000f;
+        float finalXp = maxXp * timeRatio * difficultyRatio * nightRatio * survivalRate * gameWinMultiplier;
 
-        return (uint)Mathf.RoundToInt(xp);
+        if (log)
+        {
+            Debug.Log($"--- XP Calculation Log ---");
+            Debug.Log($"Time Survived: {timeSurvived} / {MaxGameLength} → Time Ratio: {timeRatio:F3}");
+            Debug.Log($"Avg Animatronic Difficulty: {averageAnimatronicDifficulty} / {maxAnimatronicAI} → Difficulty Ratio: {difficultyRatio:F3}");
+            Debug.Log($"Night: {(float)gameNight + 1f} / {totalNights} → Night Ratio: {nightRatio:F3}");
+            Debug.Log($"Players Alive: {playersAlive} / {totalPlayableRoles} → Survival Ratio: {survivalRate:F3}");
+            Debug.Log($"Game Win Multiplier: {gameWinMultiplier:F2}");
+            Debug.Log($"Final XP: {finalXp}");
+        }
+
+        return (uint)Mathf.RoundToInt(finalXp);
     }
 
     [ServerRpc(RequireOwnership = false)] public void OnPlayerPowerDownServerRpc(PlayerRoles playerRole) => OnPlayerPowerDown?.Invoke(playerRole);
@@ -235,6 +257,8 @@ public class GameManager : NetworkSingleton<GameManager>
     {
         if (playerRoleManager.IsEveryoneDead())
         {
+            CalculateXP(true);
+
             RelayGameOverClientRpc();
         }
     }

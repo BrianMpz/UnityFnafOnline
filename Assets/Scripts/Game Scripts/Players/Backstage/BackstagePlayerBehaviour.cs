@@ -49,7 +49,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
             }
 
             // Clamp the volume to prevent it from going over 1
-            freddles.volume = Mathf.Clamp(currentVolume - 0.2f, 0f, 1f);
+            if (freddles != null) freddles.volume = Mathf.Clamp(currentVolume - 0.2f, 0f, 1f);
 
             yield return null;
         }
@@ -134,8 +134,6 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     public override void PowerOn()
     {
         base.PowerOn();
-
-        playerComputer.EnableComputerSystem();
 
         GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
     }

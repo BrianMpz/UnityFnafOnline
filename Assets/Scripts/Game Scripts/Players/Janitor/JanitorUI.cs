@@ -44,14 +44,14 @@ public class JanitorUI : PlayerUI
         EventSystem.current.SetSelectedGameObject(null);
 
         bool isMonitorUp = janitorPlayerBehaviour.playerComputer.isMonitorUp.Value;
+        bool isWearingMask = janitorPlayerBehaviour.isMaskDown.Value;
         bool canToggle = janitorPlayerBehaviour.canToggle;
-        bool isWearingMask = janitorPlayerBehaviour.isWearingMask;
 
         maskTrigger.enabled = canToggle;
         monitorTrigger.enabled = canToggle;
 
         maskTrigger.gameObject.SetActive(!isMonitorUp);
-        monitorTrigger.gameObject.SetActive(!isWearingMask); ;
+        monitorTrigger.gameObject.SetActive(!isWearingMask);
         triggerToggle.gameObject.SetActive(!canToggle);
     }
 

@@ -22,6 +22,7 @@ public class PlayerComputer : NetworkBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private Canvas selectorCanvas;
     [SerializeField] private Canvas defaultCanvas;
+    [SerializeField] private ScreenSelectButton[] screenSelectButtons;
 
     /* ───────────────────────────────── NETWORK VARIABLES ───────────────────────────────── */
 
@@ -52,6 +53,8 @@ public class PlayerComputer : NetworkBehaviour
 
     public void Initialise()
     {
+        DisableComputerSystem();
+
         selectorCanvas.worldCamera = playerBehaviour.playerCamera;
         selectorCanvas.enabled = false;
         defaultCanvas.enabled = false;
@@ -64,6 +67,12 @@ public class PlayerComputer : NetworkBehaviour
         playerManual.Initialise(playerBehaviour.playerCamera);
 
         currentComputerScreen.Value = ComputerScreen.Manual;
+
+        if (isMonitorAlwaysUp)
+        {
+            isMonitorUp.Value = true;
+            EnableComputerSystem();
+        }
     }
 
     public void PlayerBehaviour_OnPowerOn()
@@ -96,36 +105,36 @@ public class PlayerComputer : NetworkBehaviour
 
     private void ForceMonitorDown()
     {
-        if (isMonitorAlwaysUp) return;
-
-        if (isMonitorUp.Value) FlipCamera();
+        if (isMonitorUp.Value && !isMonitorAlwaysUp) FlipCamera();
     }
 
     private void FlipCamera()
     {
-        TriggerFlipAnimation(!isMonitorUp.Value);
-        isWaitingForAnimationToFinish = true;
         GameAudioManager.Instance.PlaySfxOneShot("camera flip");
+        isMonitorUp.Value = !isMonitorUp.Value;
+
+        TriggerFlipAnimation(isMonitorUp.Value);
+        isWaitingForAnimationToFinish = true;
     }
 
-    public void TriggerFlipAnimation(bool flip)
+    public void TriggerFlipAnimation(bool flipUp)
     {
         if (animator == null) return;
-        animator.SetBool("FlipUp", flip);
-        TriggerFlipAnimationServerRpc(flip);
+
+        animator.SetBool("FlipUp", flipUp);
+        TriggerFlipAnimationServerRpc(flipUp);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void TriggerFlipAnimationServerRpc(bool flip, ServerRpcParams serverRpcParams = default)
-        => TriggerFlipAnimationClientRpc(flip, serverRpcParams.Receive.SenderClientId);
+    [ServerRpc(RequireOwnership = true)]
+    private void TriggerFlipAnimationServerRpc(bool flipUp, ServerRpcParams serverRpcParams = default) => TriggerFlipAnimationClientRpc(flipUp, serverRpcParams.Receive.SenderClientId);
 
     [ClientRpc]
-    private void TriggerFlipAnimationClientRpc(bool flip, ulong ignoreId)
+    private void TriggerFlipAnimationClientRpc(bool flipUp, ulong ignoreId)
     {
         if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
         if (animator == null) return;
 
-        animator.SetBool("FlipUp", flip);
+        animator.SetBool("FlipUp", flipUp);
     }
 
     // after an animation
@@ -133,6 +142,7 @@ public class PlayerComputer : NetworkBehaviour
     {
         if (!IsOwner) return;
         if (!isWaitingForAnimationToFinish) return;
+
         isWaitingForAnimationToFinish = false;
 
         OnMonitorFlip();
@@ -141,7 +151,7 @@ public class PlayerComputer : NetworkBehaviour
 
     private void OnMonitorFlip()
     {
-        if (!isMonitorUp.Value) // flip up
+        if (isMonitorUp.Value) // flip up
         {
             EnableComputerSystem();
         }
@@ -163,13 +173,11 @@ public class PlayerComputer : NetworkBehaviour
 
     public void EnableComputerSystem()
     {
-        isMonitorUp.Value = true;
         SetComputerScreen(currentComputerScreen.Value);
     }
 
     public void DisableComputerSystem()
     {
-        isMonitorUp.Value = isMonitorAlwaysUp;
         DisableAllComputerScreens();
     }
 
