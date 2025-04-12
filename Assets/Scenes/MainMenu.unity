@@ -895,6 +895,8 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 93999e7ede9a3ae4e859bce2384794bf, type: 3}
   - name: hahaha
     audioClip: {fileID: 8300000, guid: 837e064b739a48143b3759e1ec5c0cce, type: 3}
+  - name: king nasir theme
+    audioClip: {fileID: 8300000, guid: 5af1b396c68def946aabd1575d95cd29, type: 3}
   musicSource: {fileID: 1074375430}
   sfxOneShotSource: {fileID: 325984021}
   MusicAudioGroup: {fileID: -4096412048826597134, guid: 27db747765720b245aeecd20caab3a0d, type: 2}
@@ -1555,7 +1557,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RenderShadows: 1
+  m_RenderShadows: 0
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0

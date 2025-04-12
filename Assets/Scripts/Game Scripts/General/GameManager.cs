@@ -149,8 +149,8 @@ public class GameManager : NetworkSingleton<GameManager>
         float totalNights = Enum.GetValues(typeof(GameNight)).Length;
 
         // Normalize key values
-        float timeRatio = Mathf.Pow(Mathf.Min(timeSurvived, MaxGameLength) / MaxGameLength, 3f);
-        float difficultyRatio = Mathf.Pow(Mathf.Min(averageAnimatronicDifficulty, maxAnimatronicAI) / maxAnimatronicAI, 5f);
+        float timeRatio = Mathf.Pow(Mathf.Min(timeSurvived, MaxGameLength) / MaxGameLength, 5f);
+        float difficultyRatio = Mathf.Pow(Mathf.Min(averageAnimatronicDifficulty, maxAnimatronicAI) / maxAnimatronicAI, 3f);
         float nightRatio = ((float)gameNight + 1) / totalNights;
         float survivalRate = Mathf.Max(playersAlive, 1f) / totalPlayableRoles;
         float gameWinMultiplier = playersAlive == 0 ? 0.1f : 1f;
@@ -280,9 +280,9 @@ public class GameManager : NetworkSingleton<GameManager>
     private void CleanUpNetworkObjects()
     {
         // Get all the NetworkObjects in the current scene
-        var networkObjects = FindObjectsByType<NetworkObject>(sortMode: FindObjectsSortMode.None);
+        NetworkObject[] networkObjects = FindObjectsByType<NetworkObject>(sortMode: FindObjectsSortMode.None);
 
-        foreach (var networkObject in networkObjects)
+        foreach (NetworkObject networkObject in networkObjects)
         {
             // Check if the object is not marked as persistent
             if (networkObject.gameObject.scene.name != "DontDestroyOnLoad")

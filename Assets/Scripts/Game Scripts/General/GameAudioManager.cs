@@ -28,15 +28,15 @@ public class GameAudioManager : Singleton<GameAudioManager>
 
     private void SoundArrayToDict()
     {
-        musicSoundDict = new Dictionary<string, Sound>(musicSounds.Length);
-        foreach (var sound in musicSounds)
+        musicSoundDict = new(musicSounds.Length);
+        foreach (Sound sound in musicSounds)
         {
             if (!musicSoundDict.ContainsKey(sound.name))
                 musicSoundDict.Add(sound.name, sound);
         }
 
         sfxSoundDict = new Dictionary<string, Sound>(sfxSounds.Length);
-        foreach (var sound in sfxSounds)
+        foreach (Sound sound in sfxSounds)
         {
             if (!sfxSoundDict.ContainsKey(sound.name))
                 sfxSoundDict.Add(sound.name, sound);

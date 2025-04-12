@@ -14,9 +14,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     public NetworkVariable<float> currentDifficulty;
     [SerializeField] private protected NetworkVariable<float> audioLureResistance;
     [SerializeField] private protected Node target;
-
-    [Header("Starting Values")]
-    [SerializeField] private int hourlyDifficultyIncrementAmount;
+    [SerializeField] private float hourlyDifficultyIncrementAmount;
     [SerializeField] private protected int waitTimeToStartMoving;
 
     [Header("Nodes")]
@@ -44,39 +42,39 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
         SetNode(startNode, false, false);
 
-        switch (GameManager.Instance.gameNight)
+        var difficultyData = new Dictionary<GameNight, (float difficulty, float waitTime, float increment)>
         {
-            case GameNight.One:
-                currentDifficulty.Value = 1f;
-                currentMovementWaitTime.Value = 10f;
-                break;
-            case GameNight.Two:
-                currentDifficulty.Value = 3f;
-                currentMovementWaitTime.Value = 9f;
-                break;
-            case GameNight.Three:
-                currentDifficulty.Value = 5f;
-                currentMovementWaitTime.Value = 8f;
-                break;
-            case GameNight.Four:
-                currentDifficulty.Value = 7f;
-                currentMovementWaitTime.Value = 7f;
-                break;
-            case GameNight.Five:
-                currentDifficulty.Value = 9f;
-                currentMovementWaitTime.Value = 6f;
-                break;
-            case GameNight.Six:
-                currentDifficulty.Value = 16f;
-                currentMovementWaitTime.Value = 5f;
-                break;
-            case GameNight.Seven:
-                currentDifficulty.Value = 20f;
-                currentMovementWaitTime.Value = 4f;
-                break;
+            { GameNight.One, (1f, 10f, 3f) },
+            { GameNight.Two, (3f, 9f, 3.25f) },
+            { GameNight.Three, (5f, 8f, 3.5f) },
+            { GameNight.Four, (7f, 7f, 3.75f) },
+            { GameNight.Five, (9f, 6f, 4f) },
+            { GameNight.Six, (16f, 5f, 4.25f) },
+            { GameNight.Seven, (20f, 4f, 4.5f) },
+        };
+
+        if (difficultyData.ContainsKey(GameManager.Instance.gameNight))
+        {
+            var (difficulty, waitTime, increment) = difficultyData[GameManager.Instance.gameNight];
+            currentDifficulty.Value = difficulty;
+            currentMovementWaitTime.Value = waitTime;
+            hourlyDifficultyIncrementAmount = increment;
         }
 
         gameplayLoop = StartCoroutine(GameplayLoop());
+    }
+
+    public virtual void Disable()
+    {
+        if (!IsServer) return;
+
+        SetNode(startNode, false);
+        StopAllCoroutines();
+    }
+
+    private protected void IncreaseAnimatronicDifficulty()
+    {
+        currentDifficulty.Value += hourlyDifficultyIncrementAmount;
     }
 
     private void Update()
@@ -88,58 +86,51 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         audioLureResistance.Value = Mathf.Clamp(audioLureResistance.Value, 0f, 100f);
     }
 
-    public virtual void Disable()
-    {
-        if (!IsServer) return;
-
-        SetNode(startNode);
-        StopAllCoroutines();
-    }
-
-    private protected void IncreaseAnimatronicDifficulty()
-    {
-        currentDifficulty.Value += hourlyDifficultyIncrementAmount;
-    }
-
     public void AudioLure_AttractAnimatronic(Node targetedNode)
     {
-        bool isAlreadyAtThisNode = targetedNode == target;
-        bool canResistLure = (int)audioLureResistance.Value >= UnityEngine.Random.Range(0, 100); // 0 to 99
-
-        if (!canResistLure || isAlreadyAtThisNode)
+        if (target == targetedNode)
         {
-            SetTarget(targetedNode);
-            HandleAggrivation(true);
+            audioLureResistance.Value += 50;
+        }
 
-            audioLureResistance.Value += Mathf.Lerp(0f, 80f, currentDifficulty.Value / 20f);
+        if (audioLureResistance.Value < UnityEngine.Random.Range(0, 100))
+        {
+            SetAggrivation(true);
+            SetTarget(targetedNode);
+            audioLureResistance.Value += Mathf.Lerp(10f, 80f, currentDifficulty.Value / 20f);
         }
         else
         {
             print("resisted audioLure");
-
-            TargetRandomPlayer();
         }
     }
 
-    public void OnAttentionDivert(Node targetedNode)
+    public void OnAttentionDivert(Node targetedNode) // called if the alarm goes off etc
     {
         SetTarget(targetedNode);
     }
 
-    private protected void HandleAggrivation(bool shouldBeAggrivated, float aggrivatedDifficultyAdditionAmount = 15, float aggrivatedWaitTimeCoefficient = 1.2f)
+    private protected void SetAggrivation(bool shouldBeAggrivated, float aggrivatedDifficultyAdditionAmount = 15, float aggrivatedWaitTimeCoefficient = 1.2f)
     {
-        if (isCurrentlyAggrivated.Value)
-        {
-            isCurrentlyAggrivated.Value = false;
-            currentMovementWaitTime.Value *= aggrivatedWaitTimeCoefficient;
-            currentDifficulty.Value -= aggrivatedDifficultyAdditionAmount;
-        }
         if (shouldBeAggrivated)
         {
-            isCurrentlyAggrivated.Value = true;
-            currentMovementWaitTime.Value /= aggrivatedWaitTimeCoefficient;
-            currentDifficulty.Value += aggrivatedDifficultyAdditionAmount;
+            if (!isCurrentlyAggrivated.Value)
+            {
+                isCurrentlyAggrivated.Value = true;
+                currentMovementWaitTime.Value /= aggrivatedWaitTimeCoefficient;
+                currentDifficulty.Value += aggrivatedDifficultyAdditionAmount;
+            }
         }
+        else
+        {
+            if (isCurrentlyAggrivated.Value)
+            {
+                isCurrentlyAggrivated.Value = false;
+                currentMovementWaitTime.Value *= aggrivatedWaitTimeCoefficient;
+                currentDifficulty.Value -= aggrivatedDifficultyAdditionAmount;
+            }
+        }
+
     }
 
     private protected virtual IEnumerator GameplayLoop()
@@ -151,7 +142,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         while (GameManager.Instance.isPlaying && IsServer)
         {
             bool shouldBeAggrivated = PlayerRoleManager.Instance.IsAnimatronicAboutToAttack(currentNode);
-            HandleAggrivation(shouldBeAggrivated);
+            SetAggrivation(shouldBeAggrivated);
 
             yield return new WaitForSeconds(currentMovementWaitTime.Value);
 
@@ -176,17 +167,15 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         if (PlayerRoleManager.Instance.IsEveryoneDead())
         {
             SetTarget(null);
+            return;
         }
-        else
-        {
-            var attackablePlayers = AnimatronicManager.Instance.PlayerNodes
-                .Where(x => x.playerBehaviour != null && x.playerBehaviour.isPlayerAlive.Value)
-                .ToList();
 
-            PlayerNode randomAttackablePlayer = attackablePlayers.Count > 0 ? attackablePlayers[UnityEngine.Random.Range(0, attackablePlayers.Count)] : null;
+        var attackablePlayers = AnimatronicManager.Instance.PlayerNodes
+            .Where(x => x.playerBehaviour?.isPlayerAlive.Value == true)
+            .ToList();
 
-            SetTarget(randomAttackablePlayer);
-        }
+        SetTarget(attackablePlayers.Count > 0 ? attackablePlayers[UnityEngine.Random.Range(0, attackablePlayers.Count)] : null);
+
     }
 
     private void SetTarget(Node targetNode)
@@ -213,16 +202,12 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
             }
             else // player is dead so treat as normal node
             {
-                AdvanceInPath(nodeToGoTo);
+                AdvanceInPath(nodeToGoTo, false);
             }
-        }
-        else if (movingIntoAttackPosition) // moving to attack position
-        {
-            AdvanceInPath(nodeToGoTo, true);
         }
         else
         {
-            AdvanceInPath(nodeToGoTo);
+            AdvanceInPath(nodeToGoTo, true);
         }
 
         // the gameplay loop coroutine continues...
@@ -279,9 +264,9 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
             string killerName = gameObject.name;
             playerBehaviour.DieClientRpc(killerName, deathScream, MultiplayerManager.NewClientRpcSendParams(targetNode.playerBehaviour.OwnerClientId));
         }
-        else
+        else // player is dead so treat as normal node
         {
-            AdvanceInPath(targetNode);
+            AdvanceInPath(targetNode, false);
         }
     }
 
@@ -296,7 +281,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         SetNode(startNode, false, false);
     }
 
-    private void AdvanceInPath(Node nodeToGoTo, bool lerpToPosition = false)
+    private void AdvanceInPath(Node nodeToGoTo, bool lerpToPosition)
     {
         if (!nodeToGoTo.isOccupied.Value)
         {
@@ -304,7 +289,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         }
     }
 
-    private protected virtual void SetNode(Node nodeToGoTo, bool lerpToPosition = false, bool makeNoise = true)
+    private protected virtual void SetNode(Node nodeToGoTo, bool lerpToPosition, bool makeNoise = true)
     {
         List<Node> nodes = AnimatronicManager.Instance.Nodes;
         int indexOfNodeToGoTo = nodes.IndexOf(nodeToGoTo);

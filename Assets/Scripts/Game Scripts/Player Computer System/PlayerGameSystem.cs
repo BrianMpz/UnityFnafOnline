@@ -42,7 +42,7 @@ public class PlayerGameSystem : NetworkBehaviour
         canvas.enabled = true;
         EnableServerRpc();
 
-        gameMusic = GameAudioManager.Instance.PlaySfxInterruptable("just add water", loop: true); // this music can be interrupted
+        gameMusic = GameAudioManager.Instance.PlaySfxInterruptable("king nasir theme", loop: true); // this music can be interrupted
     }
 
     [ServerRpc(RequireOwnership = false)]

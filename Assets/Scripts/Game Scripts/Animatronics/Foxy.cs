@@ -144,7 +144,7 @@ public class Foxy : Animatronic
     // The main loop where Foxy's movements and attacks are handled
     private IEnumerator GameplayLoop(bool shouldBeAggrivated, PlayerNode specificTarget = null)
     {
-        HandleAggrivation(shouldBeAggrivated || GlobalCameraSystem.Instance.timeSinceLastFoxyCheck > 30);
+        SetAggrivation(shouldBeAggrivated || GlobalCameraSystem.Instance.timeSinceLastFoxyCheck > 30);
 
         yield return new WaitForSeconds(waitTimeToStartMoving); // Initial wait before starting movement
 
@@ -233,7 +233,7 @@ public class Foxy : Animatronic
         Node targetPlayerHallwayNode = GetHallwayNodeFromPlayerRole(targetPlayerBehaviour.playerRole);
 
         yield return targetPlayerBehaviour.IsFoxyReadyToAttack(targetPlayerHallwayNode, definitiveAttackTime);
-        SetNode(targetPlayerHallwayNode);
+        SetNode(targetPlayerHallwayNode, false);
 
         InitiateAttackClientRpc(indexOfPlayerNode);
         isWaitingOnClient = true;

@@ -122,7 +122,7 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
 
     public List<Node> ReconstructPath(Dictionary<Node, Node> cameFrom, Node current)
     {
-        var path = new List<Node>();
+        List<Node> path = new();
         while (current != null)
         {
             path.Add(current);
