@@ -62,8 +62,8 @@ public class PlayerAudioLureSystem : NetworkBehaviour
     {
         isPlayingLure = true;
 
-        AnimatronicManager.Instance.PlayAudioLure(nodeName);
         PlayLureClientRpc(nodeName, lureDuration);
+        AnimatronicManager.Instance.PlayAudioLure(nodeName);
 
         yield return new WaitForSeconds(lureDuration);
 

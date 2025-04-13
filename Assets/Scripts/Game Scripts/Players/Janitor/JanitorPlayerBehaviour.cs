@@ -90,6 +90,8 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     {
         base.Update();
 
+        if (!GameManager.Instance.isPlaying) return;
+
         RoomLight.enabled = PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.Janitor);
 
         if (!IsOwner) return;
@@ -222,7 +224,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     }
 
     [ClientRpc]
-    public override void PlayDoorKnockAudioClientRpc(int _, ClientRpcParams _0)
+    public override void PlayDoorKnockAudioClientRpc(int _, bool _0, ClientRpcParams _2)
     {
         GameAudioManager.Instance.PlaySfxOneShot("janitor door close");
         MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(1f);
@@ -263,6 +265,6 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
     public override void GetGameCollectable()
     {
-        oxygenLevels.Value += 10;
+        oxygenLevels.Value += 5;
     }
 }

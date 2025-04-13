@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class PlayerCameraSystem : NetworkBehaviour
 {
     [SerializeField] private PlayerComputer playerComputer;
-    public NetworkVariable<bool> isWatchingFoxy = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<CameraName> currentCameraName = new(writePerm: NetworkVariableWritePermission.Owner);
     [SerializeField] private CameraStatic cameraStatic;
     [SerializeField] private Canvas canvas;
@@ -40,7 +39,6 @@ public class PlayerCameraSystem : NetworkBehaviour
     {
         if (!GameManager.Instance.isPlaying || !IsOwner) return;
 
-        CheckIsWatchingFoxy();
         cameraOutputScreen.enabled = PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(playerComputer.playerBehaviour.playerRole);
         cameraStatic.enabled = PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(playerComputer.playerBehaviour.playerRole);
     }
@@ -108,8 +106,6 @@ public class PlayerCameraSystem : NetworkBehaviour
 
         UpdateCameraUI(cameraData);
 
-        CheckIsWatchingFoxy();
-
         SetCameraServerRpc(cameraName); // for spectators
 
         EnableCamera(cameraData, canSeeAnyCamera);
@@ -136,12 +132,13 @@ public class PlayerCameraSystem : NetworkBehaviour
         }
     }
 
-    private void CheckIsWatchingFoxy()
+    public bool IsWatchingCamera(CameraName targetCamera)
     {
         bool isOnCameraSystem = playerComputer.currentComputerScreen.Value == ComputerScreen.Cameras;
-        bool isViewingPiratesCove = currentCameraName.Value == CameraName.Three;
+        bool isViewingTargetCamera = currentCameraName.Value == targetCamera;
+        bool isMonitorUp = playerComputer.isMonitorUp.Value;
 
-        isWatchingFoxy.Value = playerComputer.isMonitorUp.Value && isOnCameraSystem && !isHidingCurrentCamera && isViewingPiratesCove;
+        return isMonitorUp && isOnCameraSystem && !isHidingCurrentCamera && isViewingTargetCamera;
     }
 
     private void UpdateCameraUI(CameraData cameraData)
@@ -176,56 +173,48 @@ public class PlayerCameraSystem : NetworkBehaviour
     private void SetCameraServerRpc(CameraName cameraName, ServerRpcParams serverRpcParams = default)
     => SetCameraClientRpc(cameraName, serverRpcParams.Receive.SenderClientId);
 
+    public bool CanSeeCameras(bool canMonitorBeDown = false)
+    {
+        return playerComputer.currentComputerScreen.Value == ComputerScreen.Cameras && !isHidingCurrentCamera & (playerComputer.isMonitorUp.Value || canMonitorBeDown);
+    }
+
     private void GameManager_OnAnimatronicMoved(Node fromNode, Node toNode)
     {
-        if (!playerComputer.isMonitorUp.Value) return;
-
-        if (AreNodesVisibleOnCamera(fromNode, toNode))
-        {
-            RefreshCameras();
-        }
+        if (IsNodeVisibleOnCamera(fromNode) || IsNodeVisibleOnCamera(toNode)) RefreshCameras();
     }
 
     private void GameManager_OnFoxyStatusChanged()
     {
-        if (!playerComputer.isMonitorUp.Value) return;
+        if (!CanSeeCameras()) return;
 
         if (currentCameraName.Value == CameraName.Three) RefreshCameras();
     }
 
     private void GameManager_OnFoxyAttacking(Node startPositionNode)
     {
-        if (!playerComputer.isMonitorUp.Value) return;
+        if (!CanSeeCameras()) return;
 
         if (IsNodeVisibleOnCamera(startPositionNode)) RefreshCameras();
     }
 
     private void GlobalCameraSystem_OnCameraVisibilityChanged(CameraName changedCameraName)
     {
-        if (!playerComputer.isMonitorUp.Value) return;
+        if (!CanSeeCameras()) return;
 
         if (currentCameraName.Value == changedCameraName) RefreshCameras();
     }
 
     public bool CheckIfAnyoneWatchingHallwayNode(Node startPositionNode)
     {
-        if (!playerComputer.isMonitorUp.Value) return false;
+        if (!CanSeeCameras()) return false;
 
         return IsNodeVisibleOnCamera(startPositionNode);
     }
 
-    private bool AreNodesVisibleOnCamera(Node fromNode, Node toNode)
+    public bool IsNodeVisibleOnCamera(Node node, bool canMonitorBeDown = false)
     {
-        if (isHidingCurrentCamera) return false;
-        CameraData cameraData = GlobalCameraSystem.Instance.GetCameraDataFromCameraName(currentCameraName.Value);
+        if (!CanSeeCameras(canMonitorBeDown)) return false;
 
-        // Check if either node is visible in the current camera's visible nodes
-        return cameraData.nodesVisibleOnCamera.Contains(fromNode) || cameraData.nodesVisibleOnCamera.Contains(toNode);
-    }
-
-    private bool IsNodeVisibleOnCamera(Node node)
-    {
-        if (isHidingCurrentCamera) return false;
         CameraData cameraData = GlobalCameraSystem.Instance.GetCameraDataFromCameraName(currentCameraName.Value);
 
         // Check if node is visible in the current camera's visible nodes

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -21,43 +22,25 @@ public class Zap : Animatronic
         GameManager.Instance.currentHour.OnValueChanged += (currentValue, newValue) => { IncreaseAnimatronicDifficulty(); };
         DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
 
-        switch (GameManager.Instance.gameNight)
+
+        var difficultyData = new Dictionary<GameNight, (float difficulty, float waitTime, float increment, float moveSpeed)>
         {
-            case GameNight.One:
-                currentDifficulty.Value = 1;
-                currentMovementWaitTime.Value = 4;
-                moveSpeed = 1;
-                break;
-            case GameNight.Two:
-                currentDifficulty.Value = 2;
-                currentMovementWaitTime.Value = 4f;
-                moveSpeed = 3;
-                break;
-            case GameNight.Three:
-                currentDifficulty.Value = 4;
-                currentMovementWaitTime.Value = 4f;
-                moveSpeed = 5;
-                break;
-            case GameNight.Four:
-                currentDifficulty.Value = 7;
-                currentMovementWaitTime.Value = 4f;
-                moveSpeed = 7;
-                break;
-            case GameNight.Five:
-                currentDifficulty.Value = 11;
-                currentMovementWaitTime.Value = 4f;
-                moveSpeed = 9;
-                break;
-            case GameNight.Six:
-                currentDifficulty.Value = 16;
-                currentMovementWaitTime.Value = 4f;
-                moveSpeed = 10;
-                break;
-            case GameNight.Seven:
-                currentDifficulty.Value = 20;
-                currentMovementWaitTime.Value = 4f;
-                moveSpeed = 10;
-                break;
+            { GameNight.One, (1f, 3f, 3f, 1) },
+            { GameNight.Two, (3f, 3f, 3.25f, 3) },
+            { GameNight.Three, (5f, 3f, 3.5f, 5) },
+            { GameNight.Four, (7f, 3f, 3.75f, 7) },
+            { GameNight.Five, (9f, 3f, 4f, 9) },
+            { GameNight.Six, (16f, 3f, 4.25f, 10) },
+            { GameNight.Seven, (20f, 3f, 4.5f, 12) },
+        };
+
+        if (difficultyData.ContainsKey(GameManager.Instance.gameNight))
+        {
+            var (difficulty, waitTime, increment, movementSpeed) = difficultyData[GameManager.Instance.gameNight];
+            currentDifficulty.Value = difficulty;
+            currentMovementWaitTime.Value = waitTime;
+            hourlyDifficultyIncrementAmount = increment;
+            moveSpeed = movementSpeed;
         }
 
         movementProgress = StartCoroutine(ApproachPlayer());
@@ -93,7 +76,7 @@ public class Zap : Animatronic
             int indexOfTargetNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
             ConfirmKillServerRpc(indexOfTargetNode);
 
-            yield return new WaitForSeconds(Mathf.Lerp(5, 60, 1 - currentDifficulty.Value / 20f)); // wait a random amount of time before entering the facility
+            yield return new WaitForSeconds(Mathf.Lerp(5, 60, 1 - (currentDifficulty.Value / 20f))); // wait a random amount of time before entering the facility
 
             gameplayLoop = StartCoroutine(GameplayLoop()); // is released into facility
         }

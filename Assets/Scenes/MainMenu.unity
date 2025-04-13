@@ -897,6 +897,16 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 837e064b739a48143b3759e1ec5c0cce, type: 3}
   - name: king nasir theme
     audioClip: {fileID: 8300000, guid: 5af1b396c68def946aabd1575d95cd29, type: 3}
+  - name: freddy laugh normal speed
+    audioClip: {fileID: 8300000, guid: 403631ef0ac87654ea6c0d0ee27a3b3f, type: 3}
+  - name: freddy laugh 1
+    audioClip: {fileID: 8300000, guid: 39fe81eb45c929b42b868a5bf2129ce3, type: 3}
+  - name: freddy laugh 2
+    audioClip: {fileID: 8300000, guid: a719976914aa0864da7f2c0993435d2f, type: 3}
+  - name: freddy laugh 3
+    audioClip: {fileID: 8300000, guid: 4d27539a90b62ec49a66071d12356295, type: 3}
+  - name: ferocious banging
+    audioClip: {fileID: 8300000, guid: e0c84fed0043c914d848c277d27584cd, type: 3}
   musicSource: {fileID: 1074375430}
   sfxOneShotSource: {fileID: 325984021}
   MusicAudioGroup: {fileID: -4096412048826597134, guid: 27db747765720b245aeecd20caab3a0d, type: 2}

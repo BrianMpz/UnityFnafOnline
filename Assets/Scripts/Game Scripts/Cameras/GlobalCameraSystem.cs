@@ -33,6 +33,8 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
 
     private void Update()
     {
+        if (!IsServer) return;
+
         CountPlayersWatchingFoxy();
     }
 
@@ -64,13 +66,11 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
 
     public void CountPlayersWatchingFoxy()
     {
-        if (!IsServer) return;
-
         int playersWatchingfoxy = 0;
 
         foreach (PlayerComputer playerComputer in playerComputers)
         {
-            if (playerComputer.playerCameraSystem.isWatchingFoxy.Value)
+            if (playerComputer.playerCameraSystem.IsWatchingCamera(CameraName.Three))
             {
                 playersWatchingfoxy++;
                 timeSinceLastFoxyCheck = 0;
@@ -80,6 +80,19 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
         timeSinceLastFoxyCheck += Time.deltaTime;
 
         OnPlayersWatchingFoxyUpdate?.Invoke(playersWatchingfoxy);
+    }
+
+    public bool IsSomeoneWatchingNode(Node node)
+    {
+        foreach (PlayerComputer playerComputer in playerComputers)
+        {
+            if (playerComputer.playerCameraSystem.IsNodeVisibleOnCamera(node, false)) // change later
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void DisableAllCameraComponents()

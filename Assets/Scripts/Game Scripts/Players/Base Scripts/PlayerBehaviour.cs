@@ -233,10 +233,11 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     }
 
     [ClientRpc]
-    public virtual void PlayDoorKnockAudioClientRpc(int _, ClientRpcParams _0)
+    public virtual void PlayDoorKnockAudioClientRpc(int _, bool ferociousBanging, ClientRpcParams _0)
     {
         // by default just play the knocking sound without panning
-        GameAudioManager.Instance.PlaySfxOneShot("door knock");
+        string audioClip = ferociousBanging ? "ferocious banging" : "door knock";
+        GameAudioManager.Instance.PlaySfxOneShot(audioClip);
     }
 
     public virtual Node GetDoorwayNode(Node AttackingNode)

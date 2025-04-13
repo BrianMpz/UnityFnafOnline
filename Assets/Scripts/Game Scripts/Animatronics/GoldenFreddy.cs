@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,36 +14,22 @@ public class GoldenFreddy : Animatronic
         GameManager.Instance.currentHour.OnValueChanged += (currentValue, newValue) => { IncreaseAnimatronicDifficulty(); };
         DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
 
-        switch (GameManager.Instance.gameNight)
+        var difficultyData = new Dictionary<GameNight, (float difficulty, float increment)>
         {
-            case GameNight.One:
-                currentDifficulty.Value = 1;
-                currentMovementWaitTime.Value = 60f;
-                break;
-            case GameNight.Two:
-                currentDifficulty.Value = 2;
-                currentMovementWaitTime.Value = 50f;
-                break;
-            case GameNight.Three:
-                currentDifficulty.Value = 4;
-                currentMovementWaitTime.Value = 40f;
-                break;
-            case GameNight.Four:
-                currentDifficulty.Value = 7;
-                currentMovementWaitTime.Value = 30f;
-                break;
-            case GameNight.Five:
-                currentDifficulty.Value = 11;
-                currentMovementWaitTime.Value = 20f;
-                break;
-            case GameNight.Six:
-                currentDifficulty.Value = 16;
-                currentMovementWaitTime.Value = 10f;
-                break;
-            case GameNight.Seven:
-                currentDifficulty.Value = 20;
-                currentMovementWaitTime.Value = 10f;
-                break;
+            { GameNight.One, (1f, 0.5f) },
+            { GameNight.Two, (3f, 1f) },
+            { GameNight.Three, (5f, 1.5f) },
+            { GameNight.Four, (7f, 2f) },
+            { GameNight.Five, (9f, 2.5f) },
+            { GameNight.Six, (16f, 3f) },
+            { GameNight.Seven, (20f, 3.5f) },
+        };
+
+        if (difficultyData.ContainsKey(GameManager.Instance.gameNight))
+        {
+            var (difficulty, increment) = difficultyData[GameManager.Instance.gameNight];
+            currentDifficulty.Value = difficulty;
+            hourlyDifficultyIncrementAmount = increment;
         }
 
         StartCoroutine(WaitForJanitorToDie());
@@ -60,7 +47,7 @@ public class GoldenFreddy : Animatronic
         while (GameManager.Instance.isPlaying)
         {
             GetComponent<Image>().enabled = false;
-            yield return new WaitForSeconds(waitTimeToStartMoving);
+            yield return new WaitForSeconds(Mathf.Lerp(10, 60, 1 - (currentDifficulty.Value / 20f)));
             if (UnityEngine.Random.Range(1, 20 + 1) > currentDifficulty.Value) continue;
 
             TargetRandomPlayer();
@@ -77,6 +64,7 @@ public class GoldenFreddy : Animatronic
 
             // Wait until the player spots Golden Freddy
             yield return new WaitUntil(() => targetPlayer.HasSpottedGoldenFreddy() || !targetPlayer.isPlayerAlive.Value);
+            PlayLaughClientRpc(MultiplayerManager.NewClientRpcSendParams(targetPlayer.OwnerClientId));
 
             // Start the kill countdown
             float killTimer = Mathf.Lerp(2f, 1f, currentDifficulty.Value / 20);
@@ -97,6 +85,12 @@ public class GoldenFreddy : Animatronic
 
         ContinueOuterLoop:; // Label for the outer loop to continue
         }
+    }
+
+    [ClientRpc]
+    private void PlayLaughClientRpc(ClientRpcParams clientRpcParams)
+    {
+        if (PlayerRoleManager.Instance.GetLocalPlayerBehaviour().isPlayerAlive.Value) GameAudioManager.Instance.PlaySfxInterruptable("freddy laugh normal speed");
     }
 
     [ClientRpc]

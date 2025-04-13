@@ -96,7 +96,7 @@ public class FreddyInSpace : MonoBehaviour
             Vector3 scaleFactor = new(scaleX, 1f, 1f);
 
             // Color components derived from the same value with slight variation
-            Color randColor = new Color(
+            Color randColor = new(
                 Mathf.Clamp01(0.014f + UnityEngine.Random.Range(-0.01f, 0.1f)),
                 Mathf.Clamp01(0.051f + UnityEngine.Random.Range(-0.01f, 0.1f)),
                 Mathf.Clamp01(0.133f + UnityEngine.Random.Range(-0.01f, 0.1f)),

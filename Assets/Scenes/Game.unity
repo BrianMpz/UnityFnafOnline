@@ -13797,9 +13797,6 @@ MonoBehaviour:
   audioLureResistance:
     m_InternalValue: 0
   target: {fileID: 0}
-  hourlyDifficultyIncrementAmount: 0
-  waitTimeToStartMoving: 0
-  startNode: {fileID: 700935956}
   nodeDatas:
   - name: Stage1
     node: {fileID: 2144847041}
@@ -13879,9 +13876,11 @@ MonoBehaviour:
   - name: Backstage
     node: {fileID: 700935956}
     isAllowedToGoTo: 1
-  animatronicModel: {fileID: 1644602682}
+  waitTimeToStartMoving: 0
   footStepPitch: 0.7
   deathScream: sister location scream
+  startNode: {fileID: 700935956}
+  animatronicModel: {fileID: 1644602682}
   playerNode: {fileID: 700935956}
   startingPosition: {x: 0.8, y: 0.125, z: -30}
   endingPosition: {x: 0.8, y: 0.125, z: -24.5}
@@ -16083,7 +16082,7 @@ GameObject:
   - component: {fileID: 585391350}
   - component: {fileID: 585391354}
   - component: {fileID: 585391353}
-  - component: {fileID: 585391352}
+  - component: {fileID: 585391355}
   - component: {fileID: 585391351}
   m_Layer: 5
   m_Name: Freddy
@@ -16127,7 +16126,7 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &585391352
+--- !u!114 &585391353
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -16136,7 +16135,45 @@ MonoBehaviour:
   m_GameObject: {fileID: 585391349}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e599ace7635686745b3b53804c51c5f4, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.5754717, g: 0.26196694, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &585391354
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 585391349}
+  m_CullTransparentMesh: 1
+--- !u!114 &585391355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 585391349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5ad19eb41754984886360a67d5edab6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isCurrentlyAggrivated:
@@ -16148,9 +16185,6 @@ MonoBehaviour:
   audioLureResistance:
     m_InternalValue: 0
   target: {fileID: 0}
-  hourlyDifficultyIncrementAmount: 2
-  waitTimeToStartMoving: 10
-  startNode: {fileID: 255704850}
   nodeDatas:
   - name: Stage1
     node: {fileID: 2144847041}
@@ -16230,47 +16264,11 @@ MonoBehaviour:
   - name: Backstage
     node: {fileID: 700935956}
     isAllowedToGoTo: 1
-  animatronicModel: {fileID: 2070021265}
-  footStepPitch: 0.8
+  waitTimeToStartMoving: 30
+  footStepPitch: 1
   deathScream: jumpscare scream
---- !u!114 &585391353
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 585391349}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.5754717, g: 0.26196694, b: 0, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &585391354
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 585391349}
-  m_CullTransparentMesh: 1
+  startNode: {fileID: 255704850}
+  animatronicModel: {fileID: 2070021265}
 --- !u!1 &589847551
 GameObject:
   m_ObjectHideFlags: 0
@@ -17068,13 +17066,12 @@ MonoBehaviour:
   audioLureResistance:
     m_InternalValue: 0
   target: {fileID: 0}
-  hourlyDifficultyIncrementAmount: 2
-  waitTimeToStartMoving: 10
-  startNode: {fileID: 1580970636}
   nodeDatas: []
-  animatronicModel: {fileID: 1000460678}
+  waitTimeToStartMoving: 10
   footStepPitch: 1
   deathScream: jumpscare scream
+  startNode: {fileID: 1580970636}
+  animatronicModel: {fileID: 1000460678}
   isLocked: 0
   exponentialPowerDrain: 1
   currentAttackAttempt:
@@ -17330,7 +17327,7 @@ Light:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 0.63
   m_Range: 10
-  m_SpotAngle: 25.171883
+  m_SpotAngle: 61.910767
   m_InnerSpotAngle: 17.768393
   m_CookieSize: 10
   m_Shadows:
@@ -26614,9 +26611,6 @@ MonoBehaviour:
   audioLureResistance:
     m_InternalValue: 0
   target: {fileID: 0}
-  hourlyDifficultyIncrementAmount: 2
-  waitTimeToStartMoving: 5
-  startNode: {fileID: 1848919388}
   nodeDatas:
   - name: Stage1
     node: {fileID: 2144847041}
@@ -26696,9 +26690,11 @@ MonoBehaviour:
   - name: Backstage
     node: {fileID: 700935956}
     isAllowedToGoTo: 1
-  animatronicModel: {fileID: 1465744800}
+  waitTimeToStartMoving: 15
   footStepPitch: 1.2
   deathScream: jumpscare scream
+  startNode: {fileID: 1848919388}
+  animatronicModel: {fileID: 1465744800}
 --- !u!114 &1017715870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42223,15 +42219,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalPosition.x
@@ -42247,19 +42243,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.83734024
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.5466821
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -42267,7 +42263,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 66.279
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -42275,7 +42271,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -6929553913538507101, guid: 44318dcaf71174e4f86930fe2d513503, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -51938,13 +51934,12 @@ MonoBehaviour:
   audioLureResistance:
     m_InternalValue: 0
   target: {fileID: 0}
-  hourlyDifficultyIncrementAmount: 2
-  waitTimeToStartMoving: 10
-  startNode: {fileID: 2023607781}
   nodeDatas: []
-  animatronicModel: {fileID: 0}
+  waitTimeToStartMoving: 30
   footStepPitch: 0
   deathScream: 
+  startNode: {fileID: 2023607781}
+  animatronicModel: {fileID: 0}
 --- !u!1001 &1983250174
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -52646,9 +52641,6 @@ MonoBehaviour:
   audioLureResistance:
     m_InternalValue: 0
   target: {fileID: 0}
-  hourlyDifficultyIncrementAmount: 1
-  waitTimeToStartMoving: 6
-  startNode: {fileID: 2144847041}
   nodeDatas:
   - name: Stage1
     node: {fileID: 2144847041}
@@ -52728,9 +52720,11 @@ MonoBehaviour:
   - name: Backstage
     node: {fileID: 700935956}
     isAllowedToGoTo: 1
-  animatronicModel: {fileID: 43989834}
+  waitTimeToStartMoving: 5
   footStepPitch: 1
   deathScream: jumpscare scream
+  startNode: {fileID: 2144847041}
+  animatronicModel: {fileID: 43989834}
 --- !u!1 &2012670123
 GameObject:
   m_ObjectHideFlags: 0

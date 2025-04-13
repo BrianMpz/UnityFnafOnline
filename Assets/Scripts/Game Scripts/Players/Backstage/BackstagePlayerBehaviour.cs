@@ -149,6 +149,8 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     {
         base.Update();
 
+        if (!GameManager.Instance.isPlaying) return;
+
         zapCooldown += Time.deltaTime;
 
         RoomLight.enabled = isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.Backstage);

@@ -14,18 +14,17 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     public NetworkVariable<float> currentDifficulty;
     [SerializeField] private protected NetworkVariable<float> audioLureResistance;
     [SerializeField] private protected Node target;
-    [SerializeField] private float hourlyDifficultyIncrementAmount;
-    [SerializeField] private protected int waitTimeToStartMoving;
-
-    [Header("Nodes")]
-    [SerializeField] private protected Node startNode;
-    private protected Node currentNode;
     public List<NodeData> nodeDatas;
-
-    [Header("Miscellaneous")]
-    [SerializeField] private protected Transform animatronicModel;
+    private protected float hourlyDifficultyIncrementAmount;
+    private protected Node currentNode;
+    [Header("Static Values")]
+    [SerializeField] private protected int waitTimeToStartMoving;
     [SerializeField] private float footStepPitch;
     [SerializeField] private protected string deathScream;
+    [SerializeField] private protected Node startNode;
+    [SerializeField] private protected Transform animatronicModel;
+
+    [Header("Misc")]
     private protected RectTransform MapTransform { get => GetComponent<RectTransform>(); }
     private protected bool isWaitingOnClient;
     private protected Coroutine gameplayLoop;
@@ -153,11 +152,16 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
             if (path.Count < 2) continue; // there is no path to the target or has reached target
 
-            if (UnityEngine.Random.Range(1, 20 + 1) <= currentDifficulty.Value) // successful movement opportunity
+            if (MovementCondition()) // successful movement opportunity
             {
                 yield return MovementOpportunity(path);
             }
         }
+    }
+
+    private protected virtual bool MovementCondition()
+    {
+        return UnityEngine.Random.Range(1, 20 + 1) <= currentDifficulty.Value;
     }
 
     private bool NeedsANewTarget() => target == null || UnityEngine.Random.Range(1, 10 + 1) < 2;
@@ -188,7 +192,6 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         Node nodeToGoTo = path[1];
 
         bool aboutToAttackPlayer = nodeToGoTo.TryGetComponent(out PlayerNode playerNode);
-        bool movingIntoAttackPosition = path.Count == 3 && path[2].GetComponent<PlayerNode>() != null;
 
         if (aboutToAttackPlayer) // about to attack a player
         {
@@ -202,12 +205,12 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
             }
             else // player is dead so treat as normal node
             {
-                AdvanceInPath(nodeToGoTo, false);
+                AdvanceInPath(nodeToGoTo, false, true);
             }
         }
         else
         {
-            AdvanceInPath(nodeToGoTo, true);
+            AdvanceInPath(nodeToGoTo, true, true);
         }
 
         // the gameplay loop coroutine continues...
@@ -222,7 +225,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         if (playerNode.playerBehaviour.canAnimatronicsStandInDoorway)
         {
             Node doorwayNode = playerNode.playerBehaviour.GetDoorwayNode(currentNode);
-            AdvanceInPath(doorwayNode, true);
+            AdvanceInPath(doorwayNode, true, true);
         }
 
         WaitToKillLocalClientRpc(indexOfTargetNode, indexOfCurrentNode, clientRpcParams);
@@ -260,28 +263,28 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
         if (playerBehaviour.isPlayerAlive.Value)
         {
-            AdvanceInPath(targetNode, true);
+            AdvanceInPath(targetNode, true, false);
             string killerName = gameObject.name;
             playerBehaviour.DieClientRpc(killerName, deathScream, MultiplayerManager.NewClientRpcSendParams(targetNode.playerBehaviour.OwnerClientId));
         }
         else // player is dead so treat as normal node
         {
-            AdvanceInPath(targetNode, false);
+            AdvanceInPath(targetNode, false, true);
         }
     }
 
-    private void Blocked(PlayerBehaviour playerBehaviour)
+    private protected virtual void Blocked(PlayerBehaviour playerBehaviour)
     {
         int indexOfCurrentNode = AnimatronicManager.Instance.Nodes.IndexOf(currentNode);
         ulong blockId = MultiplayerManager.Instance.GetPlayerDataFromPlayerRole(playerBehaviour.playerRole).clientId;
 
         playerBehaviour.currentPower.Value -= 1;
-        playerBehaviour.PlayDoorKnockAudioClientRpc(indexOfCurrentNode, MultiplayerManager.NewClientRpcSendParams(blockId));
+        playerBehaviour.PlayDoorKnockAudioClientRpc(indexOfCurrentNode, false, MultiplayerManager.NewClientRpcSendParams(blockId));
 
         SetNode(startNode, false, false);
     }
 
-    private void AdvanceInPath(Node nodeToGoTo, bool lerpToPosition)
+    private void AdvanceInPath(Node nodeToGoTo, bool lerpToPosition, bool makeNoise)
     {
         if (!nodeToGoTo.isOccupied.Value)
         {
@@ -310,10 +313,9 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         HandleMovementAudio(makeNoise);
     }
 
-    private void HandleMovementAudio(bool makeNoise)
+    private protected virtual void HandleMovementAudio(bool makeNoise)
     {
-        // dont play normal movement noise while entering janitor room
-        if (GameManager.localPlayerBehaviour?.playerRole == PlayerRoles.Janitor) return;
+        if (GameManager.localPlayerBehaviour?.playerRole == PlayerRoles.Janitor) return; // dont play normal movement noise while entering janitor room
 
         if (makeNoise && PlayerRoleManager.Instance.IsLocalPlayerAlive() && animatronicModel.gameObject.activeSelf)
         {

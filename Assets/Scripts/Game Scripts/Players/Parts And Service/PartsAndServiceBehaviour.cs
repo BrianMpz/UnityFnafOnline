@@ -13,10 +13,12 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     private bool isGettingJumpscared;
 
     [ClientRpc]
-    public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, ClientRpcParams _)
+    public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, bool ferociousBanging, ClientRpcParams _)
     {
         // play sound with left panning
-        AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable("door knock");
+
+        string audioClip = ferociousBanging ? "ferocious banging" : "door knock";
+        AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable(audioClip);
         knocking.panStereo = -0.5f;
     }
 
@@ -61,6 +63,8 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     public override void Update()
     {
         base.Update();
+
+        if (!GameManager.Instance.isPlaying) return;
 
         RoomLight.enabled = isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.PartsAndService);
         flashLight.enabled = !isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.PartsAndService) || isGettingJumpscared;

@@ -100,11 +100,12 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     }
 
     [ClientRpc]
-    public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, ClientRpcParams _)
+    public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, bool ferociousBanging, ClientRpcParams _)
     {
         Node animatronic_currentNode = AnimatronicManager.Instance.Nodes[indexOfCurrentNode];
 
-        AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable("door knock");
+        string audioClip = ferociousBanging ? "ferocious banging" : "door knock";
+        AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable(audioClip);
         knocking.panStereo = leftDoor.linkedNode == animatronic_currentNode ? -0.5f : 0.5f;
     }
 
@@ -113,7 +114,7 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
         float forceDeathTime = Time.time + Random.Range(1, timeToWaitBeforeKill);
 
         AudioSource moaningNoDiddy = GameAudioManager.Instance.PlaySfxInterruptable("moan");
-        moaningNoDiddy.panStereo = leftDoor.linkedNode == currentNode ? -0.5f : 0.5f;
+        moaningNoDiddy.panStereo = leftDoor.linkedNode == currentNode ? -0.9f : 0.9f;
 
         if (playerComputer.isMonitorUp.Value)
         {

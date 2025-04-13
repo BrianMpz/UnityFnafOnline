@@ -7030,8 +7030,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerComputer: {fileID: 2781806535543537376}
-  isWatchingFoxy:
-    m_InternalValue: 0
   currentCameraName:
     m_InternalValue: 0
   cameraStatic: {fileID: 1990352828879565081}
@@ -8876,7 +8874,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6201714122355944731}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}
@@ -12484,7 +12482,7 @@ MonoBehaviour:
   staticaudio: {fileID: 0}
   disturbanceAudio: {fileID: 0}
   fadeOutTime: 1
-  minimumAlpha: 0.1
+  minimumAlpha: 0.05
   minimumVolume: 0.2
 --- !u!1 &8780162712911759956
 GameObject:
@@ -13142,6 +13140,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 772043437010312554}
     m_Modifications:
+    - target: {fileID: 3614416415767775482, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
+      propertyPath: m_Maskable
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3746212843672626632, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
       propertyPath: m_LocalScale.x
       value: 6
@@ -13510,6 +13512,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 772043437010312554}
     m_Modifications:
+    - target: {fileID: 3614416415767775482, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
+      propertyPath: m_Maskable
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3746212843672626632, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
       propertyPath: m_LocalScale.x
       value: 6
@@ -13592,11 +13598,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6728685034332818945, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 4.1
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 6728685034332818945, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 43.5
+      value: 43.92
       objectReference: {fileID: 0}
     - target: {fileID: 6728685034332818945, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -13882,6 +13888,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 772043437010312554}
     m_Modifications:
+    - target: {fileID: 3614416415767775482, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
+      propertyPath: m_Maskable
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3746212843672626632, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
       propertyPath: m_LocalScale.x
       value: 6
@@ -14008,6 +14018,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 772043437010312554}
     m_Modifications:
+    - target: {fileID: 3614416415767775482, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
+      propertyPath: m_Maskable
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3746212843672626632, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
       propertyPath: m_LocalScale.x
       value: 6
@@ -15657,6 +15671,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 772043437010312554}
     m_Modifications:
+    - target: {fileID: 3614416415767775482, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
+      propertyPath: m_Maskable
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3746212843672626632, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
       propertyPath: m_LocalScale.x
       value: 6
@@ -16045,6 +16063,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 772043437010312554}
     m_Modifications:
+    - target: {fileID: 3614416415767775482, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
+      propertyPath: m_Maskable
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3746212843672626632, guid: 7541dab67bdd6cd4d8a846bea5062827, type: 3}
       propertyPath: m_LocalScale.x
       value: 6
