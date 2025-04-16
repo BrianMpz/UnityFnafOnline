@@ -179,8 +179,6 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
         zapAttempts++;
 
         ZapServerRpc(zapAttempts);
-
-        MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut();
     }
 
     [ServerRpc(RequireOwnership = false)]

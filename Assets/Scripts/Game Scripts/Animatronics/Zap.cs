@@ -106,7 +106,7 @@ public class Zap : Animatronic
     [ClientRpc]
     public void GetZappedClientRpc()
     {
-        if (PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.Backstage))
+        if (PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.Backstage))
         {
             MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(); // black out for a second or 2
             GameAudioManager.Instance.PlaySfxOneShot("controlled shock", false);
