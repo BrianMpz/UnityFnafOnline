@@ -144,7 +144,7 @@ public class Foxy : Animatronic
     // The main loop where Foxy's movements and attacks are handled
     private IEnumerator GameplayLoop(bool shouldBeAggrivated, PlayerNode specificTarget = null)
     {
-        SetAggrivation(shouldBeAggrivated || GlobalCameraSystem.Instance.timeSinceLastFoxyCheck > 30);
+        SetAggrivation(shouldBeAggrivated || GlobalCameraSystem.Instance.timeSinceLastFoxyCheck > 30, 20, 2);
 
         yield return new WaitForSeconds(waitTimeToStartMoving); // Initial wait before starting movement
 
@@ -152,16 +152,16 @@ public class Foxy : Animatronic
 
         if (specificTarget != null)
         {
-            target = specificTarget;
+            currentTarget = specificTarget;
         }
         else
         {
             TargetRandomPlayer();
 
-            if (target == null) yield break; // everyone is dead
+            if (currentTarget == null) yield break; // everyone is dead
         }
 
-        PlayerNode playerNode = target.GetComponent<PlayerNode>();
+        PlayerNode playerNode = currentTarget.GetComponent<PlayerNode>();
 
         SetFoxyProgressClientRpc(0, playerNode.playerBehaviour.playerRole);
 
@@ -331,9 +331,9 @@ public class Foxy : Animatronic
 
         if (!playerNode.playerBehaviour.IsOwner)
         {
-            foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", 0.7f);
+            foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", true, 0.7f);
             yield return new WaitForSeconds(0.3f);
-            foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isCurrentlyAggrivated.Value ? "foxy taunt" : "fire in the hole", 0.3f);
+            foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isCurrentlyAggrivated.Value ? "foxy taunt" : "fire in the hole", false, 0.3f);
 
             foxyRunAudio.pitch = 1f + 0.01f * currentAttackAttempt.Value;
             foxyTauntAudio.pitch = 1f + 0.01f * currentAttackAttempt.Value;
@@ -349,9 +349,9 @@ public class Foxy : Animatronic
         }
         else
         {
-            foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", 0);
+            foxyRunAudio = GameAudioManager.Instance.PlaySfxInterruptable("foxy run", true, 0);
             yield return new WaitForSeconds(0.3f);
-            foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isCurrentlyAggrivated.Value ? "foxy taunt" : "fire in the hole", 0f);
+            foxyTauntAudio = GameAudioManager.Instance.PlaySfxInterruptable(isCurrentlyAggrivated.Value ? "foxy taunt" : "fire in the hole", false, 0f);
 
             foxyRunAudio.pitch = 1f + 0.01f * currentAttackAttempt.Value;
             foxyTauntAudio.pitch = 1f + 0.01f * currentAttackAttempt.Value;
@@ -399,26 +399,44 @@ public class Foxy : Animatronic
     [ClientRpc]
     private void PlayThunkClientRpc(int indexOfPlayerNode = -1)
     {
+        // Safety check: invalid index
+        if (indexOfPlayerNode < 0 || indexOfPlayerNode >= AnimatronicManager.Instance.PlayerNodes.Count)
+        {
+            Debug.LogWarning($"[PlayThunkClientRpc] Invalid player node index: {indexOfPlayerNode}");
+            return;
+        }
+
         PlayerNode playerNode = AnimatronicManager.Instance.PlayerNodes[indexOfPlayerNode];
 
-        if (playerNode.playerBehaviour.IsOwner) return;
-        if (GameManager.Instance.IsSpectating) return;
+        // Skip for owner of this animatronic or if spectating
+        if (playerNode.playerBehaviour.IsOwner || GameManager.Instance.IsSpectating) return;
 
-        PlayThunkAudio(playerNode.playerBehaviour, 0.3f); // set for players that arent the target
+        PlayThunkAudio(playerNode.playerBehaviour, 0.3f);
     }
 
-    public void PlayThunkAudio(PlayerBehaviour playerBehaviour, float volume = 1)
+    public void PlayThunkAudio(PlayerBehaviour playerBehaviour, float volume = 1f)
     {
-        if (GameManager.localPlayerBehaviour?.playerRole == PlayerRoles.Janitor && playerBehaviour.playerRole == PlayerRoles.Janitor)
+        // Stop conflicting SFX first
+        GameAudioManager.Instance.StopSfx(foxyRunAudio);
+        GameAudioManager.Instance.StopSfx(foxyTauntAudio);
+
+        // If this is the Janitor and alive, and the thunk is happening to the Janitor
+        bool localIsJanitor = GameManager.localPlayerBehaviour?.playerRole == PlayerRoles.Janitor;
+        bool localIsAlive = GameManager.localPlayerBehaviour?.isPlayerAlive.Value == true;
+        bool targetIsJanitor = playerBehaviour.playerRole == PlayerRoles.Janitor;
+
+        if (localIsJanitor && localIsAlive && targetIsJanitor)
         {
-            GameAudioManager.Instance.PlaySfxOneShot("janitor door close");
             MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(1f);
         }
 
-        GameAudioManager.Instance.StopSfx(foxyRunAudio);
-        GameAudioManager.Instance.StopSfx(foxyTauntAudio);
-        thunkAudio = thunkAudio != null ? thunkAudio : GameAudioManager.Instance.PlaySfxInterruptable("thunk", volume);
+        // Only play thunk if it’s not already playing
+        if (thunkAudio == null)
+        {
+            thunkAudio = GameAudioManager.Instance.PlaySfxInterruptable("thunk", true, volume);
+        }
     }
+
 
     [ClientRpc]
     private void PlayScreamClientRpc(int indexOfPlayerNode = -1)
@@ -428,6 +446,6 @@ public class Foxy : Animatronic
         if (playerNode.playerBehaviour.IsOwner) return;
         if (GameManager.Instance.IsSpectating) return;
 
-        GameAudioManager.Instance.PlaySfxInterruptable(deathScream, 0.1f); // exclude the person getting jumpscared
+        GameAudioManager.Instance.PlaySfxInterruptable(deathScream, true, 0.1f); // exclude the person getting jumpscared
     }
 }

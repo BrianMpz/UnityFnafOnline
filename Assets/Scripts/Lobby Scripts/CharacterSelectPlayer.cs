@@ -112,7 +112,7 @@ public class CharacterSelectPlayer : MonoBehaviour
                     HelpyBackstage.enabled = true;
                     break;
                 case PlayerRoles.Janitor:
-                    playerRoleText.text = "Janitor' Closet";
+                    playerRoleText.text = "Janitor's Closet";
                     HelpyJanitor.enabled = true;
                     break;
                 default:

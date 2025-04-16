@@ -6,7 +6,7 @@ public static class XPManager
     public const uint MaxXp = 1000000000;
     private const uint BaseLevel = 1;
     private const uint BaseXp = 100; // Base XP needed for level 1 → 2
-    private const float LevelScalingFactor = 2f; // XP scaling curve exponent — higher values make later levels require more XP
+    private const float LevelScalingFactor = 3f; // XP scaling curve exponent — higher values make later levels require more XP
 
     /// <summary>
     /// Calculates the total XP required to reach a specific level.

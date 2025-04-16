@@ -11,7 +11,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     [SerializeField] private JanitorCameraController janitorCameraController;
     public Animator mask;
     public NetworkVariable<float> oxygenLevels = new(writePerm: NetworkVariableWritePermission.Owner);
-    public NetworkVariable<float> animatronicRecognitionPossibility = new(writePerm: NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> recognitionPossibility = new(writePerm: NetworkVariableWritePermission.Server);
     public NetworkVariable<bool> isMaskDown = new(writePerm: NetworkVariableWritePermission.Owner);
     public bool canToggle;
     [SerializeField] private float triggerCooldownTime = 0.3f;
@@ -22,7 +22,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
     public override bool IsPlayerVulnerable(Node currentNode)
     {
-        return !isMaskDown.Value || UnityEngine.Random.Range(0f, 1f) <= animatronicRecognitionPossibility.Value;
+        return false; // handled differently for janitor
     }
 
     public override IEnumerator WaitUntilKillConditionsAreMet(Node currentNode)
@@ -36,9 +36,12 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         if (!isPlayerAlive.Value) yield break;
 
         GameAudioManager.Instance.StopAllSfx();
-        mask.gameObject.SetActive(false);
+
+        mask.SetBool("down", false);
+        TriggerMaskAnimationServerRpc(false);
+
         oxygenLevels.Value = 100;
-        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
+        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream, false);
 
         float elapsedTime = 0;
 
@@ -83,7 +86,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     public override void PowerOn()
     {
         base.PowerOn();
-        GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
+        GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", false, 0.5f, true);
     }
 
     public override void Update()
@@ -129,7 +132,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
         if (playerComputer.isLocked)
         {
-            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            GameAudioManager.Instance.PlaySfxOneShot("button error", true);
             return;
         }
 
@@ -148,14 +151,14 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         {
             mask.SetBool("down", true);
             TriggerMaskAnimationServerRpc(true);
-            GameAudioManager.Instance.PlaySfxOneShot("mask down");
-            breathingSfx = GameAudioManager.Instance.PlaySfxInterruptable("deep breaths", 0.7f, true);
+            GameAudioManager.Instance.PlaySfxOneShot("mask down", true);
+            breathingSfx = GameAudioManager.Instance.PlaySfxInterruptable("deep breaths", false, 0.7f, true);
         }
         else
         {
             mask.SetBool("down", false);
             TriggerMaskAnimationServerRpc(false);
-            GameAudioManager.Instance.PlaySfxOneShot("mask up");
+            GameAudioManager.Instance.PlaySfxOneShot("mask up", true);
             GameAudioManager.Instance.StopSfx(breathingSfx);
         }
     }
@@ -179,38 +182,99 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
         oxygenLevels.Value = 100;
         oxygenLevels.OnValueChanged += CheckOxygenValue;
+
         insideNode.isOccupied.OnValueChanged += CheckInsideNodeForAnimatronicEntry;
+        insideNode.isOccupied.OnValueChanged += CheckInsideNodeForFreddyEntry;
+    }
+
+    private void CheckInsideNodeForFreddyEntry(bool previousValue, bool newValue)
+    {
+        if (!isPlayerAlive.Value) return;
+
+        if (newValue)
+        {
+            Freddy freddy = AnimatronicManager.Instance.freddy;
+            if (insideNode.occupier == freddy) Hallucinations.Instance.StartHallucination(freddy.currentMovementWaitTime.Value + 1f);
+        }
     }
 
     private void CheckInsideNodeForAnimatronicEntry(bool previousValue, bool newValue)
     {
         if (!isPlayerAlive.Value) return;
+
         if (newValue)
         {
-            GameAudioManager.Instance.PlaySfxOneShot("janitor door open");
-            StartCoroutine(CalculateRecognitionPossibility());
+            GameAudioManager.Instance.PlaySfxOneShot("janitor door open", true);
         }
     }
 
-    private IEnumerator CalculateRecognitionPossibility()
+    [ClientRpc]
+    public override void PlayDoorKnockAudioClientRpc(int _, bool _0, ClientRpcParams _2)
     {
-        for (float timeElapsed = 0f; timeElapsed < 4.99f; timeElapsed += Time.deltaTime)
+        if (!isPlayerAlive.Value) return;
+
+        GameAudioManager.Instance.PlaySfxOneShot("janitor door close", true);
+        MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(1f);
+        recognitionPossibility.Value = 0; // 0.5s grace period
+    }
+
+    public IEnumerator HandleRecognitionLogic(float difficulty, RecognitionResult result)
+    {
+        float timeToLeaveWithMask = Mathf.Lerp(2.5f, 12, difficulty / 20) + UnityEngine.Random.Range(-2f, 2f);
+        float leniency = Mathf.Lerp(3, 0.5f, difficulty / 20);
+
+        Debug.Log($"[Recognition] Started with difficulty {difficulty:F2}, timeToLeaveWithMask: {timeToLeaveWithMask:F2}, leniency: {leniency:F2}");
+
+        yield return new WaitForSeconds(leniency);
+        Debug.Log($"[Recognition] Grace period ended after {leniency:F2} seconds");
+
+        float elapsedTimeWithoutMask = 0;
+        float elapsedTimeWithMask = 0;
+
+        bool canKill = false;
+        bool shouldLeave = false;
+
+        while (!canKill && !shouldLeave)
         {
-            // Check if the denominator is zero to avoid division by zero
-            if (Mathf.Approximately(timeElapsed - 5f, 0f))
-            {
-                yield break; // Exit the coroutine if denominator would be zero
-            }
+            yield return null;
 
             if (isMaskDown.Value)
             {
-                continue;
+                elapsedTimeWithMask += Time.deltaTime;
+
+                if (elapsedTimeWithMask >= timeToLeaveWithMask)
+                {
+                    shouldLeave = true;
+                }
             }
+            else
+            {
+                elapsedTimeWithoutMask += Time.deltaTime;
+                recognitionPossibility.Value = Mathf.Pow(elapsedTimeWithoutMask / (3 * leniency), 2);
 
-            // Calculate the recognition possibility using the given formula
-            animatronicRecognitionPossibility.Value = Mathf.Clamp((0.3f / Mathf.Pow(timeElapsed - 5f, 2)) - 0.01481f, 0, 1); // 0.5s grace period
+                if (recognitionPossibility.Value > 1)
+                {
+                    canKill = true;
+                }
+            }
+        }
 
-            yield return null;
+        if (shouldLeave)
+        {
+            float rng = UnityEngine.Random.value;
+            canKill = rng <= recognitionPossibility.Value;
+            Debug.Log($"[Recognition] Animatronic chose to leave. RNG: {rng:F2} vs Possibility: {recognitionPossibility.Value:F2} => {(canKill ? "KILL" : "SPARED")}");
+        }
+
+        result.Value = canKill;
+
+        if (canKill)
+        {
+            Debug.Log("[Recognition] Final result: Player will be killed.");
+        }
+        else
+        {
+            Debug.Log("[Recognition] Final result: Player survived the encounter.");
         }
     }
 
@@ -221,14 +285,6 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         {
             StartCoroutine(Die("Golden Freddy"));
         }
-    }
-
-    [ClientRpc]
-    public override void PlayDoorKnockAudioClientRpc(int _, bool _0, ClientRpcParams _2)
-    {
-        GameAudioManager.Instance.PlaySfxOneShot("janitor door close");
-        MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(1f);
-        animatronicRecognitionPossibility.Value = 0; // 0.5s grace period
     }
 
     public override bool IsAnimatronicCloseToAttack(Node currentNode)

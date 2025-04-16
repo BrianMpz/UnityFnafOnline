@@ -10,11 +10,32 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     public KeypadSystem keypadSystem;
     [SerializeField] private Light RoomLight;
     [SerializeField] private Light flashLight;
-    [SerializeField] private Node LeftDoorBlindSpotNode;
-    [SerializeField] private Node RightDoorBlindSpotNode;
     [SerializeField] private Node LeftDoorwayNode;
     [SerializeField] private Node RightDoorwayNode;
     private bool isGettingJumpscared;
+
+
+    public override void Initialise()
+    {
+        base.Initialise();
+
+        if (!IsOwner) return;
+
+        leftDoor.linkedNode.isOccupied.OnValueChanged += (prev, next) => CheckDoorNodeForFreddyEntry(leftDoor, next);
+        rightDoor.linkedNode.isOccupied.OnValueChanged += (prev, next) => CheckDoorNodeForFreddyEntry(rightDoor, next);
+    }
+
+    private void CheckDoorNodeForFreddyEntry(Door door, bool isNowOccupied)
+    {
+        if (!isPlayerAlive.Value || !isNowOccupied) return;
+
+        Freddy freddy = AnimatronicManager.Instance.freddy;
+        if (door.linkedNode.occupier == freddy)
+        {
+            float duration = freddy.currentMovementWaitTime.Value + 2f;
+            Hallucinations.Instance.StartHallucination(duration);
+        }
+    }
 
     private protected override void UpdateCameraView()
     {
@@ -60,8 +81,8 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     {
         base.PowerOn();
 
-        GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
-        GameAudioManager.Instance.PlaySfxInterruptable("fan", 0.2f, true);
+        GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", false, 0.5f, true);
+        GameAudioManager.Instance.PlaySfxInterruptable("fan", false, 0.2f, true);
     }
 
     public override void PowerOff()
@@ -85,7 +106,7 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
         flashLight.enabled = true;
 
         GameAudioManager.Instance.StopAllSfx();
-        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
+        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream, false);
 
         float elapsedTime = 0;
 
@@ -102,10 +123,12 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     [ClientRpc]
     public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, bool ferociousBanging, ClientRpcParams _)
     {
+        if (!isPlayerAlive.Value) return;
+
         Node animatronic_currentNode = AnimatronicManager.Instance.Nodes[indexOfCurrentNode];
 
         string audioClip = ferociousBanging ? "ferocious banging" : "door knock";
-        AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable(audioClip);
+        AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable(audioClip, true);
         knocking.panStereo = leftDoor.linkedNode == animatronic_currentNode ? -0.5f : 0.5f;
     }
 
@@ -113,7 +136,7 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     {
         float forceDeathTime = Time.time + Random.Range(1, timeToWaitBeforeKill);
 
-        AudioSource moaningNoDiddy = GameAudioManager.Instance.PlaySfxInterruptable("moan");
+        AudioSource moaningNoDiddy = GameAudioManager.Instance.PlaySfxInterruptable("moan", true);
         moaningNoDiddy.panStereo = leftDoor.linkedNode == currentNode ? -0.9f : 0.9f;
 
         if (playerComputer.isMonitorUp.Value)
@@ -151,8 +174,8 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
 
     public override Node GetDoorwayNode(Node AttackingNode)
     {
-        if (AttackingNode == LeftDoorBlindSpotNode) return LeftDoorwayNode;
-        if (AttackingNode == RightDoorBlindSpotNode) return RightDoorwayNode;
+        if (AttackingNode == leftDoor.linkedNode) return LeftDoorwayNode;
+        if (AttackingNode == rightDoor.linkedNode) return RightDoorwayNode;
 
         return base.GetDoorwayNode(AttackingNode);
     }

@@ -14,6 +14,7 @@ public class SettingsUI : Singleton<SettingsUI>
     [SerializeField] private Button closeButton;
     [SerializeField] private Slider masterVolumeSlider;
     [SerializeField] private Slider musicVolumeSlider;
+    [SerializeField] private Slider sfxVolumeSlider;
     [SerializeField] private Slider voiceChatSlider;
     [SerializeField] private Button testVoiceChatAudioVolume;
     [SerializeField] private TMP_Dropdown fullscreenDropdown;
@@ -39,6 +40,7 @@ public class SettingsUI : Singleton<SettingsUI>
         masterVolumeSlider.onValueChanged.AddListener(SetMasterVolume);
         voiceChatSlider.onValueChanged.AddListener(SetVoiceChatVolume);
         musicVolumeSlider.onValueChanged.AddListener(SetMusicVolume);
+        sfxVolumeSlider.onValueChanged.AddListener(SetSFXVolume);
         fullscreenDropdown.onValueChanged.AddListener(SetFullscreenMode);
 
         testVoiceChatAudioVolume.onClick.AddListener(GameAudioManager.Instance.TestVolume);
@@ -86,6 +88,12 @@ public class SettingsUI : Singleton<SettingsUI>
         PlayerPrefs.SetFloat("MusicVolume", value);
     }
 
+    private void SetSFXVolume(float value)
+    {
+        audioMixer.SetFloat("SFXVolume", Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20);
+        PlayerPrefs.SetFloat("SFXVolume", value);
+    }
+
     private void SetFullscreenMode(int index)
     {
         switch (index)
@@ -113,16 +121,19 @@ public class SettingsUI : Singleton<SettingsUI>
         float savedVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
         float savedVoiceChat = PlayerPrefs.GetFloat("VoiceChatVolume", 1f);
         float savedMusic = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        float savedSFX = PlayerPrefs.GetFloat("SFXVolume", 1f);
         int fullscreenMode = PlayerPrefs.GetInt("FullscreenMode", 0);
 
         masterVolumeSlider.value = savedVolume;
         voiceChatSlider.value = savedVoiceChat;
         musicVolumeSlider.value = savedMusic;
+        sfxVolumeSlider.value = savedSFX;
         fullscreenDropdown.value = fullscreenMode;
 
         SetMasterVolume(savedVolume);
         SetVoiceChatVolume(savedVoiceChat);
         SetMusicVolume(savedMusic);
+        SetSFXVolume(savedSFX);
         SetFullscreenMode(fullscreenMode);
     }
 }

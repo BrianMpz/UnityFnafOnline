@@ -43,7 +43,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha1))
         {
-            GameAudioManager.Instance.PlaySfxOneShot("select 1");
+            GameAudioManager.Instance.PlaySfxOneShot("select 1", true);
             TakeScreenshot();
         }
     }

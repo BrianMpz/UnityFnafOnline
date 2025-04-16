@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FreddyPoster : NetworkBehaviour
 {
-    [SerializeField] private NodeName nameOfTargetPlayerNode;
+    [SerializeField] private PlayerNode playerNode;
     private bool isKillingPlayer;
 
     public IEnumerator KillPlayer()
@@ -15,36 +15,35 @@ public class FreddyPoster : NetworkBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        ConfirmKillServerRpc(nameOfTargetPlayerNode);
+        ConfirmKillServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private protected void ConfirmKillServerRpc(NodeName nodeName)
+    private protected void ConfirmKillServerRpc()
     {
-        PlayerNode targetNode = AnimatronicManager.Instance.GetPlayerNodeFromName(nodeName);
-        PlayerBehaviour playerBehaviour = targetNode.playerBehaviour;
+        PlayerBehaviour playerBehaviour = playerNode.playerBehaviour;
 
         if (playerBehaviour.isPlayerAlive.Value)
         {
-            MoveToNode(nodeName);
+            MoveToNode();
             string killerName = gameObject.name;
-            playerBehaviour.DieClientRpc(killerName, "jumpscare scream", MultiplayerManager.NewClientRpcSendParams(targetNode.playerBehaviour.OwnerClientId));
+            playerBehaviour.DieClientRpc(killerName, "jumpscare scream", MultiplayerManager.NewClientRpcSendParams(playerNode.playerBehaviour.OwnerClientId));
         }
         else
         {
-            MoveToNode(nodeName);
+            MoveToNode();
         }
     }
 
-    private void MoveToNode(NodeName nodeName)
+    private void MoveToNode()
     {
-        MoveToNodeClientRpc(nodeName);
+        MoveToNodeClientRpc();
     }
 
     [ClientRpc]
-    private void MoveToNodeClientRpc(NodeName nodeName)
+    private void MoveToNodeClientRpc()
     {
-        Transform targetPosition = AnimatronicManager.Instance.GetPlayerNodeFromName(nodeName).physicalTransform;
+        Transform targetPosition = playerNode.physicalTransform;
 
         StartCoroutine(LerpToPosition(targetPosition, 12));
     }

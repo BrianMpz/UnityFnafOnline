@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Zap : Animatronic
 {
+    private const float baseMovementDuration = 354f; // takes 354s to kill at the slowest
     [SerializeField] private PlayerNode playerNode;
     [SerializeField] private Vector3 startingPosition;
     [SerializeField] private Vector3 endingPosition;
@@ -63,10 +64,10 @@ public class Zap : Animatronic
                 continue;
             }
 
+            elapsedTime += Time.deltaTime;
             movementProgressValue.Value = elapsedTime / duration; // server authoritative
 
-            elapsedTime += Time.deltaTime;
-            duration = 354f / moveSpeed;
+            duration = baseMovementDuration / moveSpeed;
         }
 
         isApproachingPlayer.Value = false;
@@ -74,7 +75,7 @@ public class Zap : Animatronic
         if (IsServer)
         {
             int indexOfTargetNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
-            ConfirmKillServerRpc(indexOfTargetNode);
+            if (playerNode.IsAlive) ConfirmKillServerRpc(indexOfTargetNode);
 
             yield return new WaitForSeconds(Mathf.Lerp(5, 60, 1 - (currentDifficulty.Value / 20f))); // wait a random amount of time before entering the facility
 
@@ -105,7 +106,11 @@ public class Zap : Animatronic
     [ClientRpc]
     public void GetZappedClientRpc()
     {
-        if (PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.Backstage)) MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut();
+        if (PlayerRoleManager.Instance.IsSpectatingPlayer(PlayerRoles.Backstage))
+        {
+            MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(); // black out for a second or 2
+            GameAudioManager.Instance.PlaySfxOneShot("controlled shock", false);
+        }
         // play zap animation later
     }
 

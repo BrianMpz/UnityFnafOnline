@@ -21,7 +21,7 @@ public class DoorLight : NetworkBehaviour
 
         if (door.isLocked || doorLightButton.isBroken)
         {
-            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            GameAudioManager.Instance.PlaySfxOneShot("button error", true);
             return;
         }
 
@@ -57,7 +57,7 @@ public class DoorLight : NetworkBehaviour
                 hasSeenDanger = false;
                 if (!hasSeenDanger && !CantSeeDanger())
                 {
-                    GameAudioManager.Instance.PlaySfxOneShot("window scare");
+                    GameAudioManager.Instance.PlaySfxOneShot("window scare", false);
                     hasSeenDanger = true;
                     StartCoroutine(WaitToDisableHasSeenDanger());
                 }
@@ -96,7 +96,7 @@ public class DoorLight : NetworkBehaviour
 
     public void EnableLights()
     {
-        lightAudioSource = GameAudioManager.Instance.PlaySfxInterruptable("light hum");
+        lightAudioSource = GameAudioManager.Instance.PlaySfxInterruptable("light hum", false);
         doorLightButton.TurnOn();
         TurnOn();
         isFlashingLight.Value = true;

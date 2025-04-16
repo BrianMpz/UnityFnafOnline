@@ -44,7 +44,7 @@ public class GeneratorPlayerObject : MonoBehaviour
         {
             powerText.color = Color.green;
             chargeButton.GetComponentInChildren<TMP_Text>().text = "Charging...";
-            if (PlayerRoleManager.Instance.IsControllingPlayer(PlayerRoles.PartsAndService)) chargingSound = GameAudioManager.Instance.PlaySfxInterruptable("charging");
+            if (PlayerRoleManager.Instance.IsControllingPlayer(PlayerRoles.PartsAndService)) chargingSound = GameAudioManager.Instance.PlaySfxInterruptable("charging", false);
         }
         else
         {
@@ -70,7 +70,7 @@ public class GeneratorPlayerObject : MonoBehaviour
     {
         if (Maintenance.Instance.powerGeneratorState.Value != State.ONLINE)
         {
-            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            GameAudioManager.Instance.PlaySfxOneShot("button error", true);
             return;
         }
 

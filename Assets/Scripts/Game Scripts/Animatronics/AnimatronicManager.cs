@@ -6,6 +6,7 @@ using UnityEngine;
 public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
 {
     public Foxy foxy;
+    public Freddy freddy;
     private List<Animatronic> Animatronics { get => GetComponentsInChildren<Animatronic>().ToList(); }
     public List<Node> Nodes
     {
@@ -174,7 +175,9 @@ public enum NodeName
     Hall3,
     Hall4,
     Hall5,
-    Bathroom,
+    Bathroom1,
+    Bathroom2,
+    Bathroom3,
     LeftHallway1,
     LeftHallway2,
     Janitor_Inside,

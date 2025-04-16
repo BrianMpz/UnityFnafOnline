@@ -60,7 +60,7 @@ public class Door : NetworkBehaviour
     {
         if (isLocked)
         {
-            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            GameAudioManager.Instance.PlaySfxOneShot("button error", true);
             return;
         }
 
@@ -73,7 +73,7 @@ public class Door : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        if (playAudio) GameAudioManager.Instance.PlaySfxOneShot("door toggle");
+        if (playAudio) GameAudioManager.Instance.PlaySfxOneShot("door toggle", true);
 
         isDoorClosed.Value = isClosingDoor;
         timeSinceLastDoorToggle = 0f;

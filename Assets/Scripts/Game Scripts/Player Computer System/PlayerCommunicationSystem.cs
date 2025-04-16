@@ -121,7 +121,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     {
         if (VivoxManager.Instance.GetChannel(VivoxManager.Instance.gameChatName) == null) return;
         GameAudioManager.Instance.StopSfx(callAudio);
-        GameAudioManager.Instance.PlaySfxOneShot("call pick up");
+        GameAudioManager.Instance.PlaySfxOneShot("call pick up", true);
     }
 
     private IEnumerator CommsOffline()
@@ -137,7 +137,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
 
         if (Maintenance.Instance.communicationsState.Value != State.ONLINE)
         {
-            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            GameAudioManager.Instance.PlaySfxOneShot("button error", true);
             StartCoroutine(CommsOffline());
             return;
         }
@@ -263,7 +263,7 @@ public class PlayerCommunicationSystem : NetworkBehaviour
     private IEnumerator PlayCallAudio()
     {
         callImage.color = new(1, 1, 1, 1);
-        callAudio = GameAudioManager.Instance.PlaySfxInterruptable("calling");
+        callAudio = GameAudioManager.Instance.PlaySfxInterruptable("calling", true);
 
         yield return new WaitForSeconds(2.4f);
 

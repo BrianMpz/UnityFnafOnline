@@ -208,7 +208,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
         canvas.enabled = true;
         isSpectating = true;
         isSpectatingAPlayer = false;
-        cameraStatic.staticaudio = GameAudioManager.Instance.PlaySfxInterruptable("static audio", 0, true);
+        cameraStatic.staticaudio = GameAudioManager.Instance.PlaySfxInterruptable("static audio", false, 0, true);
         cameraStatic.RefreshMonitorStatic(true);
         currentPlayerSpectatingIndex = 0;
     }

@@ -139,7 +139,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
         GameManager.Instance.OnPlayerPowerDownServerRpc(playerRole);
 
         GameAudioManager.Instance.StopAllSfx();
-        GameAudioManager.Instance.PlaySfxInterruptable("power down");
+        GameAudioManager.Instance.PlaySfxInterruptable("power down", false);
 
         isPlayerPoweredOn.Value = false;
     }
@@ -235,9 +235,11 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     [ClientRpc]
     public virtual void PlayDoorKnockAudioClientRpc(int _, bool ferociousBanging, ClientRpcParams _0)
     {
+        if (!isPlayerAlive.Value) return;
+
         // by default just play the knocking sound without panning
         string audioClip = ferociousBanging ? "ferocious banging" : "door knock";
-        GameAudioManager.Instance.PlaySfxOneShot(audioClip);
+        GameAudioManager.Instance.PlaySfxOneShot(audioClip, true);
     }
 
     public virtual Node GetDoorwayNode(Node AttackingNode)

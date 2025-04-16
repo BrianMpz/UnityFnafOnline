@@ -53,7 +53,7 @@ public class SecurityOfficeUI : PlayerUI
 
         if (playerBehaviour.playerComputer.isLocked)
         {
-            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            GameAudioManager.Instance.PlaySfxOneShot("button error", true);
             return;
         }
         if (timeSinceLastCameraFlip < cameraFlipCooldownTime) return;

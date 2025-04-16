@@ -25,7 +25,7 @@ public class KeypadSystem : NetworkBehaviour
 
     public void OnButtonPress(string number)
     {
-        GameAudioManager.Instance.PlaySfxOneShot("keypad button press");
+        GameAudioManager.Instance.PlaySfxOneShot("keypad button press", true);
         currentCombination += number;
     }
 
@@ -85,7 +85,7 @@ public class KeypadSystem : NetworkBehaviour
                 string newRequiredNumber = UnityEngine.Random.Range(1, 10).ToString();
                 requriedCombination += newRequiredNumber;
 
-                AudioSource number = GameAudioManager.Instance.PlaySfxInterruptable($"number 0{newRequiredNumber}");
+                AudioSource number = GameAudioManager.Instance.PlaySfxInterruptable($"number 0{newRequiredNumber}", true);
                 number.pitch = 0.9f;
                 yield return new WaitForSeconds(Mathf.Lerp(2, 1, currentDifficulty.Value / 20f));
             }
@@ -93,7 +93,7 @@ public class KeypadSystem : NetworkBehaviour
 
             if (currentCombination == requriedCombination)
             {
-                GameAudioManager.Instance.PlaySfxOneShot("select 1");
+                GameAudioManager.Instance.PlaySfxOneShot("select 1", true);
             }
             else
             {
@@ -155,11 +155,12 @@ public class KeypadSystem : NetworkBehaviour
 
     private IEnumerator PlayCallAudio()
     {
-        AudioSource callAudio = GameAudioManager.Instance.PlaySfxInterruptable("calling");
+        AudioSource callAudio = GameAudioManager.Instance.PlaySfxInterruptable("calling", true);
         callAudio.pitch = 1.2f;
         yield return new WaitForSeconds(1);
         GameAudioManager.Instance.StopSfx(callAudio);
-        GameAudioManager.Instance.PlaySfxOneShot("call pick up");
+        AudioSource callPickUpAudio = GameAudioManager.Instance.PlaySfxInterruptable("calling", true);
+        callPickUpAudio.pitch = 1.2f;
         yield return new WaitForSeconds(1f);
     }
 }

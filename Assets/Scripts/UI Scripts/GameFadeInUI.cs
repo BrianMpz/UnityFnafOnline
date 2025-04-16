@@ -13,7 +13,7 @@ public class GameFadeInUI : MonoBehaviour
         Hide();
     }
 
-    public void FadeOut(float fadeOutTime = 8, bool oneSecondBlackout = true)
+    public void FadeOut(float fadeOutTime = 5, bool oneSecondBlackout = true)
     {
         StopAllCoroutines();
         StartCoroutine(FadeOutCoroutine(fadeOutTime, oneSecondBlackout));

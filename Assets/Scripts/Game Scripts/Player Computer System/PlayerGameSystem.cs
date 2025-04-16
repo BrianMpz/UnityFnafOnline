@@ -17,6 +17,11 @@ public class PlayerGameSystem : NetworkBehaviour
     [SerializeField] private GameObject UIForSpectators;
     public NetworkVariable<bool> isPlaying = new(writePerm: NetworkVariableWritePermission.Owner);
 
+    public NetworkVariable<bool> nasirVersion = new(writePerm: NetworkVariableWritePermission.Owner);
+    [SerializeField] private GameObject nasirPoster;
+    [SerializeField] private GameObject nasirShip;
+    [SerializeField] private GameObject helpyShip;
+
     private void Start()
     {
         playButton.onClick.AddListener(StartGame);
@@ -24,7 +29,7 @@ public class PlayerGameSystem : NetworkBehaviour
 
     private void StartGame()
     {
-        GameAudioManager.Instance.PlaySfxOneShot("select 1");
+        GameAudioManager.Instance.PlaySfxOneShot("select 1", false);
 
         SetGameState(GameState.Gameplay);
         StartCoroutine(gameSceneUI.WaitToStartGame());
@@ -42,7 +47,11 @@ public class PlayerGameSystem : NetworkBehaviour
         canvas.enabled = true;
         EnableServerRpc();
 
-        gameMusic = GameAudioManager.Instance.PlaySfxInterruptable("king nasir theme", volume: 0.5f, loop: true); // this music can be interrupted
+        nasirPoster.SetActive(nasirVersion.Value);
+        nasirShip.SetActive(nasirVersion.Value);
+        helpyShip.SetActive(!nasirVersion.Value);
+
+        gameMusic = GameAudioManager.Instance.PlaySfxInterruptable(!nasirVersion.Value ? "just add water" : "king nasir theme", false, volume: 0.5f, loop: true); // this music can be interrupted
     }
 
     [ServerRpc(RequireOwnership = false)]

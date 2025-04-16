@@ -14,7 +14,7 @@ public class GFJumpscareImage : Singleton<GFJumpscareImage>
     {
         GameAudioManager.Instance.StopAllSfx();
 
-        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable("gf jumpscare scream");
+        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable("gf jumpscare scream", false);
         Show();
 
         yield return new WaitForSeconds(2f);

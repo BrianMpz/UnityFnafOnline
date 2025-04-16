@@ -73,7 +73,7 @@ public class PartsAndServiceUI : PlayerUI
         if (timeSinceLastCameraFlip < cameraFlipCooldownTime) return;
         if (playerBehaviour.playerComputer.isLocked)
         {
-            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            GameAudioManager.Instance.PlaySfxOneShot("button error", true);
             return;
         }
 

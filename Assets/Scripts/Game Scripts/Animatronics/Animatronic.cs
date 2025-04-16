@@ -9,20 +9,24 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 {
 
     [Header("Dynamic Values")]
-    [SerializeField] private protected NetworkVariable<bool> isCurrentlyAggrivated;
-    [SerializeField] private protected NetworkVariable<float> currentMovementWaitTime;
     public NetworkVariable<float> currentDifficulty;
-    [SerializeField] private protected NetworkVariable<float> audioLureResistance;
-    [SerializeField] private protected Node target;
+    public NetworkVariable<float> currentMovementWaitTime;
+    [SerializeField] private protected NetworkVariable<bool> isCurrentlyAggrivated;
+    private protected int loopsAggrivated;
+    [SerializeField] private protected NetworkVariable<float> resistanceToAudioLure;
+    [SerializeField] private protected Node currentTarget;
+    private protected Node currentNode;
+
+    [Header("Static Values")]
     public List<NodeData> nodeDatas;
     private protected float hourlyDifficultyIncrementAmount;
-    private protected Node currentNode;
-    [Header("Static Values")]
     [SerializeField] private protected int waitTimeToStartMoving;
     [SerializeField] private float footStepPitch;
     [SerializeField] private protected string deathScream;
     [SerializeField] private protected Node startNode;
     [SerializeField] private protected Transform animatronicModel;
+    [SerializeField] private float aggrivationAddition = 20f;
+    [SerializeField] private float aggrivationDivisor = 1.3f;
 
     [Header("Misc")]
     private protected RectTransform MapTransform { get => GetComponent<RectTransform>(); }
@@ -80,44 +84,61 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     {
         if (!IsServer) return;
 
-        audioLureResistance.Value -= 1 * Time.deltaTime;
+        resistanceToAudioLure.Value -= 1 * Time.deltaTime;
 
-        audioLureResistance.Value = Mathf.Clamp(audioLureResistance.Value, 0f, 100f);
+        resistanceToAudioLure.Value = Mathf.Clamp(resistanceToAudioLure.Value, 0f, 100f);
     }
 
     public void AudioLure_AttractAnimatronic(Node targetedNode)
     {
-        if (target == targetedNode)
+        // Early resistance if already targeting the node
+        if (currentTarget == targetedNode)
         {
-            audioLureResistance.Value += 50;
+            resistanceToAudioLure.Value = Mathf.Min(resistanceToAudioLure.Value + 30, 100f);
+            Debug.Log($"[AudioLure:{name}] Already targeting this node. Resistance increased by 10 to {resistanceToAudioLure.Value}");
         }
 
-        if (audioLureResistance.Value < UnityEngine.Random.Range(0, 100))
+        bool targetIsAlive = targetedNode.GetComponent<PlayerNode>()?.IsAlive ?? false;
+        float roll = UnityEngine.Random.Range(0f, 100f);
+        float threshold = resistanceToAudioLure.Value;
+
+        Debug.Log($"[AudioLure:{name}] Trying to attract to {targetedNode.name}. Resistance: {threshold:F2}, Roll: {roll:F2}, TargetAlive: {targetIsAlive}");
+
+        if (threshold < roll || targetIsAlive)
         {
-            SetAggrivation(true);
+            SetAggrivation(true, aggrivationAddition, aggrivationDivisor);
             SetTarget(targetedNode);
-            audioLureResistance.Value += Mathf.Lerp(10f, 80f, currentDifficulty.Value / 20f);
+
+            float resistanceGain = Mathf.Lerp(10f, 80f, GetUnaggrivatedDifficulty() / 20f);
+
+            resistanceToAudioLure.Value = Mathf.Min(resistanceToAudioLure.Value + resistanceGain, 100f);
+
+            Debug.Log($"[AudioLure:{name}] Lure SUCCESSFUL. New Target: {targetedNode.name}, Resistance increased by {resistanceGain:F2} to {resistanceToAudioLure.Value:F2}");
         }
         else
         {
-            print("resisted audioLure");
+            Debug.Log($"[AudioLure:{name}] Lure RESISTED. No change in behavior.");
         }
     }
+
 
     public void OnAttentionDivert(Node targetedNode) // called if the alarm goes off etc
     {
         SetTarget(targetedNode);
+        currentMovementWaitTime.Value /= 1.1f;
     }
 
-    private protected void SetAggrivation(bool shouldBeAggrivated, float aggrivatedDifficultyAdditionAmount = 15, float aggrivatedWaitTimeCoefficient = 1.2f)
+    // if isnt aggrivated and should be then aggrivate and vise versa
+    private protected void SetAggrivation(bool shouldBeAggrivated, float aggrivationAddition, float aggrivationDivisor)
     {
         if (shouldBeAggrivated)
         {
             if (!isCurrentlyAggrivated.Value)
             {
                 isCurrentlyAggrivated.Value = true;
-                currentMovementWaitTime.Value /= aggrivatedWaitTimeCoefficient;
-                currentDifficulty.Value += aggrivatedDifficultyAdditionAmount;
+                currentMovementWaitTime.Value /= aggrivationDivisor;
+                currentDifficulty.Value += aggrivationAddition;
+                loopsAggrivated = 0;
             }
         }
         else
@@ -125,46 +146,82 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
             if (isCurrentlyAggrivated.Value)
             {
                 isCurrentlyAggrivated.Value = false;
-                currentMovementWaitTime.Value *= aggrivatedWaitTimeCoefficient;
-                currentDifficulty.Value -= aggrivatedDifficultyAdditionAmount;
+                currentMovementWaitTime.Value *= aggrivationDivisor;
+                currentDifficulty.Value -= aggrivationAddition;
+                loopsAggrivated = 0;
             }
         }
+    }
 
+    private protected float GetUnaggrivatedDifficulty()
+    {
+        return currentDifficulty.Value - (isCurrentlyAggrivated.Value ? 20 : 0);
     }
 
     private protected virtual IEnumerator GameplayLoop()
     {
+        // Don't start the loop if difficulty or wait time is 0
         if (currentDifficulty.Value == 0 || currentMovementWaitTime.Value == 0) yield break;
 
         yield return new WaitForSeconds(waitTimeToStartMoving);
 
+        // Main loop: runs as long as the game is active and this is the server
         while (GameManager.Instance.isPlaying && IsServer)
         {
-            bool shouldBeAggrivated = PlayerRoleManager.Instance.IsAnimatronicAboutToAttack(currentNode);
-            SetAggrivation(shouldBeAggrivated);
-
-            yield return new WaitForSeconds(currentMovementWaitTime.Value);
-
-            if (NeedsANewTarget()) TargetRandomPlayer();
-            if (target == null) continue; // No valid target, restart loop
-
-            List<Node> path = AnimatronicManager.Instance.BreadthFirstSearch(currentNode, target, this, takeOccupancyIntoAccount: false);
-
-            if (path.Count < 2) continue; // there is no path to the target or has reached target
-
-            if (MovementCondition()) // successful movement opportunity
+            if (isCurrentlyAggrivated.Value)
             {
-                yield return MovementOpportunity(path);
+                loopsAggrivated++;
+                if (loopsAggrivated >= 5) SetAggrivation(false, 20, 1.3f);
+            }
+
+            if (currentNode == PlayerRoleManager.Instance.janitorBehaviour.insideNode)
+            {
+                RecognitionResult recognitionResult = new();
+                yield return PlayerRoleManager.Instance.janitorBehaviour.HandleRecognitionLogic(GetUnaggrivatedDifficulty(), recognitionResult);
+
+                if (recognitionResult.Value == true)
+                {
+                    StartCoroutine(KillPlayer(AnimatronicManager.Instance.GetPlayerNodeFromPlayerRole(PlayerRoles.Janitor)));
+                    yield return new WaitForSeconds(currentMovementWaitTime.Value);
+                    continue;
+                }
+                else
+                {
+
+                    Blocked(PlayerRoleManager.Instance.janitorBehaviour);
+                    continue;
+                }
+            }
+            else
+            {
+                yield return new WaitForSeconds(currentMovementWaitTime.Value);
+
+                if (NeedsANewTarget()) TargetRandomPlayer(); // Acquire a target if needed
+
+                if (currentTarget == null) continue;// If there's still no target, skip this loop iteration
+
+                // Get path to the target without considering node occupancy
+                List<Node> path = AnimatronicManager.Instance.BreadthFirstSearch(currentNode, currentTarget, this, takeOccupancyIntoAccount: false);
+
+                // Skip if path is empty or we are already at the target
+                if (path.Count <= 1) continue;
+
+                // Try to move if allowed by conditions
+                if (MovementCondition())
+                {
+                    yield return MovementOpportunity(path);
+                }
             }
         }
     }
+
 
     private protected virtual bool MovementCondition()
     {
         return UnityEngine.Random.Range(1, 20 + 1) <= currentDifficulty.Value;
     }
 
-    private bool NeedsANewTarget() => target == null || UnityEngine.Random.Range(1, 10 + 1) < 2;
+    private bool NeedsANewTarget() => currentTarget == null || UnityEngine.Random.Range(1, 10 + 1) < 2;
 
     private protected void TargetRandomPlayer()
     {
@@ -184,7 +241,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     private void SetTarget(Node targetNode)
     {
-        target = targetNode;
+        currentTarget = targetNode;
     }
 
     private IEnumerator MovementOpportunity(List<Node> path)
@@ -351,9 +408,9 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
             currentNode = null;
         }
 
-        if (IsServer) nodeToSet.isOccupied.Value = true;
         nodeToSet.occupier = this;
         currentNode = nodeToSet;
+        if (IsServer) nodeToSet.isOccupied.Value = true;
     }
 
     private protected IEnumerator LerpToPosition(Node startingNode, Node nodeToSet, float lerpSpeed, float movementTime = 1)
@@ -365,14 +422,23 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
             yield return null;
             elapsedTime += Time.deltaTime;
 
-            MapTransform.anchoredPosition = Vector2.Lerp(MapTransform.anchoredPosition, nodeToSet.MapTransform.anchoredPosition, Time.deltaTime * lerpSpeed);
+            // UI Map position lerp
+            MapTransform.anchoredPosition = Vector2.Lerp(
+                MapTransform.anchoredPosition,
+                nodeToSet.MapTransform.anchoredPosition,
+                Time.deltaTime * lerpSpeed
+            );
 
-            if (animatronicModel == null) continue; // some animatronics may not have a physical model
-            animatronicModel.position = Vector3.Lerp(animatronicModel.position, nodeToSet.physicalTransform.position, Time.deltaTime * lerpSpeed);
-            float newAnimatronicModelYRotation = Mathf.LerpAngle(animatronicModel.eulerAngles.y, nodeToSet.physicalTransform.eulerAngles.y, Time.deltaTime * lerpSpeed);
-            animatronicModel.rotation = Quaternion.Euler(0, newAnimatronicModelYRotation, 0);
+            if (animatronicModel == null) continue;
+
+            animatronicModel.SetPositionAndRotation
+            (
+                Vector3.Lerp(animatronicModel.position, nodeToSet.physicalTransform.position, Time.deltaTime * lerpSpeed),
+                Quaternion.Lerp(animatronicModel.rotation, nodeToSet.physicalTransform.rotation, Time.deltaTime * lerpSpeed)
+            );
         }
     }
+
 
     private protected virtual void TeleportToPosition(Node nodeToSet)
     {
@@ -397,4 +463,9 @@ public class NodeData
     public Node node;
     public bool isAllowedToGoTo;
 
+}
+
+public class RecognitionResult
+{
+    public bool Value;
 }

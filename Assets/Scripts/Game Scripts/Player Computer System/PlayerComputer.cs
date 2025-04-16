@@ -96,7 +96,7 @@ public class PlayerComputer : NetworkBehaviour
     {
         if (isLocked)
         {
-            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            GameAudioManager.Instance.PlaySfxOneShot("button error", true);
             return;
         }
 
@@ -110,7 +110,7 @@ public class PlayerComputer : NetworkBehaviour
 
     private void FlipCamera()
     {
-        GameAudioManager.Instance.PlaySfxOneShot("camera flip");
+        GameAudioManager.Instance.PlaySfxOneShot("camera flip", true);
         isMonitorUp.Value = !isMonitorUp.Value;
 
         TriggerFlipAnimation(isMonitorUp.Value);

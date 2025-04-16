@@ -51,10 +51,10 @@ public class GoldenFreddy : Animatronic
             if (UnityEngine.Random.Range(1, 20 + 1) > currentDifficulty.Value) continue;
 
             TargetRandomPlayer();
-            if (target == null) goto ContinueOuterLoop; // Jump to the start of the outer loop
+            if (currentTarget == null) goto ContinueOuterLoop; // Jump to the start of the outer loop
             GetComponent<Image>().enabled = true;
-            PlayerBehaviour targetPlayer = target.GetComponent<PlayerNode>().playerBehaviour;
-            transform.position = target.GetComponent<PlayerNode>().transform.position;
+            PlayerBehaviour targetPlayer = currentTarget.GetComponent<PlayerNode>().playerBehaviour;
+            transform.position = currentTarget.GetComponent<PlayerNode>().transform.position;
 
             // Wait until the player is NOT in a position to see Golden Freddy spawn
             yield return new WaitUntil(() => targetPlayer.CanGoldenFreddySpawnIn() || !targetPlayer.isPlayerAlive.Value);
@@ -90,7 +90,7 @@ public class GoldenFreddy : Animatronic
     [ClientRpc]
     private void PlayLaughClientRpc(ClientRpcParams clientRpcParams)
     {
-        if (PlayerRoleManager.Instance.GetLocalPlayerBehaviour().isPlayerAlive.Value) GameAudioManager.Instance.PlaySfxInterruptable("freddy laugh normal speed");
+        if (PlayerRoleManager.Instance.GetLocalPlayerBehaviour().isPlayerAlive.Value) GameAudioManager.Instance.PlaySfxInterruptable("freddy laugh normal speed", false);
     }
 
     [ClientRpc]

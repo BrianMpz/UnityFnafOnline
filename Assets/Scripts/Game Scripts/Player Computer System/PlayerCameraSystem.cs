@@ -48,8 +48,8 @@ public class PlayerCameraSystem : NetworkBehaviour
         if (!IsOwner) return;
         if (!gameObject.activeSelf) return;
 
-        cameraStatic.staticaudio = GameAudioManager.Instance.PlaySfxInterruptable("static audio", 0, true);
-        cameraStatic.disturbanceAudio = GameAudioManager.Instance.PlaySfxInterruptable("camera disturbance", 1, true);
+        cameraStatic.staticaudio = GameAudioManager.Instance.PlaySfxInterruptable("static audio", false, 0, true);
+        cameraStatic.disturbanceAudio = GameAudioManager.Instance.PlaySfxInterruptable("camera disturbance", true, 1, true);
 
         canvas.enabled = true;
         cameraOutputScreen.enabled = true;
@@ -87,7 +87,7 @@ public class PlayerCameraSystem : NetworkBehaviour
 
     private void BootUpCameras()
     {
-        cameraBootUpAudio = GameAudioManager.Instance.PlaySfxInterruptable("camera boot up");
+        cameraBootUpAudio = GameAudioManager.Instance.PlaySfxInterruptable("camera boot up", false);
         RefreshCameras();
     }
 

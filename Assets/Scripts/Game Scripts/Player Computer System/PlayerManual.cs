@@ -22,7 +22,7 @@ public class PlayerManual : NetworkBehaviour
     {
         if (manualAudio == null)
         {
-            manualAudio = GameAudioManager.Instance.PlaySfxInterruptable("manual", 1f, true);
+            manualAudio = GameAudioManager.Instance.PlaySfxInterruptable("manual", true, 1f, true);
             return;
         }
 

@@ -131,7 +131,7 @@ public class GameWinUI : MonoBehaviour
                 // Calculate pitch from eased time (fast start, slow end)
                 float pitch = Mathf.Lerp(0.8f, 1.5f, easedT);
 
-                AudioSource tick = GameAudioManager.Instance.PlaySfxInterruptable("select 1");
+                AudioSource tick = GameAudioManager.Instance.PlaySfxInterruptable("select 1", true);
                 if (tick != null) tick.pitch = pitch;
             }
 

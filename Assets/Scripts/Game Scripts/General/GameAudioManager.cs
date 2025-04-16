@@ -14,8 +14,9 @@ public class GameAudioManager : Singleton<GameAudioManager>
     private Dictionary<string, Sound> musicSoundDict;
     private Dictionary<string, Sound> sfxSoundDict;
 
-    [SerializeField] private AudioMixerGroup MusicAudioGroup;
+    [SerializeField] private AudioMixerGroup MasterAudioGroup;
     [SerializeField] private AudioMixerGroup SFXAudioGroup;
+    [SerializeField] private AudioMixerGroup MusicAudioGroup;
     [SerializeField] private AudioMixerGroup VoiceChatAudioGroup;
 
     private protected override void OnEnable()
@@ -82,18 +83,18 @@ public class GameAudioManager : Singleton<GameAudioManager>
         if (musicSource.isPlaying) musicSource.Stop();
     }
 
-    public void PlaySfxOneShot(string name, float volume = 1f, float pitch = 1)
+    public void PlaySfxOneShot(string name, bool isEssential, float volume = 1f)
     {
         if (!sfxSoundDict.TryGetValue(name, out Sound sound))
         {
             Debug.LogError($"SFX sound '{name}' does not exist!");
             return;
         }
-        sfxOneShotSource.outputAudioMixerGroup = SFXAudioGroup;
+        sfxOneShotSource.outputAudioMixerGroup = isEssential ? MasterAudioGroup : SFXAudioGroup; // non essential sounds can be turned down using the sfx audio slider
         sfxOneShotSource.PlayOneShot(sound.audioClip, volume);
     }
 
-    public AudioSource PlaySfxInterruptable(string name, float volume = 1f, bool loop = false)
+    public AudioSource PlaySfxInterruptable(string name, bool isEssential, float volume = 1f, bool loop = false)
     {
         if (!sfxSoundDict.TryGetValue(name, out Sound sound))
         {
@@ -103,7 +104,7 @@ public class GameAudioManager : Singleton<GameAudioManager>
 
         AudioSource newSource = gameObject.AddComponent<AudioSource>();
 
-        newSource.outputAudioMixerGroup = SFXAudioGroup;
+        newSource.outputAudioMixerGroup = isEssential ? MasterAudioGroup : SFXAudioGroup; // non essential sounds can be turned down using the sfx audio slider
         newSource.clip = sound.audioClip;
         newSource.playOnAwake = false;
         newSource.volume = volume;

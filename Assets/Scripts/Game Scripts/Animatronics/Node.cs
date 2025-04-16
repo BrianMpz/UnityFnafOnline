@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Node : NetworkBehaviour
 {
-    public NodeName nodeName;
+    public NodeName nodeName; // used for prefabs trying to get references to in-game nodes
     public Node[] neighbouringNodes;
     public RectTransform MapTransform { get => GetComponent<RectTransform>(); }
     public Transform physicalTransform;

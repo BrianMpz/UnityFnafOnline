@@ -93,7 +93,7 @@ public class Maintenance : NetworkSingleton<Maintenance>
         EnableButtons();
         CancelRebootingStates();
 
-        GameAudioManager.Instance.PlaySfxOneShot("failed sfx");
+        GameAudioManager.Instance.PlaySfxOneShot("failed sfx", true);
     }
 
     private void CommunicationsStateChanged(State _, State newValue)
@@ -134,14 +134,14 @@ public class Maintenance : NetworkSingleton<Maintenance>
     {
         if (isRebooting) yield break; // Prevent multiple reboots at the same time
 
-        GameAudioManager.Instance.PlaySfxOneShot("camera blip");
+        GameAudioManager.Instance.PlaySfxOneShot("camera blip", true);
         SetSystemState(systemType, State.REBOOTING);
         DisableButtons();
         isRebooting = true;
 
         yield return new WaitForSeconds(rebootLength);
 
-        GameAudioManager.Instance.PlaySfxOneShot("camera blip");
+        GameAudioManager.Instance.PlaySfxOneShot("camera blip", true);
         SetSystemState(systemType, State.ONLINE);
         EnableButtons();
         isRebooting = false;
@@ -153,14 +153,14 @@ public class Maintenance : NetworkSingleton<Maintenance>
     {
         if (isRebooting) yield break; // Prevent multiple reboots at the same time
 
-        GameAudioManager.Instance.PlaySfxOneShot("camera blip");
+        GameAudioManager.Instance.PlaySfxOneShot("camera blip", true);
         SetAllSystemsState(State.REBOOTING);
         DisableButtons();
         isRebooting = true;
 
         yield return new WaitForSeconds(rebootLength);
 
-        GameAudioManager.Instance.PlaySfxOneShot("camera blip");
+        GameAudioManager.Instance.PlaySfxOneShot("camera blip", true);
         SetAllSystemsState(State.ONLINE);
 
         EnableButtons();

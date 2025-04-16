@@ -31,7 +31,7 @@ public class CameraSelectionButton : MonoBehaviour
 
     private void Select()
     {
-        GameAudioManager.Instance.PlaySfxOneShot("camera blip");
+        GameAudioManager.Instance.PlaySfxOneShot("camera blip", false);
         PlayerCameraSystem.SetCamera(targetCameraName);
     }
 

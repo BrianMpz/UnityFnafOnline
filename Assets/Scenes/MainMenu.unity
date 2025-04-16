@@ -907,10 +907,13 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 4d27539a90b62ec49a66071d12356295, type: 3}
   - name: ferocious banging
     audioClip: {fileID: 8300000, guid: e0c84fed0043c914d848c277d27584cd, type: 3}
+  - name: robot voice
+    audioClip: {fileID: 8300000, guid: a8a62cc82145ebf4286412af6b906d01, type: 3}
   musicSource: {fileID: 1074375430}
   sfxOneShotSource: {fileID: 325984021}
+  MasterAudioGroup: {fileID: 24300002, guid: 27db747765720b245aeecd20caab3a0d, type: 2}
+  SFXAudioGroup: {fileID: 1047561817457134595, guid: 27db747765720b245aeecd20caab3a0d, type: 2}
   MusicAudioGroup: {fileID: -4096412048826597134, guid: 27db747765720b245aeecd20caab3a0d, type: 2}
-  SFXAudioGroup: {fileID: 24300002, guid: 27db747765720b245aeecd20caab3a0d, type: 2}
   VoiceChatAudioGroup: {fileID: -6758046340964172466, guid: 27db747765720b245aeecd20caab3a0d, type: 2}
 --- !u!4 &419760764
 Transform:
@@ -3033,6 +3036,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4703637919223072565, guid: 76aa38d82e1b12445ae8092d77778bcd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703637919223072565, guid: 76aa38d82e1b12445ae8092d77778bcd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6412849618976014186, guid: 76aa38d82e1b12445ae8092d77778bcd, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3046,6 +3057,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6492984617305540053, guid: 76aa38d82e1b12445ae8092d77778bcd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6936060768428625891, guid: 76aa38d82e1b12445ae8092d77778bcd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6936060768428625891, guid: 76aa38d82e1b12445ae8092d77778bcd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}

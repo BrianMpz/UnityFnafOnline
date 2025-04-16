@@ -251,7 +251,7 @@ public class FreddyInSpace : MonoBehaviour
             Rect collectableRect = GetWorldRect(collectable);
             if (playerRect.Overlaps(collectableRect))
             {
-                GameAudioManager.Instance.PlaySfxOneShot("ping");
+                GameAudioManager.Instance.PlaySfxOneShot("ping", true);
                 playerBehaviour.GetGameCollectable();
                 collected.Add(collectable);
             }

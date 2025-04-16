@@ -22,11 +22,25 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
         if (!IsOwner) return;
 
         StartCoroutine(HandleZapWarningAudio());
+
+        door.linkedNode.isOccupied.OnValueChanged += (prev, next) => CheckDoorNodeForFreddyEntry(door, next);
+    }
+
+    private void CheckDoorNodeForFreddyEntry(Door door, bool isNowOccupied)
+    {
+        if (!isPlayerAlive.Value || !isNowOccupied) return;
+
+        Freddy freddy = AnimatronicManager.Instance.freddy;
+        if (door.linkedNode.occupier == freddy)
+        {
+            float duration = freddy.currentMovementWaitTime.Value + 2f;
+            Hallucinations.Instance.StartHallucination(duration);
+        }
     }
 
     private IEnumerator HandleZapWarningAudio()
     {
-        AudioSource freddles = GameAudioManager.Instance.PlaySfxInterruptable("freddles", volume: 0f, loop: true);
+        AudioSource freddles = GameAudioManager.Instance.PlaySfxInterruptable("freddles", false, volume: 0f, loop: true);
 
         float volumeIncreasePerSecond = 0.015f; // Increase by 1.5% per second
         float currentVolume = 0f;
@@ -66,11 +80,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     {
         if (currentNode != door.linkedNode) return false;
 
-        if (door.isDoorClosed.Value)
-        {
-            return false;
-        }
-        return true;
+        return !door.isDoorClosed.Value;
     }
 
     private protected override void UpdateCameraView()
@@ -98,7 +108,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     {
         float forceDeathTime = Time.time + timeToWaitBeforeKill;
 
-        AudioSource moaningNoDiddy = GameAudioManager.Instance.PlaySfxInterruptable("moan");
+        AudioSource moaningNoDiddy = GameAudioManager.Instance.PlaySfxInterruptable("moan", true);
         moaningNoDiddy.panStereo = -0.5f;
 
         if (playerComputer.isMonitorUp.Value)
@@ -118,7 +128,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
         if (!isPlayerAlive.Value) yield break;
 
         GameAudioManager.Instance.StopAllSfx();
-        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
+        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream, false);
 
         float elapsedTime = 0;
 
@@ -135,7 +145,7 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     {
         base.PowerOn();
 
-        GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
+        GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", false, 0.5f, true);
     }
 
     public override void PowerOff()
@@ -161,14 +171,12 @@ public class BackstagePlayerBehaviour : PlayerBehaviour
     {
         if (zapCooldown < 10 || !isPlayerPoweredOn.Value)
         {
-            GameAudioManager.Instance.PlaySfxOneShot("button error");
+            GameAudioManager.Instance.PlaySfxOneShot("button error", true);
             return;
         }
 
         zapCooldown = 0;
         zapAttempts++;
-
-        GameAudioManager.Instance.PlaySfxOneShot("controlled shock");
 
         ZapServerRpc(zapAttempts);
 

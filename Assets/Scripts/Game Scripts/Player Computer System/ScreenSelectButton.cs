@@ -29,7 +29,7 @@ public class ScreenSelectButton : MonoBehaviour
 
     private void Select()
     {
-        GameAudioManager.Instance.PlaySfxOneShot("camera blip");
+        GameAudioManager.Instance.PlaySfxOneShot("camera blip", false);
         playerComputer.SetComputerScreen(computerScreen);
     }
 

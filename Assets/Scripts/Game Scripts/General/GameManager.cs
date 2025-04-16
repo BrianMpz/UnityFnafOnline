@@ -93,7 +93,7 @@ public class GameManager : NetworkSingleton<GameManager>
         // Play new music
         AudioSource lastBreath = GameAudioManager.Instance.PlayMusic("last breath");
 
-        float duration = 9f;
+        float duration = 7f;
         float elapsedTime = 0f;
 
         // Fade out loop
@@ -149,7 +149,7 @@ public class GameManager : NetworkSingleton<GameManager>
         float totalNights = Enum.GetValues(typeof(GameNight)).Length;
 
         // Normalize key values
-        float timeRatio = Mathf.Pow(Mathf.Min(timeSurvived, MaxGameLength) / MaxGameLength, 5f);
+        float timeRatio = Mathf.Pow(Mathf.Min(timeSurvived, MaxGameLength) / MaxGameLength, 6f);
         float difficultyRatio = Mathf.Pow(Mathf.Min(averageAnimatronicDifficulty, maxAnimatronicAI) / maxAnimatronicAI, 3f);
         float nightRatio = ((float)gameNight + 1) / totalNights;
         float survivalRate = Mathf.Max(playersAlive, 1f) / totalPlayableRoles;
@@ -191,11 +191,11 @@ public class GameManager : NetworkSingleton<GameManager>
         isPlaying = false;
 
         GameAudioManager.Instance.StopAllSfx();
-        GameAudioManager.Instance.PlaySfxInterruptable("game win");
+        GameAudioManager.Instance.PlaySfxInterruptable("game win", true);
 
         yield return new WaitForSeconds(7);
 
-        GameAudioManager.Instance.PlaySfxOneShot("kids cheering");
+        GameAudioManager.Instance.PlaySfxOneShot("kids cheering", true);
     }
 
     private void CompleteNight()

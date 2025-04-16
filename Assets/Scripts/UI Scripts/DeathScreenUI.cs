@@ -28,7 +28,7 @@ public class DeathScreenUI : MonoBehaviour
 
     private IEnumerator FadeOut()
     {
-        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable("death static");
+        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable("death static", true);
         float elapsedTime = 0;
 
         while (elapsedTime < fadeOutTime)

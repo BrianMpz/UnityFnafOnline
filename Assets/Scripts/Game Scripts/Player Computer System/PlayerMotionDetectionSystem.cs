@@ -44,7 +44,7 @@ public class PlayerMotionDetectionSystem : NetworkBehaviour
         while (true)
         {
             yield return new WaitForSeconds(2.5f);
-            GameAudioManager.Instance.PlaySfxOneShot("camera blip");
+            GameAudioManager.Instance.PlaySfxOneShot("camera blip", false);
 
             if (!IsTracking) continue;
 

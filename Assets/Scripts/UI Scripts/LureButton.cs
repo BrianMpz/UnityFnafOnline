@@ -25,7 +25,7 @@ public class LureButton : MonoBehaviour
 
     private void TryPlayLure()
     {
-        GameAudioManager.Instance.PlaySfxOneShot("camera blip");
+        GameAudioManager.Instance.PlaySfxOneShot("camera blip", false);
         playerAudioLureSystem.PlayLureServerRpc(nodeName);
     }
 

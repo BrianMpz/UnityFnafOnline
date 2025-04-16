@@ -17,8 +17,10 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     {
         // play sound with left panning
 
+        if (!isPlayerAlive.Value) return;
+
         string audioClip = ferociousBanging ? "ferocious banging" : "door knock";
-        AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable(audioClip);
+        AudioSource knocking = GameAudioManager.Instance.PlaySfxInterruptable(audioClip, true);
         knocking.panStereo = -0.5f;
     }
 
@@ -52,7 +54,7 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     public override void PowerOn()
     {
         base.PowerOn();
-        GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", 0.5f, true);
+        GameAudioManager.Instance.PlaySfxInterruptable("ambiance 1", false, 0.5f, true);
     }
 
     public override void PowerOff()
@@ -78,7 +80,7 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
         flashLight.enabled = true;
 
         GameAudioManager.Instance.StopAllSfx();
-        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream);
+        AudioSource audioSource = GameAudioManager.Instance.PlaySfxInterruptable(deathScream, false);
 
         float elapsedTime = 0;
 
@@ -96,7 +98,7 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     {
         float forceDeathTime = Time.time + timeToWaitBeforeKill;
 
-        AudioSource moaningNoDiddy = GameAudioManager.Instance.PlaySfxInterruptable("moan");
+        AudioSource moaningNoDiddy = GameAudioManager.Instance.PlaySfxInterruptable("moan", true);
         moaningNoDiddy.panStereo = -0.5f;
 
         if (playerComputer.isMonitorUp.Value)
@@ -109,6 +111,27 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
             yield break;
         }
         else playerComputer.Lock();
+    }
+
+    public override void Initialise()
+    {
+        base.Initialise();
+
+        if (!IsOwner) return;
+
+        door.linkedNode.isOccupied.OnValueChanged += (prev, next) => CheckDoorNodeForFreddyEntry(door, next);
+    }
+
+    private void CheckDoorNodeForFreddyEntry(Door door, bool isNowOccupied)
+    {
+        if (!isPlayerAlive.Value || !isNowOccupied) return;
+
+        Freddy freddy = AnimatronicManager.Instance.freddy;
+        if (door.linkedNode.occupier == freddy)
+        {
+            float duration = freddy.currentMovementWaitTime.Value + 2f;
+            Hallucinations.Instance.StartHallucination(duration);
+        }
     }
 
     public override bool IsPlayerVulnerable(Node currentNode)
@@ -151,6 +174,6 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
 
     public override IEnumerator IsFoxyReadyToAttack(Node hallwayNode, float definitiveAttackTime)
     {
-        yield return new WaitUntil(() => !hallwayNode.isOccupied.Value && (Time.time > definitiveAttackTime || GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(hallwayNode) || door.doorLight.isFlashingLight.Value));
+        yield return new WaitUntil(() => Time.time > definitiveAttackTime || GlobalCameraSystem.Instance.CheckIfAnyoneWatchingHallwayNode(hallwayNode) || door.doorLight.isFlashingLight.Value);
     }
 }
