@@ -63,7 +63,7 @@ public class GameWinUI : MonoBehaviour
 
         uint xpGain = playerData.role == PlayerRoles.None ? 0 : GameManager.Instance.XpGained.Value; // dont give xp to spectators that didnt play
 
-        xpGainedText.text = $"+{xpGain}XP";
+        xpGainedText.text = $"+{xpGain} XP";
         uint newExperience = (uint)Mathf.Min((long)oldExperience + xpGain, XPManager.MaxXp);
 
         MultiplayerManager.Instance.SetPlayerExperience(newExperience);
@@ -147,8 +147,8 @@ public class GameWinUI : MonoBehaviour
         uint currentLevel = XPManager.GetLevelFromXp(experience);
 
         currentXpLevelText.text = currentLevel.ToString();
-        totalXpText.text = experience.ToString() + "XP";
-        nextLevelXpText.text = XPManager.GetTotalXpForLevel(currentLevel + 1).ToString() + "XP";
+        totalXpText.text = experience.ToString() + " XP";
+        nextLevelXpText.text = XPManager.GetTotalXpForLevel(currentLevel + 1).ToString() + " XP";
         xpProgressBar.fillAmount = XPManager.GetLevelProgress(experience);
     }
 }

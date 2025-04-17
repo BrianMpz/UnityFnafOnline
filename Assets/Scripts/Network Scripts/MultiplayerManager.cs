@@ -39,7 +39,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
     private void Update()
     {
-        if (!!MainMenuUI.CanDebug) return;
+        if (!MainMenuUI.CanDebug) return;
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -212,7 +212,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
     public override void OnNetworkSpawn()
     {
-        int experience = PlayerPrefs.GetInt("XP", 0);
+        int experience = PlayerPrefs.GetInt("PlayerXP", 0);
 
         if (isPlayingOnline) ClientConnectedServerRpc(playerName, (uint)experience, VivoxService.Instance.SignedInPlayerId, Application.version);
         else ClientConnectedServerRpc(playerName, (uint)experience, "", "");
@@ -413,7 +413,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
     public void SetPlayerExperience(uint newValue)
     {
         SetPlayerExperienceServerRpc(newValue);
-        PlayerPrefs.SetInt("XP", (int)newValue);
+        PlayerPrefs.SetInt("PlayerXP", (int)newValue);
     }
 
     [ServerRpc(RequireOwnership = false)]

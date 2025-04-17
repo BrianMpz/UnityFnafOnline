@@ -109,8 +109,6 @@ public class GameManager : NetworkSingleton<GameManager>
 
     private IEnumerator StartGameTime()
     {
-        Debug.Log("Game has started!");
-
         currentGameTime.Value = 0;
 
         float gameEndTime = MaxGameLength;
@@ -128,46 +126,42 @@ public class GameManager : NetworkSingleton<GameManager>
 
         CalculateXP(true);
 
-        Debug.Log("Game has Ended!");
-
         EndGameClientRpc();
     }
 
     private void CalculateXP(bool log = false)
     {
-        float timeSurvived = currentGameTime.Value;
-        int playersAlive = playerRoleManager.CountPlayersAlive();
-        float averageAnimatronicDifficulty = AnimatronicManager.Instance.GetAverageAnimatronicDifficulty();
+        float timeSurvived = Mathf.Min(currentGameTime.Value, MaxGameLength);
+        int playersAlive = Mathf.Max(playerRoleManager.CountPlayersAlive(), 1);
+        int totalPlayableRoles = Enum.GetValues(typeof(PlayerRoles)).Length - 1; // take away one for spectator role
+        int totalNights = Enum.GetValues(typeof(GameNight)).Length;
+        int currentNight = (int)gameNight + 1;
 
-        XpGained.Value = CalculateXP(timeSurvived, playersAlive, averageAnimatronicDifficulty, log);
+        XpGained.Value = CalculateXP(timeSurvived, playersAlive, totalPlayableRoles, totalNights, currentNight, log);
     }
 
-    private uint CalculateXP(float timeSurvived, float playersAlive, float averageAnimatronicDifficulty, bool log)
+    public static uint CalculateXP(float timeSurvived, float playersAlive, float totalPlayableRoles, float totalNights, float currentNight, bool log = false)
     {
-        float totalPlayableRoles = Enum.GetValues(typeof(PlayerRoles)).Length - 1;
-        float maxAnimatronicAI = 20f;
-        float totalNights = Enum.GetValues(typeof(GameNight)).Length;
-
         // Normalize key values
-        float timeRatio = Mathf.Pow(Mathf.Min(timeSurvived, MaxGameLength) / MaxGameLength, 6f);
-        float difficultyRatio = Mathf.Pow(Mathf.Min(averageAnimatronicDifficulty, maxAnimatronicAI) / maxAnimatronicAI, 3f);
-        float nightRatio = ((float)gameNight + 1) / totalNights;
-        float survivalRate = Mathf.Max(playersAlive, 1f) / totalPlayableRoles;
+        float timeRatio = Mathf.Pow(timeSurvived / MaxGameLength, 4f);
+        float nightRatio = Mathf.Pow(currentNight / totalNights, 3f);
+        float survivalRate = playersAlive / totalPlayableRoles;
         float gameWinMultiplier = playersAlive == 0 ? 0.1f : 1f;
 
         // Final XP computation
         float maxXp = 1000000f;
-        float finalXp = maxXp * timeRatio * difficultyRatio * nightRatio * survivalRate * gameWinMultiplier;
+        float finalXp = maxXp * timeRatio * nightRatio * survivalRate * gameWinMultiplier;
 
         if (log)
         {
-            Debug.Log($"--- XP Calculation Log ---");
-            Debug.Log($"Time Survived: {timeSurvived} / {MaxGameLength} → Time Ratio: {timeRatio:F3}");
-            Debug.Log($"Avg Animatronic Difficulty: {averageAnimatronicDifficulty} / {maxAnimatronicAI} → Difficulty Ratio: {difficultyRatio:F3}");
-            Debug.Log($"Night: {(float)gameNight + 1f} / {totalNights} → Night Ratio: {nightRatio:F3}");
-            Debug.Log($"Players Alive: {playersAlive} / {totalPlayableRoles} → Survival Ratio: {survivalRate:F3}");
-            Debug.Log($"Game Win Multiplier: {gameWinMultiplier:F2}");
-            Debug.Log($"Final XP: {finalXp}");
+            // Debug.Log($"--- XP Calculation Log ---");
+            // Debug.Log($"Time Survived: {timeSurvived} / {MaxGameLength} → Time Ratio: {timeRatio:F3}");
+            // Debug.Log($"Night: {(float)gameNight + 1f} / {totalNights} → Night Ratio: {nightRatio:F3}");
+            // Debug.Log($"Players Alive: {playersAlive} / {totalPlayableRoles} → Survival Ratio: {survivalRate:F3}");
+            // Debug.Log($"Game Win Multiplier: {gameWinMultiplier:F2}");
+            // Debug.Log($"Final XP: {finalXp}");
+
+            Debug.Log($"Final XP gained on Night {currentNight}: {finalXp}");
         }
 
         return (uint)Mathf.RoundToInt(finalXp);

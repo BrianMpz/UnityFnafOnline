@@ -50,6 +50,7 @@ public class Zap : Animatronic
     private IEnumerator ApproachPlayer()
     {
         isApproachingPlayer.Value = true;
+        transform.eulerAngles = Vector3.zero;
 
         movementProgressValue.Value = 0;
         float elapsedTime = 0;

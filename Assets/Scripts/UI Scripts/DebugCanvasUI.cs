@@ -5,13 +5,11 @@ using UnityEngine.UI;
 
 public class DebugCanvasUI : Singleton<DebugCanvasUI>
 {
-    private bool debug;
     public Canvas debugCanvas;
     public Action OnBuff;
 
     private void Awake()
     {
-        debug = MainMenuUI.CanDebug;
         Hide();
     }
 

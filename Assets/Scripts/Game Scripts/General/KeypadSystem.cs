@@ -159,7 +159,7 @@ public class KeypadSystem : NetworkBehaviour
         callAudio.pitch = 1.2f;
         yield return new WaitForSeconds(1);
         GameAudioManager.Instance.StopSfx(callAudio);
-        AudioSource callPickUpAudio = GameAudioManager.Instance.PlaySfxInterruptable("calling", true);
+        AudioSource callPickUpAudio = GameAudioManager.Instance.PlaySfxInterruptable("call pick up", true);
         callPickUpAudio.pitch = 1.2f;
         yield return new WaitForSeconds(1f);
     }

@@ -134,7 +134,7 @@ public class NightSelector : MonoBehaviour
 
     void Update()
     {
-        if (!!MainMenuUI.CanDebug) return;
+        if (!MainMenuUI.CanDebug) return;
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha5))
         {

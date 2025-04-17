@@ -66,6 +66,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
             if (currentLobbyState == LobbyState.WaitingToStart) StartGameCountdown();
             else if (currentLobbyState == LobbyState.Starting) CancelStartGameCountdown();
         });
+
     }
 
     private void SetJoinCodeText()
@@ -174,7 +175,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
         {
             elapsedTime += Time.deltaTime;
             color.a = Mathf.Lerp(0, 1, elapsedTime / duration); // Gradually increase alpha
-            GameAudioManager.Instance.GetMusic().volume = Mathf.Lerp(0.5f, 0.1f, elapsedTime / duration);
+            GameAudioManager.Instance.GetMusic().volume = Mathf.Lerp(1f, 0.1f, elapsedTime / duration);
             fadeOutImage.color = color;
             yield return null; // Wait for the next frame
         }
