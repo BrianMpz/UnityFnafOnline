@@ -12,7 +12,7 @@ using System.IO;
 public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles most of netcode 
 {
     public static bool isPlayingOnline;
-    public const int MaxPlayers = 6;
+    public const int MaxPlayers = 5;
     public const string PlayerprefsPlayerNameLocation = "PLAYERNAME";
     public string joinCode { get; private set; }
     public string playerName;

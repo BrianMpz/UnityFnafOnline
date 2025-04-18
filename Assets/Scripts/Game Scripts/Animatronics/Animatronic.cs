@@ -11,8 +11,8 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     [Header("Dynamic Values")]
     public NetworkVariable<float> currentDifficulty;
     public NetworkVariable<float> currentMovementWaitTime;
-    [SerializeField] private protected NetworkVariable<bool> isCurrentlyAggrivated;
     private protected int loopsAggrivated;
+    [SerializeField] private protected NetworkVariable<bool> isCurrentlyAggrivated;
     [SerializeField] private protected NetworkVariable<float> resistanceToAudioLure;
     [SerializeField] private protected Node currentTarget;
     private protected Node currentNode;
@@ -44,27 +44,27 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         AnimatronicManager.Instance.AttentionDivert += OnAttentionDivert;
 
         SetNode(startNode, false, false);
-
-        var difficultyData = new Dictionary<GameNight, (float difficulty, float waitTime, float increment)>
-        {
-            { GameNight.One, (1f, 10f, 3f) },
-            { GameNight.Two, (3f, 9f, 3.25f) },
-            { GameNight.Three, (5f, 8f, 3.5f) },
-            { GameNight.Four, (7f, 7f, 3.75f) },
-            { GameNight.Five, (9f, 6f, 4f) },
-            { GameNight.Six, (16f, 5f, 4.25f) },
-            { GameNight.Seven, (20f, 4f, 4.5f) },
-        };
-
-        if (difficultyData.ContainsKey(GameManager.Instance.gameNight))
-        {
-            var (difficulty, waitTime, increment) = difficultyData[GameManager.Instance.gameNight];
-            currentDifficulty.Value = difficulty;
-            currentMovementWaitTime.Value = waitTime;
-            hourlyDifficultyIncrementAmount = increment;
-        }
+        GetAnimatronicData();
 
         gameplayLoop = StartCoroutine(GameplayLoop());
+    }
+
+    private protected void GetAnimatronicData()
+    {
+        string animatronicName = gameObject.name;
+        GameNight currentNight = GameManager.Instance.gameNight;
+
+        if (AnimatronicManager.Instance.CanFindNightData(currentNight, animatronicName, out AnimatronicData animatronicData))
+        {
+            waitTimeToStartMoving = animatronicData.waitTimeToStartMoving;
+            currentDifficulty.Value = animatronicData.startingDifficulty;
+            currentMovementWaitTime.Value = animatronicData.timeBetweenMovementOpportunities;
+            hourlyDifficultyIncrementAmount = animatronicData.hourlyDifficultyIncrementAmount;
+        }
+        else
+        {
+            Debug.LogWarning($"Difficulty data not found for {animatronicName} on night {currentNight}");
+        }
     }
 
     public virtual void Disable()

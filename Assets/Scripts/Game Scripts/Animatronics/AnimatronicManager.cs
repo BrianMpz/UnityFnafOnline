@@ -20,9 +20,32 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
 
     public event Action<Node> OnAudioLure;
 
+    public Dictionary<GameNight, Dictionary<string, AnimatronicData>> animatronicData = new()
+    {
+        [GameNight.One] = new()
+        {
+            ["Bonnie"] = new AnimatronicData(10, 1, 5, 1),
+            ["Chica"] = new AnimatronicData(30, 0, 6, 2),
+            ["Foxy"] = new AnimatronicData(60, 5, 5, 1),
+            ["Freddy"] = new AnimatronicData(180, 5, 10, 2),
+        },
+        [GameNight.Two] = new()
+        {
+            ["Bonnie"] = new AnimatronicData(3f, 9f, 3.25f),
+            ["Chica"] = new AnimatronicData(3.5f, 10f, 3.1f),
+        }
+    };
+    public bool CanFindNightData(GameNight night, string animatronicName, out AnimatronicData data)
+    {
+        data = default;
+        return animatronicData.TryGetValue(night, out var nightData) && nightData.TryGetValue(animatronicName, out data);
+    }
+
+
     private void Start()
     {
         if (!IsServer) return;
+
         GameManager.Instance.OnGameStarted += InitialiseAnimatronics;
         GameManager.Instance.OnGameWin += DisableAnimatronics;
         GameManager.Instance.OnGameOver += DisableAnimatronics;
@@ -163,6 +186,23 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
         return Animatronics.Average(a => a.currentDifficulty.Value);
     }
 
+}
+
+[Serializable]
+public struct AnimatronicData
+{
+    public int waitTimeToStartMoving;
+    public float startingDifficulty;
+    public float timeBetweenMovementOpportunities;
+    public float hourlyDifficultyIncrementAmount;
+
+    public AnimatronicData(int waitTimeToStartMoving, float startingDifficulty, float timeBetweenMovementOpportunities, float hourlyDifficultyIncrementAmount)
+    {
+        this.waitTimeToStartMoving = waitTimeToStartMoving;
+        this.startingDifficulty = startingDifficulty;
+        this.timeBetweenMovementOpportunities = timeBetweenMovementOpportunities;
+        this.hourlyDifficultyIncrementAmount = hourlyDifficultyIncrementAmount;
+    }
 }
 
 public enum NodeName
