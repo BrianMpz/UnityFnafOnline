@@ -2428,7 +2428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26df13b5e638fb34580403cbb1cf866d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canDebug: 1
+  canDebug: 0
   canPlayOnline: 1
   canUseVoiceChat: 1
   playButton: {fileID: 8918612446107920610}

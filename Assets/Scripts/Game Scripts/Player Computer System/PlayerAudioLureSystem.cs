@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerAudioLureSystem : NetworkBehaviour
 {
     [SerializeField] AudioClip[] audioClips;
+    [SerializeField] TMP_Text roomName;
     [SerializeField] private Canvas canvas;
     [SerializeField] private bool isPlayingLure;
     [SerializeField] private float lureDuration;
@@ -81,5 +83,15 @@ public class PlayerAudioLureSystem : NetworkBehaviour
         audioSource.Play();
 
         OnLurePlayed?.Invoke(nodeName, lureDuration);
+    }
+
+    public void ShowRoomName(string name)
+    {
+        roomName.text = $"-{name}-";
+    }
+
+    public void HideRoomName()
+    {
+        roomName.text = $"";
     }
 }

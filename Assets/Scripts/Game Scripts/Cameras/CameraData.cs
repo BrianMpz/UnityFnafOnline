@@ -13,6 +13,7 @@ public class CameraData : MonoBehaviour
     public Light cameraFlashlight;
     [HideInInspector] public float startingRange;
     [HideInInspector] public float startingIntensity;
+    public string room;
 
     private void Awake()
     {

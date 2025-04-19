@@ -121,9 +121,9 @@ public class PlayerCameraSystem : NetworkBehaviour
 
         if (canSeeAnyCamera)
         {
-            cameraData.cameraFlashlight.intensity = cameraData.startingIntensity * 3;
+            cameraData.cameraFlashlight.intensity = cameraData.startingIntensity * 2;
             cameraOutputScreen.color = Color.green;
-            cameraData.cameraFlashlight.range = cameraData.startingRange * 4f;
+            cameraData.cameraFlashlight.range = cameraData.startingRange * 5f;
         }
         else
         {
@@ -139,7 +139,7 @@ public class PlayerCameraSystem : NetworkBehaviour
         cameraDistrubanceText.enabled = false;
         accessDeniedText.enabled = false;
         audioOnlyText.enabled = false;
-        currentCameraNameText.enabled = false;
+        currentCameraNameText.text = $"-{cameraData.room}-";
 
         cameraStatic.RefreshMonitorStatic(isHidingCurrentCamera);
 
@@ -157,11 +157,6 @@ public class PlayerCameraSystem : NetworkBehaviour
             {
                 cameraDistrubanceText.enabled = true;
             }
-        }
-        else
-        {
-            currentCameraNameText.enabled = true;
-            currentCameraNameText.text = $"Camera {currentCameraName.Value}";
         }
 
         OnCameraViewChanged?.Invoke(cameraData.GetCameraName());

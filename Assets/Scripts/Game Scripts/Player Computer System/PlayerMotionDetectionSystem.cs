@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,7 @@ public class PlayerMotionDetectionSystem : NetworkBehaviour
 {
     [SerializeField] private TrackerNode[] trackerNodes;
     [SerializeField] private TrackerButton[] trackerButtons;
+    [SerializeField] TMP_Text roomName;
     [SerializeField] private Canvas canvas;
     [HideInInspector] public TrackerButton currentTrackerButton;
     public event Action<TrackerButton> OnTrackerUpdate;
@@ -36,6 +38,9 @@ public class PlayerMotionDetectionSystem : NetworkBehaviour
     {
         TrackerButton trackerButton = indexOfButton == -1 ? null : trackerButtons[indexOfButton];
         currentTrackerButton = trackerButton;
+
+        if (currentTrackerButton != null) ShowRoomName(currentTrackerButton.roomName); else HideRoomName();
+
         OnTrackerUpdate?.Invoke(currentTrackerButton);
     }
 
@@ -110,5 +115,15 @@ public class PlayerMotionDetectionSystem : NetworkBehaviour
         if (NetworkManager.Singleton.LocalClientId == ignoreId) return;
         canvas.enabled = false;
         trackerNodes.ToList().ForEach(Node => Node.GetComponent<Image>().color = new(0, 0, 0, 0));
+    }
+
+    private void ShowRoomName(string name)
+    {
+        roomName.text = $"-{name}-";
+    }
+
+    private void HideRoomName()
+    {
+        roomName.text = $"";
     }
 }

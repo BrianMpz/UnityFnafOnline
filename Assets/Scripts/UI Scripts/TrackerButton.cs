@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class TrackerButton : MonoBehaviour
@@ -8,6 +9,7 @@ public class TrackerButton : MonoBehaviour
     public TrackerNode[] encompassingNodes;
     [SerializeField] private Button trackerButton;
     [SerializeField] private Image trackerRadius;
+    public string roomName;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

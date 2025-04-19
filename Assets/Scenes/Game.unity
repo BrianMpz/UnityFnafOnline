@@ -3463,6 +3463,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4817489866260022971, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Name
+      value: Point Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: room
+      value: Bathrooms
+      objectReference: {fileID: 0}
     - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: cameraName
       value: 6
@@ -4183,6 +4191,14 @@ PrefabInstance:
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4817489866260022971, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Name
+      value: Point Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: room
+      value: Kitchen
       objectReference: {fileID: 0}
     - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: isHidden
@@ -14905,6 +14921,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4817489866260022971, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Name
+      value: Point Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: room
+      value: Parts And Service
+      objectReference: {fileID: 0}
     - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: isHidden
       value: 0
@@ -18227,19 +18251,19 @@ Light:
   serializedVersion: 11
   m_Type: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.63
+  m_Intensity: 0.07
   m_Range: 10
   m_SpotAngle: 61.910767
   m_InnerSpotAngle: 17.768393
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
+    m_Strength: 0.582
     m_Bias: 0.05
     m_NormalBias: 0.4
-    m_NearPlane: 0.2
+    m_NearPlane: 0.1
     m_CullingMatrixOverride:
       e00: 1
       e01: 0
@@ -21378,7 +21402,7 @@ Light:
   m_GameObject: {fileID: 779687224}
   m_Enabled: 1
   serializedVersion: 11
-  m_Type: 0
+  m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 0.09
   m_Range: 10
@@ -31582,7 +31606,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1125162688}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 11
   m_Type: 2
   m_Color: {r: 0.6673193, g: 0.8506549, b: 0.8679245, a: 1}
@@ -32706,7 +32730,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
@@ -32787,6 +32811,14 @@ PrefabInstance:
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4817489866260022971, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Name
+      value: Point Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: room
+      value: Party Hall
       objectReference: {fileID: 0}
     - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: cameraName
@@ -37714,7 +37746,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1408002241}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 388036875}
@@ -38622,7 +38654,7 @@ Transform:
   m_GameObject: {fileID: 1427147748}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.921, y: 3.442, z: 13.365}
+  m_LocalPosition: {x: 10.361, y: 3.442, z: 13.365}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -39684,7 +39716,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1463935042}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 11
   m_Type: 2
   m_Color: {r: 0.6673193, g: 0.8506549, b: 0.8679245, a: 1}
@@ -40715,6 +40747,14 @@ PrefabInstance:
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4817489866260022971, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Name
+      value: Point Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: room
+      value: Backstage
       objectReference: {fileID: 0}
     - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: isHidden
@@ -41870,7 +41910,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1538451568}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 11
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -43368,7 +43408,7 @@ Transform:
   m_GameObject: {fileID: 1619255599}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.32, y: 5.13, z: 23.5}
+  m_LocalPosition: {x: -2.32, y: 4.771, z: 23.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -46526,6 +46566,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4817489866260022971, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Name
+      value: Point Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: room
+      value: Pirate's Cove
+      objectReference: {fileID: 0}
     - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: cameraName
       value: 2
@@ -48219,6 +48267,14 @@ PrefabInstance:
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4817489866260022971, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Name
+      value: Point Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: room
+      value: Right Corridor
       objectReference: {fileID: 0}
     - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: cameraName
@@ -51062,7 +51118,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
-      value: 9
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_SpotAngle
@@ -51139,6 +51195,14 @@ PrefabInstance:
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4817489866260022971, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Name
+      value: Point Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: room
+      value: Left Corridor
       objectReference: {fileID: 0}
     - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: cameraName
@@ -55228,7 +55292,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2037199466}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 11
   m_Type: 2
   m_Color: {r: 0.6673193, g: 0.8506549, b: 0.8679245, a: 1}
@@ -60068,6 +60132,14 @@ PrefabInstance:
     - target: {fileID: 2216940292148328542, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4817489866260022971, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Name
+      value: Point Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: room
+      value: Main Stage
       objectReference: {fileID: 0}
     - target: {fileID: 5316962012634507043, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: isSecurityOfficeOnly

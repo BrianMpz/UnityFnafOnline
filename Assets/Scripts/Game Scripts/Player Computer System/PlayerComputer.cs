@@ -42,7 +42,6 @@ public class PlayerComputer : NetworkBehaviour
 
     private void Start()
     {
-        selectorCanvas.enabled = true;
         defaultCanvas.enabled = false;
 
         playerBehaviour.OnInitialise += Initialise;
@@ -56,7 +55,6 @@ public class PlayerComputer : NetworkBehaviour
         DisableComputerSystem();
 
         selectorCanvas.worldCamera = playerBehaviour.playerCamera;
-        selectorCanvas.enabled = false;
         defaultCanvas.enabled = false;
 
         playerCameraSystem.Initialise(playerBehaviour.playerCamera);
@@ -189,7 +187,6 @@ public class PlayerComputer : NetworkBehaviour
 
         currentComputerScreen.Value = computerScreen;
 
-        selectorCanvas.enabled = true;
         defaultCanvas.enabled = true;
 
         switch (currentComputerScreen.Value)
@@ -226,8 +223,12 @@ public class PlayerComputer : NetworkBehaviour
         playerGameSystem.Disable();
         playerManual.Disable();
 
-        selectorCanvas.enabled = false;
         defaultCanvas.enabled = false;
+    }
+
+    private void Update()
+    {
+        selectorCanvas.enabled = isMonitorUp.Value;
     }
 }
 

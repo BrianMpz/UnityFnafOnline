@@ -2,15 +2,16 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class LureButton : MonoBehaviour
+public class LureButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private PlayerAudioLureSystem playerAudioLureSystem;
     [SerializeField] private Image radius;
     [SerializeField] private Button button;
     [SerializeField] private NodeName nodeName;
+    [SerializeField] private string roomName;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         radius.color = new(0, 0, 0, 0);
@@ -47,4 +48,15 @@ public class LureButton : MonoBehaviour
 
         radius.color = new Color(1, 1, 1, 0);
     }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        playerAudioLureSystem.ShowRoomName(roomName);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        playerAudioLureSystem.HideRoomName();
+    }
+
 }
