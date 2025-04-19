@@ -199,13 +199,13 @@ public class GameManager : NetworkSingleton<GameManager>
         // Unlock the current night and all previous nights
         for (int i = 0; i <= nightIndex; i++)
         {
-            PlayerPrefs.SetInt("CompletedNight_" + i, 1);
+            PlayerPrefs.SetInt("HasCompletedNight_" + i, 1);
         }
 
         // Unlock the next night (if it exists)
         if (nightIndex + 1 < Enum.GetValues(typeof(GameNight)).Length)
         {
-            PlayerPrefs.SetInt("CompletedNight_" + (nightIndex + 1), 1);
+            PlayerPrefs.SetInt("HasCompletedNight_" + (nightIndex + 1), 1);
         }
 
         PlayerPrefs.Save(); // Save to disk to persist across sessions

@@ -3364,6 +3364,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 396085141}
     m_Modifications:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
@@ -3377,7 +3381,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
@@ -3390,6 +3394,18 @@ PrefabInstance:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_InnerSpotAngle
       value: 104.53336
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.08432284
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Antialiasing
@@ -3479,6 +3495,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[2]'
       value: 
       objectReference: {fileID: 726434279}
+    - target: {fileID: 6151189758031613857, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_ClearFlags
       value: 2
@@ -4065,6 +4085,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 396085141}
     m_Modifications:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
@@ -4091,6 +4115,18 @@ PrefabInstance:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_InnerSpotAngle
       value: 104.53336
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.08432284
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Antialiasing
@@ -4184,6 +4220,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[0]'
       value: 
       objectReference: {fileID: 1425638965}
+    - target: {fileID: 6151189758031613857, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -14518,8 +14558,7 @@ MonoBehaviour:
     m_InternalValue: 0
   isCurrentlyAggrivated:
     m_InternalValue: 0
-  resistanceToAudioLure:
-    m_InternalValue: 0
+  resistanceToAudioLure: 0
   currentTarget: {fileID: 0}
   nodeDatas:
   - name: Stage1
@@ -14606,8 +14645,6 @@ MonoBehaviour:
   - name: Backstage
     node: {fileID: 700935956}
     isAllowedToGoTo: 1
-  waitTimeToStartMoving: 0
-  footStepPitch: 0.7
   deathScream: sister location scream
   startNode: {fileID: 700935956}
   animatronicModel: {fileID: 1644602682}
@@ -14769,6 +14806,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 396085141}
     m_Modifications:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Range
       value: 4.39
       objectReference: {fileID: 0}
@@ -14795,6 +14836,18 @@ PrefabInstance:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_SpotAngle
       value: 115.1243
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.08432284
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Antialiasing
@@ -14884,6 +14937,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[1]'
       value: 
       objectReference: {fileID: 1742026147}
+    - target: {fileID: 6151189758031613857, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_ClearFlags
       value: 2
@@ -17022,8 +17079,7 @@ MonoBehaviour:
     m_InternalValue: 0
   isCurrentlyAggrivated:
     m_InternalValue: 0
-  resistanceToAudioLure:
-    m_InternalValue: 0
+  resistanceToAudioLure: 0
   currentTarget: {fileID: 0}
   nodeDatas:
   - name: Stage1
@@ -17110,8 +17166,6 @@ MonoBehaviour:
   - name: Backstage
     node: {fileID: 700935956}
     isAllowedToGoTo: 1
-  waitTimeToStartMoving: 30
-  footStepPitch: 1
   deathScream: jumpscare scream
   startNode: {fileID: 255704850}
   animatronicModel: {fileID: 2070021265}
@@ -17912,12 +17966,9 @@ MonoBehaviour:
     m_InternalValue: 0
   isCurrentlyAggrivated:
     m_InternalValue: 0
-  resistanceToAudioLure:
-    m_InternalValue: 0
+  resistanceToAudioLure: 0
   currentTarget: {fileID: 0}
   nodeDatas: []
-  waitTimeToStartMoving: 10
-  footStepPitch: 1
   deathScream: jumpscare scream
   startNode: {fileID: 1580970636}
   animatronicModel: {fileID: 1000460678}
@@ -28034,8 +28085,7 @@ MonoBehaviour:
     m_InternalValue: 0
   isCurrentlyAggrivated:
     m_InternalValue: 0
-  resistanceToAudioLure:
-    m_InternalValue: 0
+  resistanceToAudioLure: 0
   currentTarget: {fileID: 0}
   nodeDatas:
   - name: Stage1
@@ -28122,8 +28172,6 @@ MonoBehaviour:
   - name: Backstage
     node: {fileID: 700935956}
     isAllowedToGoTo: 1
-  waitTimeToStartMoving: 15
-  footStepPitch: 1.2
   deathScream: jumpscare scream
   startNode: {fileID: 1848919388}
   animatronicModel: {fileID: 1465744800}
@@ -32637,6 +32685,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 396085141}
     m_Modifications:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Range
       value: 14.83
       objectReference: {fileID: 0}
@@ -32654,7 +32706,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
@@ -32667,6 +32719,18 @@ PrefabInstance:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_InnerSpotAngle
       value: 81.04102
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Antialiasing
@@ -32748,6 +32812,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[2]'
       value: 
       objectReference: {fileID: 2066843624}
+    - target: {fileID: 6151189758031613857, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_ClearFlags
       value: 2
@@ -40549,6 +40617,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 396085141}
     m_Modifications:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
@@ -40575,6 +40647,18 @@ PrefabInstance:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_InnerSpotAngle
       value: 44.85434
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.08432284
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Antialiasing
@@ -40664,6 +40748,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[1]'
       value: 
       objectReference: {fileID: 2066843624}
+    - target: {fileID: 6151189758031613857, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_ClearFlags
       value: 2
@@ -43174,7 +43262,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1619255599}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 11
   m_Type: 2
   m_Color: {r: 0.6673193, g: 0.8506549, b: 0.8679245, a: 1}
@@ -46335,6 +46423,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 396085141}
     m_Modifications:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Range
       value: 6
       objectReference: {fileID: 0}
@@ -46365,6 +46457,18 @@ PrefabInstance:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_InnerSpotAngle
       value: 4.524915
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.08432284
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Antialiasing
@@ -46446,6 +46550,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[0]'
       value: 
       objectReference: {fileID: 1580970636}
+    - target: {fileID: 6151189758031613857, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_ClearFlags
       value: 2
@@ -48009,6 +48117,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 396085141}
     m_Modifications:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Range
       value: 36.85
       objectReference: {fileID: 0}
@@ -48039,6 +48151,14 @@ PrefabInstance:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_InnerSpotAngle
       value: 31.33973
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Shadows.m_NearPlane
@@ -48132,6 +48252,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[2]'
       value: 
       objectReference: {fileID: 1988298912}
+    - target: {fileID: 6151189758031613857, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_ClearFlags
       value: 2
@@ -50913,6 +51037,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 396085141}
     m_Modifications:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Range
       value: 10
       objectReference: {fileID: 0}
@@ -50943,6 +51071,18 @@ PrefabInstance:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_InnerSpotAngle
       value: 16.291687
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.099999994
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Antialiasing
@@ -51038,7 +51178,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6151189758031613857, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6151189758031613857, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_LocalPosition.z
@@ -53759,12 +53899,9 @@ MonoBehaviour:
     m_InternalValue: 0
   isCurrentlyAggrivated:
     m_InternalValue: 0
-  resistanceToAudioLure:
-    m_InternalValue: 0
+  resistanceToAudioLure: 0
   currentTarget: {fileID: 0}
   nodeDatas: []
-  waitTimeToStartMoving: 30
-  footStepPitch: 0
   deathScream: 
   startNode: {fileID: 2023607781}
   animatronicModel: {fileID: 0}
@@ -54468,8 +54605,7 @@ MonoBehaviour:
     m_InternalValue: 0
   isCurrentlyAggrivated:
     m_InternalValue: 0
-  resistanceToAudioLure:
-    m_InternalValue: 0
+  resistanceToAudioLure: 0
   currentTarget: {fileID: 0}
   nodeDatas:
   - name: Stage1
@@ -54556,8 +54692,6 @@ MonoBehaviour:
   - name: Backstage
     node: {fileID: 700935956}
     isAllowedToGoTo: 1
-  waitTimeToStartMoving: 5
-  footStepPitch: 1
   deathScream: jumpscare scream
   startNode: {fileID: 2144847041}
   animatronicModel: {fileID: 43989834}
@@ -59844,6 +59978,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 396085141}
     m_Modifications:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
@@ -59862,6 +60000,18 @@ PrefabInstance:
     - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Intensity
       value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212357704686891022, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.08432284
       objectReference: {fileID: 0}
     - target: {fileID: 453659694513464073, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_Antialiasing
@@ -59935,6 +60085,10 @@ PrefabInstance:
       propertyPath: 'nodesVisibleOnCamera.Array.data[2]'
       value: 
       objectReference: {fileID: 1848919388}
+    - target: {fileID: 6151189758031613857, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6406270548477476603, guid: 35d18d8b263cc0441b081e074b7c65eb, type: 3}
       propertyPath: m_ClearFlags
       value: 2
@@ -59978,14 +60132,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132147852399674}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.4936546, y: 0, z: 0, w: 0.86965805}
-  m_LocalPosition: {x: 0, y: 0.12993689, z: 0.071807235}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1151388028315320280}
   m_Father: {fileID: 1230808988}
-  m_LocalEulerAnglesHint: {x: -59.16214, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &543450652901358072
 Transform:
   m_ObjectHideFlags: 0

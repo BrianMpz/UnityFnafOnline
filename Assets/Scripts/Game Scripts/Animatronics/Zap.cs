@@ -6,14 +6,14 @@ using UnityEngine;
 
 public class Zap : Animatronic
 {
-    private const float baseMovementDuration = 354f; // takes 354s to kill at the slowest
+    private const float baseMovementDuration = 300f; // takes 300s to kill at the slowest
     [SerializeField] private PlayerNode playerNode;
     [SerializeField] private Vector3 startingPosition;
     [SerializeField] private Vector3 endingPosition;
     [SerializeField] private float moveSpeed;
-    [SerializeField] private NetworkVariable<bool> isBeingWatched = new(writePerm: NetworkVariableWritePermission.Server);
-    [SerializeField] private NetworkVariable<bool> isApproachingPlayer = new(writePerm: NetworkVariableWritePermission.Server);
-    public NetworkVariable<float> movementProgressValue = new(writePerm: NetworkVariableWritePermission.Server);
+    [SerializeField] private NetworkVariable<bool> isBeingWatched;
+    [SerializeField] private NetworkVariable<bool> isApproachingPlayer;
+    public NetworkVariable<float> movementProgressValue;
     Coroutine movementProgress;
 
     public override void Initialise() // dont call base class
@@ -23,26 +23,8 @@ public class Zap : Animatronic
         GameManager.Instance.currentHour.OnValueChanged += (currentValue, newValue) => { IncreaseAnimatronicDifficulty(); };
         DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
 
-
-        var difficultyData = new Dictionary<GameNight, (float difficulty, float waitTime, float increment, float moveSpeed)>
-        {
-            { GameNight.One, (1f, 3f, 3f, 1) },
-            { GameNight.Two, (3f, 3f, 3.25f, 3) },
-            { GameNight.Three, (5f, 3f, 3.5f, 5) },
-            { GameNight.Four, (7f, 3f, 3.75f, 7) },
-            { GameNight.Five, (9f, 3f, 4f, 9) },
-            { GameNight.Six, (16f, 3f, 4.25f, 10) },
-            { GameNight.Seven, (20f, 3f, 4.5f, 12) },
-        };
-
-        if (difficultyData.ContainsKey(GameManager.Instance.gameNight))
-        {
-            var (difficulty, waitTime, increment, movementSpeed) = difficultyData[GameManager.Instance.gameNight];
-            currentDifficulty.Value = difficulty;
-            currentMovementWaitTime.Value = waitTime;
-            hourlyDifficultyIncrementAmount = increment;
-            moveSpeed = movementSpeed;
-        }
+        GetAnimatronicData();
+        moveSpeed = Mathf.Lerp(0, 10, currentDifficulty.Value / 20);
 
         movementProgress = StartCoroutine(ApproachPlayer());
     }
@@ -77,8 +59,6 @@ public class Zap : Animatronic
         {
             int indexOfTargetNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
             if (playerNode.IsAlive) ConfirmKillServerRpc(indexOfTargetNode);
-
-            yield return new WaitForSeconds(Mathf.Lerp(5, 60, 1 - (currentDifficulty.Value / 20f))); // wait a random amount of time before entering the facility
 
             gameplayLoop = StartCoroutine(GameplayLoop()); // is released into facility
         }

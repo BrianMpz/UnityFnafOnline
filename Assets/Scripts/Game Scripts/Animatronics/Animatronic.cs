@@ -13,15 +13,14 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     public NetworkVariable<float> currentMovementWaitTime;
     private protected int loopsAggrivated;
     [SerializeField] private protected NetworkVariable<bool> isCurrentlyAggrivated;
-    [SerializeField] private protected NetworkVariable<float> resistanceToAudioLure;
+    [SerializeField] private protected float resistanceToAudioLure;
     [SerializeField] private protected Node currentTarget;
     private protected Node currentNode;
 
     [Header("Static Values")]
     public List<NodeData> nodeDatas;
     private protected float hourlyDifficultyIncrementAmount;
-    [SerializeField] private protected int waitTimeToStartMoving;
-    [SerializeField] private float footStepPitch;
+    private protected int waitTimeToStartMoving;
     [SerializeField] private protected string deathScream;
     [SerializeField] private protected Node startNode;
     [SerializeField] private protected Transform animatronicModel;
@@ -49,17 +48,17 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         gameplayLoop = StartCoroutine(GameplayLoop());
     }
 
-    private protected void GetAnimatronicData()
+    private protected virtual void GetAnimatronicData()
     {
         string animatronicName = gameObject.name;
         GameNight currentNight = GameManager.Instance.gameNight;
 
         if (AnimatronicManager.Instance.CanFindNightData(currentNight, animatronicName, out AnimatronicData animatronicData))
         {
-            waitTimeToStartMoving = animatronicData.waitTimeToStartMoving;
-            currentDifficulty.Value = animatronicData.startingDifficulty;
-            currentMovementWaitTime.Value = animatronicData.timeBetweenMovementOpportunities;
-            hourlyDifficultyIncrementAmount = animatronicData.hourlyDifficultyIncrementAmount;
+            waitTimeToStartMoving = (int)animatronicData.waitTimeToStartMoving;
+            currentDifficulty.Value = (float)animatronicData.startingDifficulty;
+            currentMovementWaitTime.Value = (float)animatronicData.timeBetweenMovementOpportunities;
+            hourlyDifficultyIncrementAmount = (float)animatronicData.hourlyDifficultyIncrementAmount;
         }
         else
         {
@@ -84,9 +83,9 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     {
         if (!IsServer) return;
 
-        resistanceToAudioLure.Value -= 1 * Time.deltaTime;
+        resistanceToAudioLure -= 1 * Time.deltaTime;
 
-        resistanceToAudioLure.Value = Mathf.Clamp(resistanceToAudioLure.Value, 0f, 100f);
+        resistanceToAudioLure = Mathf.Clamp(resistanceToAudioLure, 0f, 100f);
     }
 
     public void AudioLure_AttractAnimatronic(Node targetedNode)
@@ -94,13 +93,13 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         // Early resistance if already targeting the node
         if (currentTarget == targetedNode)
         {
-            resistanceToAudioLure.Value = Mathf.Min(resistanceToAudioLure.Value + 30, 100f);
-            Debug.Log($"[AudioLure:{name}] Already targeting this node. Resistance increased by 10 to {resistanceToAudioLure.Value}");
+            resistanceToAudioLure = Mathf.Min(resistanceToAudioLure + 30, 100f);
+            Debug.Log($"[AudioLure:{name}] Already targeting this node. Resistance increased by 10 to {resistanceToAudioLure}");
         }
 
         bool targetIsAlive = targetedNode.GetComponent<PlayerNode>()?.IsAlive ?? false;
         float roll = UnityEngine.Random.Range(0f, 100f);
-        float threshold = resistanceToAudioLure.Value;
+        float threshold = resistanceToAudioLure;
 
         Debug.Log($"[AudioLure:{name}] Trying to attract to {targetedNode.name}. Resistance: {threshold:F2}, Roll: {roll:F2}, TargetAlive: {targetIsAlive}");
 
@@ -111,9 +110,9 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
             float resistanceGain = Mathf.Lerp(10f, 80f, GetUnaggrivatedDifficulty() / 20f);
 
-            resistanceToAudioLure.Value = Mathf.Min(resistanceToAudioLure.Value + resistanceGain, 100f);
+            resistanceToAudioLure = Mathf.Min(resistanceToAudioLure + resistanceGain, 100f);
 
-            Debug.Log($"[AudioLure:{name}] Lure SUCCESSFUL. New Target: {targetedNode.name}, Resistance increased by {resistanceGain:F2} to {resistanceToAudioLure.Value:F2}");
+            Debug.Log($"[AudioLure:{name}] Lure SUCCESSFUL. New Target: {targetedNode.name}, Resistance increased by {resistanceGain:F2} to {resistanceToAudioLure:F2}");
         }
         else
         {
@@ -125,7 +124,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     public void OnAttentionDivert(Node targetedNode) // called if the alarm goes off etc
     {
         SetTarget(targetedNode);
-        currentMovementWaitTime.Value /= 1.1f;
+        currentMovementWaitTime.Value /= 1.1f; // permanantly makes animatronic faster
     }
 
     // if isnt aggrivated and should be then aggrivate and vise versa
@@ -183,14 +182,8 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
                 {
                     StartCoroutine(KillPlayer(AnimatronicManager.Instance.GetPlayerNodeFromPlayerRole(PlayerRoles.Janitor)));
                     yield return new WaitForSeconds(currentMovementWaitTime.Value);
-                    continue;
                 }
-                else
-                {
-
-                    Blocked(PlayerRoleManager.Instance.janitorBehaviour);
-                    continue;
-                }
+                else Blocked(PlayerRoleManager.Instance.janitorBehaviour);
             }
             else
             {
@@ -221,7 +214,12 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         return UnityEngine.Random.Range(1, 20 + 1) <= currentDifficulty.Value;
     }
 
-    private bool NeedsANewTarget() => currentTarget == null || UnityEngine.Random.Range(1, 10 + 1) < 2;
+    private protected virtual IEnumerator SecondaryMovementCondition()
+    {
+        yield break;
+    }
+
+    private bool NeedsANewTarget() => currentTarget == null || UnityEngine.Random.Range(1, 10 + 1) < 1;
 
     private protected void TargetRandomPlayer()
     {
@@ -246,13 +244,14 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     private IEnumerator MovementOpportunity(List<Node> path)
     {
+        yield return SecondaryMovementCondition(); // if needed
         Node nodeToGoTo = path[1];
 
         bool aboutToAttackPlayer = nodeToGoTo.TryGetComponent(out PlayerNode playerNode);
 
         if (aboutToAttackPlayer) // about to attack a player
         {
-            if (PlayerRoleManager.Instance.IsPlayerVulnerableToAttack(currentNode, playerNode) && playerNode.IsAlive)
+            if (IsPlayerVulnerableToAttack(playerNode))
             {
                 yield return KillPlayer(playerNode);
             }
@@ -271,6 +270,11 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         }
 
         // the gameplay loop coroutine continues...
+    }
+
+    private protected virtual bool IsPlayerVulnerableToAttack(PlayerNode playerNode)
+    {
+        return PlayerRoleManager.Instance.IsPlayerVulnerableToAttack(currentNode, playerNode) && playerNode.IsAlive;
     }
 
     private IEnumerator KillPlayer(PlayerNode playerNode)
@@ -381,7 +385,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
             string randomWalkClipName = "walk" + UnityEngine.Random.Range(0, 5).ToString();
 
             audioSource.clip = GameAudioManager.Instance.GetAudioClip(randomWalkClipName);
-            audioSource.pitch = footStepPitch;
+            audioSource.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
             audioSource.Play();
         }
     }

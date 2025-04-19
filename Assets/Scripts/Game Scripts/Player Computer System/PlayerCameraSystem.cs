@@ -15,6 +15,7 @@ public class PlayerCameraSystem : NetworkBehaviour
     [SerializeField] private TMP_Text cameraDistrubanceText;
     [SerializeField] private TMP_Text accessDeniedText;
     [SerializeField] private TMP_Text audioOnlyText;
+    [SerializeField] private TMP_Text currentCameraNameText;
 
     private AudioSource cameraBootUpAudio;
     public event Action<CameraName> OnCameraViewChanged;
@@ -122,7 +123,7 @@ public class PlayerCameraSystem : NetworkBehaviour
         {
             cameraData.cameraFlashlight.intensity = cameraData.startingIntensity * 3;
             cameraOutputScreen.color = Color.green;
-            cameraData.cameraFlashlight.range = cameraData.startingRange * 5f;
+            cameraData.cameraFlashlight.range = cameraData.startingRange * 4f;
         }
         else
         {
@@ -132,21 +133,13 @@ public class PlayerCameraSystem : NetworkBehaviour
         }
     }
 
-    public bool IsWatchingCamera(CameraName targetCamera)
-    {
-        bool isOnCameraSystem = playerComputer.currentComputerScreen.Value == ComputerScreen.Cameras;
-        bool isViewingTargetCamera = currentCameraName.Value == targetCamera;
-        bool isMonitorUp = playerComputer.isMonitorUp.Value;
-
-        return isMonitorUp && isOnCameraSystem && !isHidingCurrentCamera && isViewingTargetCamera;
-    }
-
     private void UpdateCameraUI(CameraData cameraData)
     {
         cameraOutputScreen.texture = cameraData.GetRenderTexture();
         cameraDistrubanceText.enabled = false;
         accessDeniedText.enabled = false;
         audioOnlyText.enabled = false;
+        currentCameraNameText.enabled = false;
 
         cameraStatic.RefreshMonitorStatic(isHidingCurrentCamera);
 
@@ -165,6 +158,11 @@ public class PlayerCameraSystem : NetworkBehaviour
                 cameraDistrubanceText.enabled = true;
             }
         }
+        else
+        {
+            currentCameraNameText.enabled = true;
+            currentCameraNameText.text = $"Camera {currentCameraName.Value}";
+        }
 
         OnCameraViewChanged?.Invoke(cameraData.GetCameraName());
     }
@@ -175,7 +173,18 @@ public class PlayerCameraSystem : NetworkBehaviour
 
     public bool CanSeeCameras(bool canMonitorBeDown = false)
     {
-        return playerComputer.currentComputerScreen.Value == ComputerScreen.Cameras && !isHidingCurrentCamera & (playerComputer.isMonitorUp.Value || canMonitorBeDown);
+        bool isOnCameraSystem = playerComputer.currentComputerScreen.Value == ComputerScreen.Cameras;
+        bool isMonitorUp = playerComputer.isMonitorUp.Value;
+        bool isPlayerAlive = playerComputer.playerBehaviour.isPlayerAlive.Value;
+
+        return isPlayerAlive && isOnCameraSystem && !isHidingCurrentCamera && (isMonitorUp || canMonitorBeDown);
+    }
+
+    public bool IsWatchingCamera(CameraName targetCamera)
+    {
+        bool isViewingTargetCamera = currentCameraName.Value == targetCamera;
+
+        return CanSeeCameras() && isViewingTargetCamera;
     }
 
     private void GameManager_OnAnimatronicMoved(Node fromNode, Node toNode)
@@ -185,29 +194,21 @@ public class PlayerCameraSystem : NetworkBehaviour
 
     private void GameManager_OnFoxyStatusChanged()
     {
-        if (!CanSeeCameras()) return;
-
-        if (currentCameraName.Value == CameraName.Three) RefreshCameras();
+        if (IsWatchingCamera(CameraName.Three)) RefreshCameras();
     }
 
     private void GameManager_OnFoxyAttacking(Node startPositionNode)
     {
-        if (!CanSeeCameras()) return;
-
         if (IsNodeVisibleOnCamera(startPositionNode)) RefreshCameras();
     }
 
     private void GlobalCameraSystem_OnCameraVisibilityChanged(CameraName changedCameraName)
     {
-        if (!CanSeeCameras()) return;
-
-        if (currentCameraName.Value == changedCameraName) RefreshCameras();
+        if (IsWatchingCamera(changedCameraName)) RefreshCameras();
     }
 
     public bool CheckIfAnyoneWatchingHallwayNode(Node startPositionNode)
     {
-        if (!CanSeeCameras()) return false;
-
         return IsNodeVisibleOnCamera(startPositionNode);
     }
 

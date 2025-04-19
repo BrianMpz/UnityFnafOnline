@@ -19,12 +19,15 @@ public class SettingsUI : Singleton<SettingsUI>
     [SerializeField] private Slider voiceChatSlider;
     [SerializeField] private TMP_Dropdown frameRateDropdown;
     [SerializeField] private TMP_Dropdown fullscreenDropdown;
+    [SerializeField] private TMP_Text gameVersionText;
     [SerializeField] TMP_Text fpsText;
     private float deltaTime;
     [SerializeField] private AudioMixer audioMixer;
 
     private void Start()
     {
+        gameVersionText.text = $"v{Application.version}";
+
         closeButton.onClick.AddListener(Hide);
 
         string currentSceneName = SceneManager.GetActiveScene().name;

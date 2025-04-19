@@ -86,7 +86,7 @@ public class GlobalCameraSystem : NetworkSingleton<GlobalCameraSystem>
     {
         foreach (PlayerComputer playerComputer in playerComputers)
         {
-            if (playerComputer.playerCameraSystem.IsNodeVisibleOnCamera(node, false)) // change later
+            if (playerComputer.playerCameraSystem.IsNodeVisibleOnCamera(node, true))
             {
                 return true;
             }

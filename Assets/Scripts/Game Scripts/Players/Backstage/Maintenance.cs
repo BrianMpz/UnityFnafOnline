@@ -56,31 +56,23 @@ public class Maintenance : NetworkSingleton<Maintenance>
         PowerOn();
         EnableButtons();
 
-        switch (GameManager.Instance.gameNight)
-        {
-            case GameNight.One:
-                currentDifficulty = 1;
-                break;
-            case GameNight.Two:
-                currentDifficulty = 4;
-                break;
-            case GameNight.Three:
-                currentDifficulty = 7;
-                break;
-            case GameNight.Four:
-                currentDifficulty = 10;
-                break;
-            case GameNight.Five:
-                currentDifficulty = 13;
-                break;
-            case GameNight.Six:
-                currentDifficulty = 16;
-                break;
-            case GameNight.Seven:
-                currentDifficulty = 20;
-                break;
-        }
+        GetData();
+
         StartCoroutine(RandomlyDisableSystems());
+    }
+
+    private void GetData()
+    {
+        GameNight currentNight = GameManager.Instance.gameNight;
+
+        if (AnimatronicManager.Instance.CanFindNightData(currentNight, "Maintenance System", out AnimatronicData animatronicData))
+        {
+            currentDifficulty = (float)animatronicData.startingDifficulty;
+        }
+        else
+        {
+            Debug.LogWarning($"Difficulty data not found for Maintenance System on night {currentNight}");
+        }
     }
 
     private void CancelReboot()

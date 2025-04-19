@@ -44,7 +44,7 @@ public class NightSelector : MonoBehaviour
         previousNightButton.onClick.AddListener(GoToPreviousNight);
         nextNightButton.onClick.AddListener(GoToNextNight);
 
-        CurrentNight = lastPlayedNight;
+        CurrentNight = lastPlayedNight != GameNight.One ? lastPlayedNight : GetHighestAvailableNight();
     }
 
     private void UpdateNightText(GameNight newValue)
@@ -65,7 +65,7 @@ public class NightSelector : MonoBehaviour
         }
 
         // Keep going back until we find a completed night
-        while (previousIndex > 0 && PlayerPrefs.GetInt("CompletedNight_" + previousIndex, 0) == 0)
+        while (previousIndex > 0 && PlayerPrefs.GetInt("HasCompletedNight_" + previousIndex, 0) == 0)
         {
             previousIndex--;
         }
@@ -86,7 +86,7 @@ public class NightSelector : MonoBehaviour
         }
 
         // Keep going forward until we find an available night
-        while (nextIndex < nights.Length && PlayerPrefs.GetInt("CompletedNight_" + nextIndex, 0) == 0)
+        while (nextIndex < nights.Length && PlayerPrefs.GetInt("HasCompletedNight_" + nextIndex, 0) == 0)
         {
             nextIndex++;
         }
@@ -104,7 +104,7 @@ public class NightSelector : MonoBehaviour
 
         for (int i = nights.Length - 1; i >= 0; i--) // Start from the highest night
         {
-            if (PlayerPrefs.GetInt("CompletedNight_" + i, i == 0 ? 1 : 0) == 1)
+            if (PlayerPrefs.GetInt("HasCompletedNight_" + i, i == 0 ? 1 : 0) == 1)
             {
                 return nights[i]; // Return the highest unlocked night
             }
@@ -122,7 +122,7 @@ public class NightSelector : MonoBehaviour
         foreach (GameNight night in nights)
         {
             int nightIndex = (int)night;
-            PlayerPrefs.SetInt("CompletedNight_" + nightIndex, 1);
+            PlayerPrefs.SetInt("HasCompletedNight_" + nightIndex, 1);
         }
 
         // Save the changes to disk

@@ -35,38 +35,7 @@ public class Foxy : Animatronic
         GlobalCameraSystem.Instance.OnPlayersWatchingFoxyUpdate += CameraSystem_OnPlayersWatchingFoxyUpdated;
         GameManager.Instance.OnPlayerPowerDown += GameManager_OnPlayerPowerDown;
 
-        switch (GameManager.Instance.gameNight)
-        {
-            case GameNight.One:
-                currentDifficulty.Value = 1;
-                currentMovementWaitTime.Value = 10;
-                break;
-            case GameNight.Two:
-                currentDifficulty.Value = 4;
-                currentMovementWaitTime.Value = 8;
-                break;
-            case GameNight.Three:
-                currentDifficulty.Value = 7;
-                currentMovementWaitTime.Value = 6;
-                break;
-            case GameNight.Four:
-                currentDifficulty.Value = 10;
-                currentMovementWaitTime.Value = 5;
-                break;
-            case GameNight.Five:
-                currentDifficulty.Value = 13;
-                currentMovementWaitTime.Value = 4;
-                break;
-            case GameNight.Six:
-                currentDifficulty.Value = 16;
-                currentMovementWaitTime.Value = 3;
-                break;
-            case GameNight.Seven:
-                currentDifficulty.Value = 20;
-                currentMovementWaitTime.Value = 3;
-                break;
-        }
-
+        GetAnimatronicData();
         ResetFoxyServerRpc();
 
         DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;

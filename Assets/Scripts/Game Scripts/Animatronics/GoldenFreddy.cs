@@ -14,31 +14,33 @@ public class GoldenFreddy : Animatronic
         GameManager.Instance.currentHour.OnValueChanged += (currentValue, newValue) => { IncreaseAnimatronicDifficulty(); };
         DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
 
-        var difficultyData = new Dictionary<GameNight, (float difficulty, float increment)>
-        {
-            { GameNight.One, (1f, 0.5f) },
-            { GameNight.Two, (3f, 1f) },
-            { GameNight.Three, (5f, 1.5f) },
-            { GameNight.Four, (7f, 2f) },
-            { GameNight.Five, (9f, 2.5f) },
-            { GameNight.Six, (16f, 3f) },
-            { GameNight.Seven, (20f, 3.5f) },
-        };
-
-        if (difficultyData.ContainsKey(GameManager.Instance.gameNight))
-        {
-            var (difficulty, increment) = difficultyData[GameManager.Instance.gameNight];
-            currentDifficulty.Value = difficulty;
-            hourlyDifficultyIncrementAmount = increment;
-        }
+        GetAnimatronicData();
 
         StartCoroutine(WaitForJanitorToDie());
+    }
+
+    private protected override void GetAnimatronicData()
+    {
+        string animatronicName = gameObject.name;
+        GameNight currentNight = GameManager.Instance.gameNight;
+
+        if (AnimatronicManager.Instance.CanFindNightData(currentNight, animatronicName, out AnimatronicData animatronicData))
+        {
+            waitTimeToStartMoving = (int)animatronicData.waitTimeToStartMoving;
+            currentDifficulty.Value = (float)animatronicData.startingDifficulty;
+            hourlyDifficultyIncrementAmount = (float)animatronicData.hourlyDifficultyIncrementAmount;
+        }
+        else
+        {
+            Debug.LogWarning($"Difficulty data not found for {animatronicName} on night {currentNight}");
+        }
     }
 
     private IEnumerator WaitForJanitorToDie()
     {
         yield return new WaitForSeconds(waitTimeToStartMoving);
         yield return new WaitUntil(() => !PlayerRoleManager.Instance.janitorBehaviour.isPlayerAlive.Value);
+        yield return new WaitForSeconds(waitTimeToStartMoving);
         StartCoroutine(GameplayLoop());
     }
 

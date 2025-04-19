@@ -10,17 +10,34 @@ public class KeypadSystem : NetworkBehaviour
     [SerializeField] private string requriedCombination;
     [SerializeField] private string currentCombination;
     [SerializeField] private NetworkVariable<float> currentDifficulty = new(writePerm: NetworkVariableWritePermission.Owner);
+    private float difficultyIncrementAmount;
     [SerializeField] private AudioSource alarm;
     [SerializeField] private Light alarmLight;
 
     private void Start()
     {
+        alarmLight.enabled = false;
         GameManager.Instance.OnGameStarted += () => { StartCoroutine(GameplayLoop()); };
         DebugCanvasUI.Instance.OnBuff += () =>
         {
-            if (IsOwner) currentDifficulty.Value += 2f;
+            if (IsOwner) currentDifficulty.Value += difficultyIncrementAmount;
         };
-        alarmLight.enabled = false;
+
+    }
+
+    private void GetData()
+    {
+        GameNight currentNight = GameManager.Instance.gameNight;
+
+        if (AnimatronicManager.Instance.CanFindNightData(currentNight, "Keypad System", out AnimatronicData animatronicData))
+        {
+            currentDifficulty.Value = (float)animatronicData.startingDifficulty;
+            difficultyIncrementAmount = (float)animatronicData.hourlyDifficultyIncrementAmount;
+        }
+        else
+        {
+            Debug.LogWarning($"Difficulty data not found for Keypad System on night {currentNight}");
+        }
     }
 
     public void OnButtonPress(string number)
@@ -44,31 +61,8 @@ public class KeypadSystem : NetworkBehaviour
 
     public IEnumerator GameplayLoop()
     {
+        GetData();
         if (!IsOwner) yield break;
-        switch (GameManager.Instance.gameNight)
-        {
-            case GameNight.One:
-                currentDifficulty.Value = 2f;
-                break;
-            case GameNight.Two:
-                currentDifficulty.Value = 5f;
-                break;
-            case GameNight.Three:
-                currentDifficulty.Value = 8f;
-                break;
-            case GameNight.Four:
-                currentDifficulty.Value = 11f;
-                break;
-            case GameNight.Five:
-                currentDifficulty.Value = 14f;
-                break;
-            case GameNight.Six:
-                currentDifficulty.Value = 17f;
-                break;
-            case GameNight.Seven:
-                currentDifficulty.Value = 20f;
-                break;
-        }
 
         while (GameManager.Instance.isPlaying)
         {

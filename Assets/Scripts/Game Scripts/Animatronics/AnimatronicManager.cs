@@ -7,7 +7,10 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
 {
     public Foxy foxy;
     public Freddy freddy;
-    private List<Animatronic> Animatronics { get => GetComponentsInChildren<Animatronic>().ToList(); }
+    private List<Animatronic> Animatronics
+    {
+        get => GetComponentsInChildren<Animatronic>().ToList();
+    }
     public List<Node> Nodes
     {
         get => GetComponentsInChildren<Node>().ToList();
@@ -24,16 +27,81 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
     {
         [GameNight.One] = new()
         {
-            ["Bonnie"] = new AnimatronicData(10, 1, 5, 1),
+            ["Bonnie"] = new AnimatronicData(waitTimeToStartMoving: 20, startingDifficulty: 1, timeBetweenMovement: 5, hourlyDifficultyIncrement: 1),
             ["Chica"] = new AnimatronicData(30, 0, 6, 2),
-            ["Foxy"] = new AnimatronicData(60, 5, 5, 1),
-            ["Freddy"] = new AnimatronicData(180, 5, 10, 2),
+            ["Foxy"] = new AnimatronicData(10, 5, 5, 1),
+            ["Freddy"] = new AnimatronicData(30, 0, 10, 0.3f),
+            ["Zap"] = new AnimatronicData(60, 5, 10, 2),
+            ["Golden Freddy"] = new AnimatronicData(180, 5, null, 2),
+            ["Keypad System"] = new AnimatronicData(null, 5, null, 2),
+            ["Maintenance System"] = new AnimatronicData(null, 5, null, null),
         },
         [GameNight.Two] = new()
         {
-            ["Bonnie"] = new AnimatronicData(3f, 9f, 3.25f),
-            ["Chica"] = new AnimatronicData(3.5f, 10f, 3.1f),
-        }
+            ["Bonnie"] = new AnimatronicData(17, 2, 5, 2),
+            ["Chica"] = new AnimatronicData(24, 2, 6, 2),
+            ["Foxy"] = new AnimatronicData(8, 7, 5, 2),
+            ["Freddy"] = new AnimatronicData(30, 1, 9, 1f),
+            ["Zap"] = new AnimatronicData(51, 7, 8, 2),
+            ["Golden Freddy"] = new AnimatronicData(130, 7, null, 2),
+            ["Keypad System"] = new AnimatronicData(null, 7, null, 2),
+            ["Maintenance System"] = new AnimatronicData(null, 7, null, null),
+        },
+        [GameNight.Three] = new()
+        {
+            ["Bonnie"] = new AnimatronicData(14, 5, 5, 2),
+            ["Chica"] = new AnimatronicData(18, 5, 6, 2),
+            ["Foxy"] = new AnimatronicData(7, 9, 5, 2),
+            ["Freddy"] = new AnimatronicData(30, 2, 8, 2f),
+            ["Zap"] = new AnimatronicData(42, 9, 7, 2),
+            ["Golden Freddy"] = new AnimatronicData(70, 9, null, 2),
+            ["Keypad System"] = new AnimatronicData(null, 9, null, 2),
+            ["Maintenance System"] = new AnimatronicData(null, 9, null, null),
+        },
+        [GameNight.Four] = new()
+        {
+            ["Bonnie"] = new AnimatronicData(11, 6, 5, 2),
+            ["Chica"] = new AnimatronicData(12, 7, 6, 2),
+            ["Foxy"] = new AnimatronicData(6, 11, 5, 2),
+            ["Freddy"] = new AnimatronicData(30, 3, 7, 2f),
+            ["Zap"] = new AnimatronicData(33, 11, 6, 2),
+            ["Golden Freddy"] = new AnimatronicData(30, 11, null, 2),
+            ["Keypad System"] = new AnimatronicData(null, 11, null, 2),
+            ["Maintenance System"] = new AnimatronicData(null, 11, null, null),
+        },
+        [GameNight.Five] = new()
+        {
+            ["Bonnie"] = new AnimatronicData(8, 8, 5, 3),
+            ["Chica"] = new AnimatronicData(6, 10, 6, 2),
+            ["Foxy"] = new AnimatronicData(5, 13, 5, 2),
+            ["Freddy"] = new AnimatronicData(30, 5, 6, 2f),
+            ["Zap"] = new AnimatronicData(24, 13, 5, 2),
+            ["Golden Freddy"] = new AnimatronicData(20, 13, null, 2),
+            ["Keypad System"] = new AnimatronicData(null, 13, null, 2),
+            ["Maintenance System"] = new AnimatronicData(null, 13, null, null),
+        },
+        [GameNight.Six] = new()
+        {
+            ["Bonnie"] = new AnimatronicData(3, 10, 5, 3),
+            ["Chica"] = new AnimatronicData(3, 12, 6, 2),
+            ["Foxy"] = new AnimatronicData(3, 15, 5, 3),
+            ["Freddy"] = new AnimatronicData(30, 10, 5, 2f),
+            ["Zap"] = new AnimatronicData(3, 15, 3, 1),
+            ["Golden Freddy"] = new AnimatronicData(10, 15, null, 2),
+            ["Keypad System"] = new AnimatronicData(null, 15, null, 2),
+            ["Maintenance System"] = new AnimatronicData(null, 17, null, null),
+        },
+        [GameNight.Seven] = new()
+        {
+            ["Bonnie"] = new AnimatronicData(0, 20, 4, 0),
+            ["Chica"] = new AnimatronicData(0, 20, 4, 0),
+            ["Foxy"] = new AnimatronicData(0, 20, 4, 0),
+            ["Freddy"] = new AnimatronicData(0, 20, 4, 0),
+            ["Zap"] = new AnimatronicData(0, 20, 3, 0),
+            ["Golden Freddy"] = new AnimatronicData(5, 20, null, 2),
+            ["Keypad System"] = new AnimatronicData(null, 20, null, 2),
+            ["Maintenance System"] = new AnimatronicData(null, 20, null, null),
+        },
     };
     public bool CanFindNightData(GameNight night, string animatronicName, out AnimatronicData data)
     {
@@ -177,31 +245,22 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
 
         OnAudioLure?.Invoke(node);
     }
-
-    public float GetAverageAnimatronicDifficulty()
-    {
-        if (Animatronics == null || Animatronics.Count == 0)
-            return 1f; // Default to minimum difficulty
-
-        return Animatronics.Average(a => a.currentDifficulty.Value);
-    }
-
 }
 
 [Serializable]
 public struct AnimatronicData
 {
-    public int waitTimeToStartMoving;
-    public float startingDifficulty;
-    public float timeBetweenMovementOpportunities;
-    public float hourlyDifficultyIncrementAmount;
+    public int? waitTimeToStartMoving;
+    public float? startingDifficulty;
+    public float? timeBetweenMovementOpportunities;
+    public float? hourlyDifficultyIncrementAmount;
 
-    public AnimatronicData(int waitTimeToStartMoving, float startingDifficulty, float timeBetweenMovementOpportunities, float hourlyDifficultyIncrementAmount)
+    public AnimatronicData(int? waitTimeToStartMoving, float? startingDifficulty, float? timeBetweenMovement, float? hourlyDifficultyIncrement)
     {
         this.waitTimeToStartMoving = waitTimeToStartMoving;
         this.startingDifficulty = startingDifficulty;
-        this.timeBetweenMovementOpportunities = timeBetweenMovementOpportunities;
-        this.hourlyDifficultyIncrementAmount = hourlyDifficultyIncrementAmount;
+        this.timeBetweenMovementOpportunities = timeBetweenMovement;
+        this.hourlyDifficultyIncrementAmount = hourlyDifficultyIncrement;
     }
 }
 
