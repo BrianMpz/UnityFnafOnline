@@ -28,7 +28,7 @@ public class MainMenuUI : MonoBehaviour
 
         gameVersionText.text = $"v{Application.version}";
 
-        DebugCanvasUI.CanDebug = canDebug;
+        DebugUI.CanDebug = canDebug;
         VivoxManager.CanUseVoiceChat = canUseVoiceChat;
 
         playButton.onClick.AddListener(PlayOnline);

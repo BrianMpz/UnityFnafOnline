@@ -229,7 +229,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
 
     public void Show()
     {
-        DebugCanvasUI.Instance.Show();
+        DebugUI.Instance.nodeCanvas.enabled = true;
         canvas.enabled = true;
         isSpectating = true;
         isSpectatingAPlayer = false;
@@ -240,7 +240,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
 
     public void Hide()
     {
-        DebugCanvasUI.Instance.Hide();
+        DebugUI.Instance.nodeCanvas.enabled = false;
         canvas.enabled = false;
         isSpectating = false;
         GameAudioManager.Instance.StopSfx(cameraStatic.staticaudio);

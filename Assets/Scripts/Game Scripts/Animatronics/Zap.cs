@@ -21,7 +21,7 @@ public class Zap : Animatronic
         if (!IsServer) return;
 
         GameManager.Instance.currentHour.OnValueChanged += (currentValue, newValue) => { IncreaseAnimatronicDifficulty(); };
-        DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
+        DebugUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
 
         GetAnimatronicData();
         moveSpeed = Mathf.Lerp(0, 10, currentDifficulty.Value / 20);

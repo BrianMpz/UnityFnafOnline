@@ -18,7 +18,7 @@ public class KeypadSystem : NetworkBehaviour
     {
         alarmLight.enabled = false;
         GameManager.Instance.OnGameStarted += () => { StartCoroutine(GameplayLoop()); };
-        DebugCanvasUI.Instance.OnBuff += () =>
+        DebugUI.Instance.OnBuff += () =>
         {
             if (IsOwner) currentDifficulty.Value += difficultyIncrementAmount;
         };
@@ -103,7 +103,7 @@ public class KeypadSystem : NetworkBehaviour
         PlayerNode playerNode = AnimatronicManager.Instance.GetPlayerNodeFromPlayerRole(PlayerRoles.SecurityOffice);
         AnimatronicManager.Instance.AttentionDivert?.Invoke(playerNode);
         AlertAllAnimatronicsClientRpc();
-        DebugCanvasUI.Instance.OnBuff?.Invoke();
+        DebugUI.Instance.OnBuff?.Invoke();
     }
 
     [ClientRpc]

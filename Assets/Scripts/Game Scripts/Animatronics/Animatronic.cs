@@ -38,7 +38,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         if (!IsServer) return;
 
         GameManager.Instance.currentHour.OnValueChanged += (currentValue, newValue) => { IncreaseAnimatronicDifficulty(); };
-        DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
+        DebugUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
         AnimatronicManager.Instance.OnAudioLure += AudioLure_AttractAnimatronic;
         AnimatronicManager.Instance.AttentionDivert += OnAttentionDivert;
 

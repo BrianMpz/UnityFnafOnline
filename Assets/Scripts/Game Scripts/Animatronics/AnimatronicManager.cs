@@ -185,6 +185,14 @@ public class AnimatronicManager : NetworkSingleton<AnimatronicManager>
         return path;
     }
 
+    public float GetAverageAnimatronicDifficulty()
+    {
+        if (Animatronics == null || Animatronics.Count == 0)
+            return 1f; // Default to minimum difficulty
+
+        return Animatronics.Average(a => a.currentDifficulty.Value);
+    }
+
     public PlayerNode GetPlayerNodeFromPlayerRole(PlayerRoles playerRole)
     {
         return PlayerNodes.FirstOrDefault(playerNode => playerNode.playerBehaviour != null && playerNode.playerBehaviour.playerRole == playerRole);
@@ -220,8 +228,8 @@ public struct AnimatronicData
     {
         this.waitTimeToStartMoving = waitTimeToStartMoving;
         this.startingDifficulty = startingDifficulty;
-        this.timeBetweenMovementOpportunities = timeBetweenMovement;
-        this.hourlyDifficultyIncrementAmount = hourlyDifficultyIncrement;
+        timeBetweenMovementOpportunities = timeBetweenMovement;
+        hourlyDifficultyIncrementAmount = hourlyDifficultyIncrement;
     }
 }
 

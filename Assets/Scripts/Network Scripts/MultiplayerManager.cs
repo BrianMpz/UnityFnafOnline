@@ -39,7 +39,7 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
     private void Update()
     {
-        if (!DebugCanvasUI.CanDebug) return;
+        if (!DebugUI.CanDebug) return;
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha1))
         {

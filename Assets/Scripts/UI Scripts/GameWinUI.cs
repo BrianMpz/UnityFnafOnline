@@ -45,10 +45,21 @@ public class GameWinUI : MonoBehaviour
     private void Show()
     {
         GameAudioManager.Instance.StopAllSfx();
-        MiscellaneousGameUI.Instance.debugCanvasUI.Hide();
+        DebugUI.Instance.Hide();
         canvas.enabled = true;
 
         StartCoroutine(PlayXpAnimation());
+        StartCoroutine(PlayWinAudio());
+    }
+
+    private IEnumerator PlayWinAudio()
+    {
+        GameAudioManager.Instance.StopAllSfx();
+        GameAudioManager.Instance.PlaySfxInterruptable("game win", true);
+
+        yield return new WaitForSeconds(7);
+
+        GameAudioManager.Instance.PlaySfxOneShot("kids cheering", true);
     }
 
     private IEnumerator PlayXpAnimation()

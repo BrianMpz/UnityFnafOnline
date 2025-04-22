@@ -12,7 +12,7 @@ public class GoldenFreddy : Animatronic
         if (!IsServer) return;
 
         GameManager.Instance.currentHour.OnValueChanged += (currentValue, newValue) => { IncreaseAnimatronicDifficulty(); };
-        DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
+        DebugUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
 
         GetAnimatronicData();
 

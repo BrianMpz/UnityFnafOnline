@@ -126,7 +126,7 @@ public class GameManager : NetworkSingleton<GameManager>
 
         CalculateXP(true);
 
-        EndGameClientRpc();
+        WinGameClientRpc();
     }
 
     private void CalculateXP(bool log = false)
@@ -170,26 +170,19 @@ public class GameManager : NetworkSingleton<GameManager>
     [ServerRpc(RequireOwnership = false)] public void OnPlayerPowerDownServerRpc(PlayerRoles playerRole) => OnPlayerPowerDown?.Invoke(playerRole);
 
     [ClientRpc]
-    public void EndGameClientRpc()
+    public void WinGameClientRpc()
     {
-        StartCoroutine(EndGame());
+        WinGame();
 
         if (MultiplayerManager.isPlayingOnline) VivoxManager.Instance.SwitchToLobbyChat();
     }
 
-    public IEnumerator EndGame()
+    public void WinGame()
     {
         CompleteNight(); // Mark night as completed
 
         OnGameWin?.Invoke();
         isPlaying = false;
-
-        GameAudioManager.Instance.StopAllSfx();
-        GameAudioManager.Instance.PlaySfxInterruptable("game win", true);
-
-        yield return new WaitForSeconds(7);
-
-        GameAudioManager.Instance.PlaySfxOneShot("kids cheering", true);
     }
 
     private void CompleteNight()

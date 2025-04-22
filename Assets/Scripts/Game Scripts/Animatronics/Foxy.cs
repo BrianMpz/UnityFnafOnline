@@ -38,7 +38,7 @@ public class Foxy : Animatronic
         GetAnimatronicData();
         ResetFoxyServerRpc();
 
-        DebugCanvasUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
+        DebugUI.Instance.OnBuff += IncreaseAnimatronicDifficulty;
     }
 
     public float CalculatePowerDrain()

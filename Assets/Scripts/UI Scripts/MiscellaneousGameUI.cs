@@ -4,7 +4,7 @@ public class MiscellaneousGameUI : Singleton<MiscellaneousGameUI>
 {
     public SpectatorUI spectatorUI;
     public DeathScreenUI deathScreenUI;
-    public DebugCanvasUI debugCanvasUI;
+    public DebugUI debugUI;
     public GameFadeInUI gameFadeInUI;
     public GameWinUI gameWinUI;
     public GameOverUI gameOverUI;

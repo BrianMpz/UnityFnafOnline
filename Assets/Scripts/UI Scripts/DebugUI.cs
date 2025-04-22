@@ -1,13 +1,18 @@
 using System;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DebugCanvasUI : Singleton<DebugCanvasUI>
+public class DebugUI : Singleton<DebugUI>
 {
     public static bool CanDebug;
-    public Canvas debugCanvas;
     public Action OnBuff;
+    public Canvas nodeCanvas;
+    public Canvas debugCanvas;
+    [SerializeField] private TMP_Text estimatedXPText;
+    [SerializeField] private TMP_Text playersAliveText;
+    [SerializeField] private TMP_Text averageDifficultyText;
 
     private void Awake()
     {
@@ -16,18 +21,20 @@ public class DebugCanvasUI : Singleton<DebugCanvasUI>
 
     public void Show()
     {
+        nodeCanvas.enabled = true;
         debugCanvas.enabled = true;
     }
 
     public void Hide()
     {
+        nodeCanvas.enabled = false;
         debugCanvas.enabled = false;
     }
 
 
     private void Update()
     {
-        if (!DebugCanvasUI.CanDebug) return;
+        if (!CanDebug) return;
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha9) && PlayerRoleManager.Instance.IsLocalPlayerAlive())
         {
@@ -47,7 +54,11 @@ public class DebugCanvasUI : Singleton<DebugCanvasUI>
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha6))
         {
-            if (debugCanvas.enabled) Hide(); else Show();
+            if (nodeCanvas.enabled) Hide(); else Show();
         }
+
+        estimatedXPText.text = $"Estimated XP: {GameManager.Instance.XpGained.Value}";
+        playersAliveText.text = $"Players Alive: {PlayerRoleManager.Instance.CountPlayersAlive()}";
+        averageDifficultyText.text = $"Average Animatronic Difficulty: {AnimatronicManager.Instance.GetAverageAnimatronicDifficulty()}";
     }
 }

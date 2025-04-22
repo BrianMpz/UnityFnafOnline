@@ -39,7 +39,7 @@ public class GameOverUI : MonoBehaviour
     private void Show()
     {
         GameAudioManager.Instance.StopAllSfx();
-        MiscellaneousGameUI.Instance.debugCanvasUI.Hide();
+        DebugUI.Instance.Hide();
         canvas.enabled = true;
 
         float timeLeft = Mathf.Round((GameManager.MaxGameLength - GameManager.Instance.currentGameTime.Value) * 10f) / 10f;
