@@ -60,6 +60,8 @@ public class Zap : Animatronic
             int indexOfTargetNode = AnimatronicManager.Instance.PlayerNodes.IndexOf(playerNode);
             if (playerNode.IsAlive) ConfirmKillServerRpc(indexOfTargetNode);
 
+            yield return new WaitForSeconds(waitTimeToStartMoving);
+
             gameplayLoop = StartCoroutine(GameplayLoop()); // is released into facility
         }
     }

@@ -61,12 +61,13 @@ public class KeypadSystem : NetworkBehaviour
 
     public IEnumerator GameplayLoop()
     {
-        GetData();
         if (!IsOwner) yield break;
+
+        GetData();
 
         while (GameManager.Instance.isPlaying)
         {
-            yield return new WaitForSeconds(10 + Mathf.Lerp(30f, 10f, currentDifficulty.Value / 20f));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(0f, 20f) + Mathf.Lerp(30f, 10f, currentDifficulty.Value / 20f));
             if (UnityEngine.Random.Range(1, 20) > currentDifficulty.Value || !PlayerRoleManager.Instance.securityOfficeBehaviour.isPlayerAlive.Value || !GameManager.Instance.isPlaying) continue;
 
             yield return PlayCallAudio();
@@ -81,7 +82,7 @@ public class KeypadSystem : NetworkBehaviour
 
                 AudioSource number = GameAudioManager.Instance.PlaySfxInterruptable($"number 0{newRequiredNumber}", true);
                 number.pitch = 0.9f;
-                yield return new WaitForSeconds(Mathf.Lerp(2, 1, currentDifficulty.Value / 20f));
+                yield return new WaitForSeconds(Mathf.Lerp(2, 0.7f, currentDifficulty.Value / 20f));
             }
             yield return new WaitForSeconds(1);
 

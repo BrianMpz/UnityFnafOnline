@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class NightSelector : MonoBehaviour
 {
     public static GameNight lastPlayedNight;
+    public static bool hasPlayedAtLeastAGame;
     [SerializeField] private Button previousNightButton;
     [SerializeField] private Button nextNightButton;
     [SerializeField] private TMP_Text nightText;
@@ -44,7 +45,7 @@ public class NightSelector : MonoBehaviour
         previousNightButton.onClick.AddListener(GoToPreviousNight);
         nextNightButton.onClick.AddListener(GoToNextNight);
 
-        CurrentNight = lastPlayedNight != GameNight.One ? lastPlayedNight : GetHighestAvailableNight();
+        CurrentNight = hasPlayedAtLeastAGame ? lastPlayedNight : GetHighestAvailableNight();
     }
 
     private void UpdateNightText(GameNight newValue)
@@ -134,7 +135,7 @@ public class NightSelector : MonoBehaviour
 
     void Update()
     {
-        if (!MainMenuUI.CanDebug) return;
+        if (!DebugCanvasUI.CanDebug) return;
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha5))
         {

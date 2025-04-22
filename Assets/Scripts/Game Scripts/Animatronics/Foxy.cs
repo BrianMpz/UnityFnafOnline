@@ -113,7 +113,7 @@ public class Foxy : Animatronic
     // The main loop where Foxy's movements and attacks are handled
     private IEnumerator GameplayLoop(bool shouldBeAggrivated, PlayerNode specificTarget = null)
     {
-        SetAggrivation(shouldBeAggrivated || GlobalCameraSystem.Instance.timeSinceLastFoxyCheck > 30, 20, 2);
+        SetAggrivation(shouldBeAggrivated || GlobalCameraSystem.Instance.timeSinceLastFoxyCheck > 30);
 
         yield return new WaitForSeconds(waitTimeToStartMoving); // Initial wait before starting movement
 
@@ -259,7 +259,9 @@ public class Foxy : Animatronic
         bool playBlockAudio = targetPlayerBehaviour.playerRole != PlayerRoles.Janitor;
 
         PlayThunkAudio(targetPlayerBehaviour);
+
         OnFoxyPowerDrain.Invoke(targetPlayerBehaviour.playerRole, CalculatePowerDrain());
+
         ResetFoxyServerRpc(playBlockAudio, indexOfPlayerNode: indexOfPlayerNode);
     }
 
@@ -389,12 +391,12 @@ public class Foxy : Animatronic
         GameAudioManager.Instance.StopSfx(foxyRunAudio);
         GameAudioManager.Instance.StopSfx(foxyTauntAudio);
 
-        // If this is the Janitor and alive, and the thunk is happening to the Janitor
-        bool localIsJanitor = GameManager.localPlayerBehaviour?.playerRole == PlayerRoles.Janitor;
-        bool localIsAlive = GameManager.localPlayerBehaviour?.isPlayerAlive.Value == true;
+        // If the Janitor is alive, and the thunk is happening to the Janitor
         bool targetIsJanitor = playerBehaviour.playerRole == PlayerRoles.Janitor;
+        bool isControllingOrSpectatingJanitor = PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.Janitor);
+        bool janitorIsAlive = PlayerRoleManager.Instance.janitorBehaviour.isPlayerAlive.Value;
 
-        if (localIsJanitor && localIsAlive && targetIsJanitor)
+        if (isControllingOrSpectatingJanitor && janitorIsAlive && targetIsJanitor)
         {
             MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(1f);
         }

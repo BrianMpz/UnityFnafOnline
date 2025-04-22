@@ -85,10 +85,9 @@ public abstract class PlayerBehaviour : NetworkBehaviour
         if (!IsOwner) return;
 
         OnInitialise?.Invoke();
+
         isPlayerAlive.Value = true;
-
         PowerOn();
-
         SubscribeToEvents();
     }
 
@@ -233,8 +232,9 @@ public abstract class PlayerBehaviour : NetworkBehaviour
     }
 
     [ClientRpc]
-    public virtual void PlayDoorKnockAudioClientRpc(int _, bool ferociousBanging, ClientRpcParams _0)
+    public virtual void PlayDoorKnockAudioClientRpc(int _, bool ferociousBanging)
     {
+        if (!IsOwner) return;
         if (!isPlayerAlive.Value) return;
 
         // by default just play the knocking sound without panning

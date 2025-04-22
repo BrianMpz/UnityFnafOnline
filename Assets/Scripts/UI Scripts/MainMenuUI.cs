@@ -6,11 +6,8 @@ using System.Collections;
 
 public class MainMenuUI : MonoBehaviour
 {
-    public static bool CanDebug;
-    [SerializeField] public bool canDebug;
-    public static bool CanPlayOnline;
-    [SerializeField] public bool canPlayOnline;
-    public static bool CanUseVoiceChat;
+    [SerializeField] private bool canDebug;
+    [SerializeField] private bool canPlayOnline;
     [SerializeField] private bool canUseVoiceChat;
 
     [SerializeField] private Button playButton;
@@ -31,9 +28,8 @@ public class MainMenuUI : MonoBehaviour
 
         gameVersionText.text = $"v{Application.version}";
 
-        CanPlayOnline = canPlayOnline;
-        CanDebug = canDebug;
-        CanUseVoiceChat = canUseVoiceChat;
+        DebugCanvasUI.CanDebug = canDebug;
+        VivoxManager.CanUseVoiceChat = canUseVoiceChat;
 
         playButton.onClick.AddListener(PlayOnline);
         playOfflineButton.onClick.AddListener(PlayOffline);
@@ -57,7 +53,7 @@ public class MainMenuUI : MonoBehaviour
 
     private void PlayOnline()
     {
-        if (!CanPlayOnline)
+        if (!canPlayOnline)
         {
             NotImplementedInBuildUI.Instance.Show();
             return;

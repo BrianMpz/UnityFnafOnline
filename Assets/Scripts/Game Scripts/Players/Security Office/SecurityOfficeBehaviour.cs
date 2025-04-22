@@ -121,8 +121,9 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
     }
 
     [ClientRpc]
-    public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, bool ferociousBanging, ClientRpcParams _)
+    public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, bool ferociousBanging)
     {
+        if (!IsOwner) return;
         if (!isPlayerAlive.Value) return;
 
         Node animatronic_currentNode = AnimatronicManager.Instance.Nodes[indexOfCurrentNode];

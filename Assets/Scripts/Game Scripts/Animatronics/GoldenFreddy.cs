@@ -49,7 +49,7 @@ public class GoldenFreddy : Animatronic
         while (GameManager.Instance.isPlaying)
         {
             GetComponent<Image>().enabled = false;
-            yield return new WaitForSeconds(Mathf.Lerp(10, 60, 1 - (currentDifficulty.Value / 20f)));
+            yield return new WaitForSeconds(Mathf.Lerp(20, 60, 1 - (currentDifficulty.Value / 20f)));
             if (UnityEngine.Random.Range(1, 20 + 1) > currentDifficulty.Value) continue;
 
             TargetRandomPlayer();

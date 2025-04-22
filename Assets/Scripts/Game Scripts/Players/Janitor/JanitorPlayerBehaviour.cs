@@ -209,12 +209,14 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     }
 
     [ClientRpc]
-    public override void PlayDoorKnockAudioClientRpc(int _, bool _0, ClientRpcParams _2)
+    public override void PlayDoorKnockAudioClientRpc(int _, bool _0)
     {
+        MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(1f);
+
+        if (!IsOwner) return;
         if (!isPlayerAlive.Value) return;
 
         GameAudioManager.Instance.PlaySfxOneShot("janitor door close", true);
-        MiscellaneousGameUI.Instance.gameFadeInUI.FadeOut(1f);
         recognitionPossibility.Value = 0; // 0.5s grace period
     }
 
@@ -283,7 +285,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         // if the sign changes from pos to neg then power off
         if (previousValue > 0 && newValue <= 0)
         {
-            StartCoroutine(Die("Golden Freddy"));
+            HandleDeath("No Oxygen"); // pass out
         }
     }
 
@@ -321,6 +323,6 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
     public override void GetGameCollectable()
     {
-        oxygenLevels.Value += 5;
+        oxygenLevels.Value += 7.5f;
     }
 }

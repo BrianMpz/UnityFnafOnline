@@ -25,11 +25,11 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
     [SerializeField] private Button roomCodeCopyButton;
     [SerializeField] private int countDownTime;
     public bool aboutToStartGame;
-    public Action AboutToStartGame;
     public Action CancelToStartGame;
+    public Action AboutToStartGame;
     [SerializeField] private TMP_Text singleplayerWarningText;
     [SerializeField] private Image fadeOutImage;
-    private NetworkVariable<FixedString128Bytes> gameStartingTextString = new(writePerm: NetworkVariableWritePermission.Server);
+    private readonly NetworkVariable<FixedString128Bytes> gameStartingTextString = new(writePerm: NetworkVariableWritePermission.Server);
 
     private void Start()
     {
@@ -150,6 +150,7 @@ public class LobbyUI : NetworkSingleton<LobbyUI>
         startButton.gameObject.SetActive(false);
 
         FadeInClientRpc();
+
         yield return new WaitForSeconds(2f);
 
         MultiplayerManager.Instance.ResetPlayersLoadedIntoGameSceneDictionary();

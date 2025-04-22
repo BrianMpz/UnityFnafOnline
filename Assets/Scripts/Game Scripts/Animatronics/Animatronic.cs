@@ -15,7 +15,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     [SerializeField] private protected NetworkVariable<bool> isCurrentlyAggrivated;
     [SerializeField] private protected float resistanceToAudioLure;
     [SerializeField] private protected Node currentTarget;
-    private protected Node currentNode;
+    [SerializeField] private protected Node currentNode;
 
     [Header("Static Values")]
     public List<NodeData> nodeDatas;
@@ -25,7 +25,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     [SerializeField] private protected Node startNode;
     [SerializeField] private protected Transform animatronicModel;
     [SerializeField] private float aggrivationAddition = 20f;
-    [SerializeField] private float aggrivationDivisor = 1.3f;
+    [SerializeField] private float aggrivationDivisor = 1.1f;
 
     [Header("Misc")]
     private protected RectTransform MapTransform { get => GetComponent<RectTransform>(); }
@@ -105,7 +105,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
         if (threshold < roll || targetIsAlive)
         {
-            SetAggrivation(true, aggrivationAddition, aggrivationDivisor);
+            SetAggrivation(true);
             SetTarget(targetedNode);
 
             float resistanceGain = Mathf.Lerp(10f, 80f, GetUnaggrivatedDifficulty() / 20f);
@@ -128,7 +128,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     }
 
     // if isnt aggrivated and should be then aggrivate and vise versa
-    private protected void SetAggrivation(bool shouldBeAggrivated, float aggrivationAddition, float aggrivationDivisor)
+    private protected void SetAggrivation(bool shouldBeAggrivated)
     {
         if (shouldBeAggrivated)
         {
@@ -159,6 +159,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     private protected virtual IEnumerator GameplayLoop()
     {
+        SetNode(startNode, false, false);
         // Don't start the loop if difficulty or wait time is 0
         if (currentDifficulty.Value == 0 || currentMovementWaitTime.Value == 0) yield break;
 
@@ -167,12 +168,6 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         // Main loop: runs as long as the game is active and this is the server
         while (GameManager.Instance.isPlaying && IsServer)
         {
-            if (isCurrentlyAggrivated.Value)
-            {
-                loopsAggrivated++;
-                if (loopsAggrivated >= 5) SetAggrivation(false, 20, 1.3f);
-            }
-
             if (currentNode == PlayerRoleManager.Instance.janitorBehaviour.insideNode)
             {
                 RecognitionResult recognitionResult = new();
@@ -219,7 +214,25 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         yield break;
     }
 
-    private bool NeedsANewTarget() => currentTarget == null || UnityEngine.Random.Range(1, 10 + 1) < 1;
+    private bool NeedsANewTarget()
+    {
+        if (currentTarget == null) return true;
+
+        bool isTargetingPlayer = currentTarget.GetComponent<PlayerNode>() != null;
+
+        float difficulty = currentDifficulty.Value / 20f;
+
+        // Base chance to switch targets
+        float baseChance = isTargetingPlayer
+            ? Mathf.Lerp(20f, 10f, difficulty)
+            : Mathf.Lerp(10f, 20f, difficulty);
+
+        // If aggravated, dampen the chance (e.g. by 50%)
+        if (isCurrentlyAggrivated.Value)
+            baseChance *= 0.5f;
+
+        return UnityEngine.Random.Range(0f, 100f) < baseChance;
+    }
 
     private protected void TargetRandomPlayer()
     {
@@ -239,6 +252,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     private void SetTarget(Node targetNode)
     {
+        SetAggrivation(false); // reset aggrivation
         currentTarget = targetNode;
     }
 
@@ -337,10 +351,9 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     private protected virtual void Blocked(PlayerBehaviour playerBehaviour)
     {
         int indexOfCurrentNode = AnimatronicManager.Instance.Nodes.IndexOf(currentNode);
-        ulong blockId = MultiplayerManager.Instance.GetPlayerDataFromPlayerRole(playerBehaviour.playerRole).clientId;
 
         playerBehaviour.currentPower.Value -= 1;
-        playerBehaviour.PlayDoorKnockAudioClientRpc(indexOfCurrentNode, false, MultiplayerManager.NewClientRpcSendParams(blockId));
+        playerBehaviour.PlayDoorKnockAudioClientRpc(indexOfCurrentNode, false);
 
         SetNode(startNode, false, false);
     }

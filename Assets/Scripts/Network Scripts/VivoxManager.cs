@@ -2,16 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
 using Unity.Services.Vivox;
-using Unity.Services.Vivox.AudioTaps;
 using UnityEngine;
 
 public class VivoxManager : Singleton<VivoxManager>
 {
-    private bool canUseVoiceChat;
+    public static bool CanUseVoiceChat;
     private bool isSwitchingChannels;
     public Action<string> ChannelJoined;
     public Action<string> ChannelLeft;
@@ -25,7 +23,6 @@ public class VivoxManager : Singleton<VivoxManager>
 
     private void Awake()
     {
-        canUseVoiceChat = MainMenuUI.CanUseVoiceChat;
         if (MultiplayerManager.isPlayingOnline) DontDestroyOnLoad(gameObject); else Destroy(gameObject);
     }
 
@@ -41,7 +38,7 @@ public class VivoxManager : Singleton<VivoxManager>
 
     public async Task LogInAsync()
     {
-        if (!canUseVoiceChat) return;
+        if (!CanUseVoiceChat) return;
 
         await VivoxService.Instance.InitializeAsync();
         VivoxService.Instance.ChannelJoined += OnChannelJoined;
@@ -58,7 +55,7 @@ public class VivoxManager : Singleton<VivoxManager>
 
     public async Task LogOutAsync()
     {
-        if (!canUseVoiceChat) return;
+        if (!CanUseVoiceChat) return;
 
         if (VivoxService.Instance == null) return;
 
@@ -87,7 +84,7 @@ public class VivoxManager : Singleton<VivoxManager>
 
     private async void SetActiveAudioChannel(string channelName)
     {
-        if (!canUseVoiceChat) return;
+        if (!CanUseVoiceChat) return;
 
         if (VivoxService.Instance == null) return;
         if (currentChannelName == channelName) return;
@@ -109,7 +106,7 @@ public class VivoxManager : Singleton<VivoxManager>
 
     private async Task LeaveCurrentChannel(string channelName)
     {
-        if (!canUseVoiceChat) return;
+        if (!CanUseVoiceChat) return;
 
         if (!VivoxService.Instance.ActiveChannels.TryGetValue(channelName, out _)) return; // we are not in any channels
 

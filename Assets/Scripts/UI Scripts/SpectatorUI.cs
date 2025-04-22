@@ -19,16 +19,17 @@ public class SpectatorUI : Singleton<SpectatorUI>
     [SerializeField] private TMP_Text hourText;
     [SerializeField] private TMP_Text timeLeftText;
     [SerializeField] private TMP_Text currentPlayerPowerText;
+    [SerializeField] private TMP_Text oxygenText;
     [SerializeField] private protected TMP_Text nightText;
     [SerializeField] private List<SpectatingPlayer> spectatingPlayerList;
     private List<PlayerRoles> playerList;
     private int currentPlayerSpectatingIndex;
 
 
-
     private void Start()
     {
         currentPlayerPowerText.text = "";
+        oxygenText.text = "";
         previousPlayerButton.onClick.AddListener(PreviousPlayer);
         nextPlayerButton.onClick.AddListener(NextPlayer);
         GameManager.Instance.OnGameOver += Hide;
@@ -69,7 +70,7 @@ public class SpectatorUI : Singleton<SpectatorUI>
         if (currentPlayer == default) return;
 
         HandleGoldenFreddyVisibility(currentPlayer);
-        UpdatePlayerPower(currentPlayer);
+        UpdatePlayerUI(currentPlayer);
     }
 
     private void HandleGoldenFreddyVisibility(PlayerBehaviour currentPlayer)
@@ -83,14 +84,38 @@ public class SpectatorUI : Singleton<SpectatorUI>
         timeLeftText.text = $"{timeLeft:F1}";
     }
 
-    private bool UpdatePlayerPower(PlayerBehaviour currentPlayer)
+    private void UpdatePlayerUI(PlayerBehaviour currentPlayer)
     {
-
+        // Power display
         if (!PlayerRoleManager.Instance.IsPlayerDead(currentPlayer))
-            currentPlayerPowerText.text = $"Player Power: {Mathf.Max(currentPlayer.currentPower.Value, 0):F1}%";
+        {
+            float clampedPower = Mathf.Max(currentPlayer.currentPower.Value, 0f);
+            currentPlayerPowerText.text = $"Player Power: {clampedPower:F1}%";
+        }
         else
+        {
             currentPlayerPowerText.text = "";
-        return true;
+        }
+
+        // Only continue if player is Janitor
+        if (currentPlayer.playerRole != PlayerRoles.Janitor)
+        {
+            oxygenText.text = "";
+            return;
+        }
+
+        JanitorPlayerBehaviour janitorPlayerBehaviour = PlayerRoleManager.Instance.janitorBehaviour;
+        float oxygenLevels = janitorPlayerBehaviour.oxygenLevels.Value;
+
+        if (oxygenLevels <= 99.9f)
+        {
+            oxygenText.text = $"Oxygen: {oxygenLevels:F1}%";
+        }
+        else
+        {
+            float bonusOxygen = oxygenLevels - 100f;
+            oxygenText.text = $"Oxygen: 100% +{Mathf.FloorToInt(bonusOxygen)}%";
+        }
     }
 
     private void UpdateGameTimeText(int previousHour, int currentHour)

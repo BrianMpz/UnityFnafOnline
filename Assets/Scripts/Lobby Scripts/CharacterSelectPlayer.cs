@@ -136,7 +136,7 @@ public class CharacterSelectPlayer : MonoBehaviour
 
     private void Update()
     {
-        if (!MainMenuUI.CanDebug) return;
+        if (!DebugCanvasUI.CanDebug) return;
 
         if (Input.GetKey(KeyCode.C))
         {

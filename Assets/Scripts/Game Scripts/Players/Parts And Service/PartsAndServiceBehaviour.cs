@@ -13,10 +13,11 @@ public class PartsAndServiceBehaviour : PlayerBehaviour
     private bool isGettingJumpscared;
 
     [ClientRpc]
-    public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, bool ferociousBanging, ClientRpcParams _)
+    public override void PlayDoorKnockAudioClientRpc(int indexOfCurrentNode, bool ferociousBanging)
     {
         // play sound with left panning
 
+        if (!IsOwner) return;
         if (!isPlayerAlive.Value) return;
 
         string audioClip = ferociousBanging ? "ferocious banging" : "door knock";

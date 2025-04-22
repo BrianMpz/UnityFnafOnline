@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class DebugCanvasUI : Singleton<DebugCanvasUI>
 {
+    public static bool CanDebug;
     public Canvas debugCanvas;
     public Action OnBuff;
 
@@ -26,7 +27,7 @@ public class DebugCanvasUI : Singleton<DebugCanvasUI>
 
     private void Update()
     {
-        if (!MainMenuUI.CanDebug) return;
+        if (!DebugCanvasUI.CanDebug) return;
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha9) && PlayerRoleManager.Instance.IsLocalPlayerAlive())
         {

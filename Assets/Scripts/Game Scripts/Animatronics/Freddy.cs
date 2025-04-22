@@ -4,9 +4,27 @@ using UnityEngine;
 
 public class Freddy : Animatronic
 {
+    const float stallGracePeriod = 0.5f;
+
     private protected override IEnumerator SecondaryMovementCondition()
     {
-        yield return new WaitUntil(() => !GlobalCameraSystem.Instance.IsSomeoneWatchingNode(currentNode));
+        float unobservedTimer = 0f;
+
+        while (true)
+        {
+            if (!GlobalCameraSystem.Instance.IsSomeoneWatchingNode(currentNode))
+            {
+                unobservedTimer += Time.deltaTime;
+
+                if (unobservedTimer >= stallGracePeriod) yield break; // Node has been unobserved long enough, allow movement
+            }
+            else
+            {
+                unobservedTimer = 0f; // Reset timer if someone looks again
+            }
+
+            yield return null;
+        }
     }
 
     private protected override void HandleMovementAudio(bool makeNoise)
@@ -17,10 +35,9 @@ public class Freddy : Animatronic
     private protected override void Blocked(PlayerBehaviour playerBehaviour)
     {
         int indexOfCurrentNode = AnimatronicManager.Instance.Nodes.IndexOf(currentNode);
-        ulong blockId = MultiplayerManager.Instance.GetPlayerDataFromPlayerRole(playerBehaviour.playerRole).clientId;
 
         playerBehaviour.currentPower.Value--;
-        playerBehaviour.PlayDoorKnockAudioClientRpc(indexOfCurrentNode, true, MultiplayerManager.NewClientRpcSendParams(blockId));
+        playerBehaviour.PlayDoorKnockAudioClientRpc(indexOfCurrentNode, true);
 
         if (playerBehaviour.playerRole == PlayerRoles.Janitor)
         {
