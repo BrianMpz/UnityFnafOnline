@@ -30,6 +30,7 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
     [Header("Misc")]
     private protected RectTransform MapTransform { get => GetComponent<RectTransform>(); }
     private protected bool isWaitingOnClient;
+    private protected bool hasStartedMoving;
     private protected Coroutine gameplayLoop;
     private Coroutine lerpingToPosition;
 
@@ -76,6 +77,8 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
 
     private protected void IncreaseAnimatronicDifficulty()
     {
+        if (!hasStartedMoving) return;
+
         currentDifficulty.Value += hourlyDifficultyIncrementAmount;
     }
 
@@ -163,7 +166,9 @@ public class Animatronic : NetworkBehaviour // main animatronic logic ALWAYS run
         // Don't start the loop if difficulty or wait time is 0
         if (currentDifficulty.Value == 0 || currentMovementWaitTime.Value == 0) yield break;
 
+        hasStartedMoving = false;
         yield return new WaitForSeconds(waitTimeToStartMoving);
+        hasStartedMoving = true;
 
         // Main loop: runs as long as the game is active and this is the server
         while (GameManager.Instance.isPlaying && IsServer)

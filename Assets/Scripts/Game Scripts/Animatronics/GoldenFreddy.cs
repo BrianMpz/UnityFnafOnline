@@ -40,7 +40,9 @@ public class GoldenFreddy : Animatronic
     {
         yield return new WaitForSeconds(waitTimeToStartMoving);
         yield return new WaitUntil(() => !PlayerRoleManager.Instance.janitorBehaviour.isPlayerAlive.Value);
+        hasStartedMoving = false;
         yield return new WaitForSeconds(waitTimeToStartMoving);
+        hasStartedMoving = true;
         StartCoroutine(GameplayLoop());
     }
 

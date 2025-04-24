@@ -115,7 +115,9 @@ public class Foxy : Animatronic
     {
         SetAggrivation(shouldBeAggrivated || GlobalCameraSystem.Instance.timeSinceLastFoxyCheck > 30);
 
-        yield return new WaitForSeconds(waitTimeToStartMoving); // Initial wait before starting movement
+        hasStartedMoving = false;
+        yield return new WaitForSeconds(waitTimeToStartMoving);
+        hasStartedMoving = true;
 
         currentAttackAttempt.Value++;
 

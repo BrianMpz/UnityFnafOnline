@@ -19,6 +19,8 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
     [SerializeField] private Light RoomLight;
     private AudioSource breathingSfx;
     public Node insideNode;
+    private AudioSource openAudio;
+    private AudioSource shutAudio;
 
     public override bool IsPlayerVulnerable(Node currentNode)
     {
@@ -151,14 +153,20 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
         {
             mask.SetBool("down", true);
             TriggerMaskAnimationServerRpc(true);
-            GameAudioManager.Instance.PlaySfxOneShot("mask down", true);
-            breathingSfx = GameAudioManager.Instance.PlaySfxInterruptable("deep breaths", false, 0.7f, true);
+
+            GameAudioManager.Instance.StopSfx(openAudio);
+            shutAudio = GameAudioManager.Instance.PlaySfxInterruptable("mask shut", true, 0.6f);
+
+            breathingSfx = GameAudioManager.Instance.PlaySfxInterruptable("deep breaths", false, 0.5f, true);
         }
         else
         {
             mask.SetBool("down", false);
             TriggerMaskAnimationServerRpc(false);
-            GameAudioManager.Instance.PlaySfxOneShot("mask up", true);
+
+            GameAudioManager.Instance.StopSfx(shutAudio);
+            openAudio = GameAudioManager.Instance.PlaySfxInterruptable("mask open", true, 0.3f);
+
             GameAudioManager.Instance.StopSfx(breathingSfx);
         }
     }

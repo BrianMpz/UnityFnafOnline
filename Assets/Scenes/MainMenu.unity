@@ -831,6 +831,10 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 7e8f3d0756e2e0e4080e4ecdfa47e684, type: 3}
   - name: mask up
     audioClip: {fileID: 8300000, guid: 600645d8f7e330b49b79fdfe894a294e, type: 3}
+  - name: mask open
+    audioClip: {fileID: 8300000, guid: c453767220be97e449a9518c8f1724bb, type: 3}
+  - name: mask shut
+    audioClip: {fileID: 8300000, guid: 1c82e4789a8dd2d40b0cd720daaa14a7, type: 3}
   - name: mask down
     audioClip: {fileID: 8300000, guid: 38d87432776632c4cb09d9562884e74f, type: 3}
   - name: deep breaths
@@ -909,6 +913,8 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: e0c84fed0043c914d848c277d27584cd, type: 3}
   - name: robot voice
     audioClip: {fileID: 8300000, guid: a8a62cc82145ebf4286412af6b906d01, type: 3}
+  - name: springlocked
+    audioClip: {fileID: 8300000, guid: 84580e96f7fe61748acf0778917d296b, type: 3}
   musicSource: {fileID: 1074375430}
   sfxOneShotSource: {fileID: 325984021}
   MasterAudioGroup: {fileID: 24300002, guid: 27db747765720b245aeecd20caab3a0d, type: 2}
