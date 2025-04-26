@@ -34,7 +34,7 @@ public class DebugUI : Singleton<DebugUI>
 
     private void Update()
     {
-        if (!CanDebug) return;
+        if (!CanDebug || !GameManager.Instance.isPlaying) return;
 
         if (Input.GetKey(KeyCode.C) && Input.GetKeyDown(KeyCode.Alpha9) && PlayerRoleManager.Instance.IsLocalPlayerAlive())
         {

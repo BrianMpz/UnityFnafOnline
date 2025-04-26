@@ -144,7 +144,7 @@ public class GameManager : NetworkSingleton<GameManager>
     {
         // Normalize key values
         float timeRatio = Mathf.Pow(timeSurvived / MaxGameLength, 4f);
-        float nightRatio = Mathf.Pow(currentNight / totalNights, 3f);
+        float nightRatio = Mathf.Pow(currentNight / totalNights, 4f);
         float survivalRate = playersAlive / totalPlayableRoles;
         float gameWinMultiplier = playersAlive == 0 ? 0.1f : 1f;
 

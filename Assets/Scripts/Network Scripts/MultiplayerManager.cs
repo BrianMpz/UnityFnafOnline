@@ -212,7 +212,6 @@ public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles
 
     public override void OnNetworkSpawn()
     {
-        Tips.rolesThatHaveSeenTips = new();
         int experience = PlayerPrefs.GetInt("PlayerXP", 0);
 
         if (isPlayingOnline) ClientConnectedServerRpc(playerName, (uint)experience, VivoxService.Instance.SignedInPlayerId, Application.version);

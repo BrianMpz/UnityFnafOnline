@@ -230,7 +230,7 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
     public IEnumerator HandleRecognitionLogic(float difficulty, RecognitionResult result)
     {
-        float timeToLeaveWithMask = Mathf.Lerp(1f, 12, difficulty / 20) + UnityEngine.Random.Range(-2f, 2f);
+        float timeToLeaveWithMask = Mathf.Lerp(1f, 12, difficulty / 20) + UnityEngine.Random.Range(-0.5f, 2f);
         float leniency = Mathf.Lerp(3, 0.5f, difficulty / 20);
 
         Debug.Log($"[Recognition] Started with difficulty {difficulty:F2}, timeToLeaveWithMask: {timeToLeaveWithMask:F2}, leniency: {leniency:F2}");
@@ -331,6 +331,6 @@ public class JanitorPlayerBehaviour : PlayerBehaviour
 
     public override void GetGameCollectable()
     {
-        oxygenLevels.Value += 7.5f;
+        oxygenLevels.Value += 5f;
     }
 }
