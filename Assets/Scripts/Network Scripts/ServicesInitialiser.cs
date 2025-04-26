@@ -1,7 +1,6 @@
 using System;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
-using UnityEngine;
 
 public class ServicesInitialiser : Singleton<ServicesInitialiser>
 {

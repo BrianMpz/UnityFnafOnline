@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class MiscellaneousGameUI : Singleton<MiscellaneousGameUI>
 {
     public SpectatorUI spectatorUI;

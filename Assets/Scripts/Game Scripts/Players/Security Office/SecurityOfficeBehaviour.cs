@@ -96,6 +96,8 @@ public class SecurityOfficeBehaviour : PlayerBehaviour
 
         RoomLight.enabled = isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.SecurityOffice);
         flashLight.enabled = !isPlayerPoweredOn.Value && PlayerRoleManager.Instance.IsSpectatingOrControllingPlayer(PlayerRoles.SecurityOffice) || isGettingJumpscared;
+
+        if (keypadSystem.isc)
     }
 
     private protected override IEnumerator PlayDeathAnimation(string deathScream)

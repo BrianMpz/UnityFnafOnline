@@ -198,8 +198,9 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
         OnPlayerJumpscare?.Invoke();
 
-        if (killerName == "Golden Freddy") yield return PlayGoldenFreddyDeathAnimation();
-        else yield return PlayDeathAnimation(deathScream.ToString()); // each individual subclass determine this behaviour
+        yield return killerName == "Golden Freddy"
+            ? PlayGoldenFreddyDeathAnimation()
+            : PlayDeathAnimation(deathScream.ToString());
 
         HandleDeath(killerName);
 
@@ -221,7 +222,7 @@ public abstract class PlayerBehaviour : NetworkBehaviour
 
     public IEnumerator DisconnectionDeathCleanUp()
     {
-        // the player has disconnected during the came and needs to be cleaned up
+        // the player has disconnected during the game and needs to be cleaned up
 
         yield return new WaitUntil(() => { return IsOwner; });
         GameManager.Instance.RelayDeathServerRpc("disconnection");

@@ -1,8 +1,6 @@
 using System;
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class DebugUI : Singleton<DebugUI>
 {

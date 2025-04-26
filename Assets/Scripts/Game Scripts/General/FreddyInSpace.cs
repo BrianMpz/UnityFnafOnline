@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,6 +27,8 @@ public class FreddyInSpace : MonoBehaviour
     [SerializeField] private float minY, maxY;
     [SerializeField] private bool rotate;
     private PlayerBehaviour playerBehaviour;
+
+    [SerializeField, Range(0f, 1f)] private float difficulty;
 
     private float verticalVelocity;
 
@@ -70,6 +70,7 @@ public class FreddyInSpace : MonoBehaviour
 
     public void UnpauseGame()
     {
+        verticalVelocity = 0;
         playerGameSystem.isPlaying.Value = true;
         playerBehaviour.ultraPowerDrain.Value = false;
         pauseScreen.SetActive(false);
@@ -77,25 +78,22 @@ public class FreddyInSpace : MonoBehaviour
 
     private void SpawnPipes()
     {
+        difficulty = (float)GameManager.Instance.gameNight / 7f;
         obstacles = new();
-        collectables = new(); // Also make sure this is reset if needed
+        collectables = new();
 
-        for (int xPosition = -14700; xPosition < 14700; xPosition += UnityEngine.Random.Range(400, 500))
+        float baseSpacing = Mathf.Lerp(500f, 250f, difficulty); // Easy: 500px apart, Hard: 250px apart
+        float xScale = Mathf.Lerp(1f, UnityEngine.Random.Range(2.5f, 3), difficulty);
+        float yScale = Mathf.Lerp(1.2f, 0.9f, difficulty);
+
+        float xPosition = -14700f;
+
+        while (xPosition < 14700f)
         {
-            RectTransform pipe = Instantiate(pipePrefab, obstacleParent.transform);
-            float yPosition = UnityEngine.Random.Range(-150, 150);
+            RectTransform pipe = InstantiatePipe(xPosition);
 
-            pipe.gameObject.SetActive(true);
-            pipe.localPosition = new(xPosition, yPosition);
-            pipe.rotation = pipePrefab.rotation;
-            pipe.localEulerAngles = new Vector3(UnityEngine.Random.Range(0, 2) == 0 ? 0f : 180f, 0f, 0f);
+            pipe.localScale = new(1, yScale, 1f);
 
-            float randomValue = UnityEngine.Random.value;
-
-            float scaleX = Mathf.Lerp(1f, 3f, randomValue);
-            Vector3 scaleFactor = new(scaleX, 1f, 1f);
-
-            // Color components derived from the same value with slight variation
             Color randColor = new(
                 Mathf.Clamp01(0.014f + UnityEngine.Random.Range(-0.01f, 0.1f)),
                 Mathf.Clamp01(0.051f + UnityEngine.Random.Range(-0.01f, 0.1f)),
@@ -110,7 +108,7 @@ public class FreddyInSpace : MonoBehaviour
                     if (child.CompareTag("Obstacle"))
                     {
                         img.color = randColor;
-                        child.localScale = scaleFactor;
+                        child.localScale = new(xScale, 1, 1f);
                         obstacles.Add(child);
                     }
                     else if (child.CompareTag("Collectable"))
@@ -119,9 +117,25 @@ public class FreddyInSpace : MonoBehaviour
                     }
                 }
             }
+
+            float breatheRoom = UnityEngine.Random.Range(30, 50) * xScale;
+            xPosition += baseSpacing + breatheRoom;
         }
     }
 
+    private RectTransform InstantiatePipe(float xPosition)
+    {
+        RectTransform pipe = Instantiate(pipePrefab, obstacleParent.transform);
+
+        float yPosition = UnityEngine.Random.Range(-150, 140);
+
+        pipe.localPosition = new Vector2(xPosition, yPosition);
+        pipe.rotation = pipePrefab.rotation;
+        pipe.localEulerAngles = new Vector3(UnityEngine.Random.Range(0, 2) == 0 ? 0f : 180f, 0f, 0f);
+
+        pipe.gameObject.SetActive(true);
+        return pipe;
+    }
 
     private IEnumerator ScrollBackground()
     {

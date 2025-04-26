@@ -1,18 +1,16 @@
-using System;
 using System.Collections;
-using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class KeypadSystem : NetworkBehaviour
 {
+    public NetworkVariable<bool> isCalling = new(writePerm: NetworkVariableWritePermission.Owner);
     [SerializeField] private string requriedCombination;
     [SerializeField] private string currentCombination;
     [SerializeField] private NetworkVariable<float> currentDifficulty = new(writePerm: NetworkVariableWritePermission.Owner);
-    private float difficultyIncrementAmount;
     [SerializeField] private AudioSource alarm;
     [SerializeField] private Light alarmLight;
+    private float difficultyIncrementAmount;
 
     private void Start()
     {
@@ -94,6 +92,8 @@ public class KeypadSystem : NetworkBehaviour
             {
                 if (PlayerRoleManager.Instance.securityOfficeBehaviour.isPlayerAlive.Value && GameManager.Instance.isPlaying) AlertAllAnimatronicsServerRpc();
             }
+
+            isCalling.Value = false;
         }
     }
 
@@ -152,10 +152,15 @@ public class KeypadSystem : NetworkBehaviour
     {
         AudioSource callAudio = GameAudioManager.Instance.PlaySfxInterruptable("calling", true);
         callAudio.pitch = 1.2f;
+
         yield return new WaitForSeconds(1);
+
         GameAudioManager.Instance.StopSfx(callAudio);
         AudioSource callPickUpAudio = GameAudioManager.Instance.PlaySfxInterruptable("call pick up", true);
         callPickUpAudio.pitch = 1.2f;
+
+        isCalling.Value = true;
+
         yield return new WaitForSeconds(1f);
     }
 }

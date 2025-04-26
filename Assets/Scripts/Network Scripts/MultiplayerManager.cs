@@ -6,7 +6,6 @@ using Unity.Services.Vivox;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
-using System.Collections;
 using System.IO;
 
 public class MultiplayerManager : NetworkSingleton<MultiplayerManager>// handles most of netcode 
